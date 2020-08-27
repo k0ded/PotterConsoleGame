@@ -11,6 +11,7 @@ namespace PotterGame.Player.Story
         string[] previousStory;
 
         public abstract void tick();
+        public abstract void start();
 
         public string[] getPreviousStory()
         {
@@ -22,6 +23,5 @@ namespace PotterGame.Player.Story
             previousStory = message;
             Program.getPlayer().SendMenu(message);
         }
-    
     }
 }

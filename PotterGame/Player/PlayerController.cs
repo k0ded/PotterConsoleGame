@@ -9,9 +9,9 @@ namespace PotterGame.Player
     class PlayerController
     {
 
-        PlayerController()
+        public PlayerController()
         {
-
+            MakeSelection();
         }
 
         public void MakeSelection()

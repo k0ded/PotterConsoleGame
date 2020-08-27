@@ -23,6 +23,9 @@ namespace PotterGame.Player
         public Player()
         {
             playerInventory = new Inventory("Inventory", 20);
+            context = new MainStory();
+            context.start();
+            new PlayerController();
         }
 
         internal void SendMenu(string[] inventory)
