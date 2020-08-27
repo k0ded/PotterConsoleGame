@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace PotterGame.Player.Story
 {
-    class baseContext
+    abstract class baseContext
     {
         string[] previousStory;
+
+        public abstract void tick();
+
         public string[] getPreviousStory()
         {
             return previousStory;

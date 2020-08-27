@@ -25,9 +25,7 @@ namespace PotterGame
             // Ser till så att pilarna i inventoryt inte visas som lådor
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             ConsoleHelper.SetConsoleFont();
-            Console.WriteLine("Hello");
             Maximize();
-            Console.ReadKey();
 
         }
 

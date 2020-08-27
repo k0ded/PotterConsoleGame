@@ -50,7 +50,7 @@ namespace ConsoleApp
             {
                 //Ser till så att man kan ha olika instanser av inventoryt till t.ex Affärer. Så att det inte bara
                 //Säger inventory men kan också bli t.ex Shop utan att förstöra formatet.
-                inventory[0] = name + "                                    ".Substring(0, name.Length) + "(" + p.GetMoney() + ")";
+                inventory[0] = name + "                                 💰 ".Substring(0, name.Length) + "(" + p.GetMoney() + ")";
                 inventory[1] = "     Item                           ";
                 for (int i = 0; i < content.Count; i++)
                 {
@@ -63,7 +63,7 @@ namespace ConsoleApp
 
             // Det är inte jättemånga items som ska vara i listan så jag valde att lägga i dom i dom rätta platserna direkt.
             // Annars hade man kunnat använda en for loop för att göra det.
-            inventory[0] = name + ("                                   ".Substring(0, name.Length)) + "(" + p.GetMoney() + ")";
+            inventory[0] = name + ("                                💰 ".Substring(0, name.Length)) + "(" + p.GetMoney() + ")";
             inventory[1] = "     Item                           ";
             inventory[2] = canScrollUp ? "           ↑" : "            ";
             baseItem i0 = content.ElementAt(0 + offset);

@@ -14,7 +14,7 @@ namespace ConsoleApp
     class Inventory : baseInventory
     {
 
-        //Inventory                          (Money)
+        //Inventory                       💰 (Money)
         //     Item                           Value  Count
         //           ↑
         //     []                              (0)    (1)
@@ -24,7 +24,7 @@ namespace ConsoleApp
         //     [Charms Book]                   (50)   (1)
         //     [Butterbeer]                    (5)    (7)
         //           ↓
-        
+
         // Det här är vad inventoryt borde se ut i slutändan.
 
         String name;
@@ -67,7 +67,7 @@ namespace ConsoleApp
             {
                 //Ser till så att man kan ha olika instanser av inventoryt till t.ex Affärer. Så att det inte bara
                 //Säger inventory men kan också bli t.ex Shop utan att förstöra formatet.
-                inventory[0] = name + "                                    ".Substring(0, name.Length) + "(" + p.GetMoney() + ")";
+                inventory[0] = name + "                                💰 ".Substring(0, name.Length) + "(" + p.GetMoney() + ")";
                 inventory[1] = "     Item                           Value  Count";
                 for (int i = 0; i < content.Count; i++)
                 {
@@ -78,7 +78,7 @@ namespace ConsoleApp
             }
 
             // Det är inte jättemånga items som ska vara i listan så jag valde att lägga i dom i dom rätta platserna direkt.
-            inventory[0] = "Inventory                          (" + p.GetMoney() + ")";
+            inventory[0] = "Inventory                       💰 (" + p.GetMoney() + ")";
             inventory[1] = "     Item                           Value  Count";
             inventory[2] = canScrollUp ? "           ↑" : "            ";
             baseItem i0 = content.ElementAt(0 + offset);

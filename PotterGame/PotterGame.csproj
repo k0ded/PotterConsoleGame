@@ -57,6 +57,8 @@
     <Compile Include="Player\Player.cs" />
     <Compile Include="Player\PlayerController.cs" />
     <Compile Include="Player\Story\baseContext.cs" />
+    <Compile Include="Player\Story\Battle.cs" />
+    <Compile Include="Player\Story\MainStory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
