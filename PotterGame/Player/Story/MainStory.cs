@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PotterGame.Player.Story
 {
-    class MainStory : baseContext
+    class MainStory : BaseContext
     {
         int story = 0;
 

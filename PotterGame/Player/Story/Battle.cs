@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace PotterGame.Player.Story
 {
-    class Battle : baseContext
+    class Battle : BaseContext
     {
+        public override void start()
+        {
+            
+        }
 
         public override void tick()
         {

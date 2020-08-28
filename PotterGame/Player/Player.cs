@@ -12,17 +12,17 @@ namespace PotterGame.Player
 {
     class Player
     {
-        baseInventory openInventory;
-        baseInventory playerInventory;
+        BaseInventory openInventory;
+        BaseInventory playerInventory;
 
         bool isInventoryOpen = false;
-        baseContext context;
+        BaseContext context;
         
         int money;
 
         public Player()
         {
-            playerInventory = new Inventory("Inventory", 20);
+            playerInventory = new Inventory("Inventory");
             context = new MainStory();
             context.start();
             new PlayerController();
@@ -36,14 +36,14 @@ namespace PotterGame.Player
             }
         }
 
-        public baseInventory GetOpenInventory()
+        public BaseInventory GetOpenInventory()
         {
             if (isInventoryOpen)
                 return openInventory;
             return null;
         }
 
-        internal void OpenInventory(baseInventory inventory)
+        internal void OpenInventory(BaseInventory inventory)
         {
             openInventory = inventory;
             isInventoryOpen = true;
@@ -59,7 +59,7 @@ namespace PotterGame.Player
         {
             return money;
         } 
-        public baseContext GetContext()
+        public BaseContext GetContext()
         {
             return context;
         }
@@ -74,7 +74,7 @@ namespace PotterGame.Player
             this.money -= money;
         }
 
-        internal baseInventory GetPlayerInventory()
+        internal BaseInventory GetPlayerInventory()
         {
             return playerInventory;
         }

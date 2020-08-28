@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PotterGame.Player.Story
 {
-    abstract class baseContext
+    abstract class BaseContext
     {
         string[] previousStory;
 

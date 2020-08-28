@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -26,7 +27,33 @@ namespace PotterGame
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             ConsoleHelper.SetConsoleFont();
             Maximize();
+            
+        }
 
+        public void startTicking()
+        {
+            shouldTick = true;
+            tick();
+        }
+
+        public void stopTicking()
+        {
+            shouldTick = false;
+        }
+
+
+        bool shouldTick = true;
+        void tick()
+        {
+            while(true)
+            {
+                if (!shouldTick)
+                    break;
+
+                getPlayer().GetContext().tick();
+
+                Thread.Sleep(1000 / 128);
+            }
         }
 
         private static void Maximize()
@@ -40,7 +67,7 @@ namespace PotterGame
             return player;
         }
 
-        internal static Shop getShop(baseItem item)
+        internal static Shop getShop(IBaseItem item)
         {
             throw new NotImplementedException();
         }

@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -49,14 +52,15 @@
   <ItemGroup>
     <Compile Include="ConsoleHelper.cs" />
     <Compile Include="Inventories\Bank.cs" />
-    <Compile Include="Inventories\baseInventory.cs" />
+    <Compile Include="Inventories\BaseInventory.cs" />
     <Compile Include="Inventories\Inventory.cs" />
-    <Compile Include="Inventories\Items\baseItem.cs" />
+    <Compile Include="Inventories\Items\IBaseItem.cs" />
+    <Compile Include="Inventories\Items\Butterbeer.cs" />
     <Compile Include="Inventories\Shop.cs" />
     <Compile Include="Inventories\ShopSelector.cs" />
     <Compile Include="Player\Player.cs" />
     <Compile Include="Player\PlayerController.cs" />
-    <Compile Include="Player\Story\baseContext.cs" />
+    <Compile Include="Player\Story\BaseContext.cs" />
     <Compile Include="Player\Story\Battle.cs" />
     <Compile Include="Player\Story\MainStory.cs" />
     <Compile Include="Program.cs" />
