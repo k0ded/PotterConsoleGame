@@ -21,12 +21,6 @@ namespace ConsoleApp
             content = new List<IBaseItem>();
         }
 
-        //Används när inventoryt ska öppnas. Den andra används för att man ska kunna scrolla.
-        public void openInventory()
-        {
-            OpenInventory(0, 0);
-        }
-
         internal string GetName()
         {
             return name;
@@ -82,10 +76,10 @@ namespace ConsoleApp
 
         public override void RunInteractAction()
         {
-            if(Selected.Value <= Program.getPlayer().GetMoney())
+            if(Selected.Value <= Program.getPlayer().Money)
             {
                 Program.getPlayer().RemoveMoney(Selected.Value);
-                Program.getPlayer().GetPlayerInventory().AddItem(Selected);
+                Program.getPlayer().PlayerInventory.AddItem(Selected);
                 Console.WriteLine("+1 " + Selected.Name);
             }
         }

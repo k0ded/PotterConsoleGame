@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PotterGame.Inventories;
+using PotterGame.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,22 +18,30 @@ namespace PotterGame.Player
 
         public void MakeSelection()
         {
+            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.Write(new Text("", 12, 12, 12, false).Message);
             ConsoleKey key = Console.ReadKey().Key;
 
-            if(Program.getPlayer().IsInventoryOpen())
+            if (Program.getPlayer().IsInventoryOpen)
             {
-                if(key.Equals(ConsoleKey.Enter))
+                BaseInventory openInventory = Program.getPlayer().OpenInventory;
+
+                if (key.Equals(ConsoleKey.Enter))
                 {
-                    Program.getPlayer().GetOpenInventory().RunInteractAction();
+                    openInventory.RunInteractAction();
                 }else if(key.Equals(ConsoleKey.Backspace))
                 {
-                    Program.getPlayer().GetOpenInventory().RunBackspaceAction();
+                    openInventory.RunBackspaceAction();
                 }else if(key.Equals(ConsoleKey.W))
                 {
-                    Program.getPlayer().GetOpenInventory().RunWAction();
+                    openInventory.RunWAction();
                 }else if(key.Equals(ConsoleKey.S))
                 {
-                    Program.getPlayer().GetOpenInventory().RunSAction();
+                    openInventory.RunSAction();
+                }
+                else
+                {
+                    openInventory.RunReloadAction();
                 }
             }
             else

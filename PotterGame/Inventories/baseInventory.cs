@@ -11,43 +11,68 @@ namespace PotterGame.Inventories
     {
         public string Controls { get; } = "[W/S] - Scroll        [ENTER] - Interact        [BACKSPACE] - Back";
 
-        public  List<IBaseItem> content;
+        public List<IBaseItem> content;
 
         public int Selection = 0;
         public int Offset = 0;
-        public IBaseItem Selected;
-       
-        protected String myName;
+        public IBaseItem Selected = null;
 
+        protected String myName = "DEFAULT";
         private Player.Player myPlayer = Program.getPlayer();
+        private string myMoneyBag = "\xfeff \u26f5";
 
         public void OpenInventory(int aSelection, int aOffset)
         {
-            myPlayer.OpenInventory(this);
+            Console.Clear();
+            myPlayer.InventoryOpened(this);
             Selection = aSelection;
             Offset = aOffset;
-            
-            Text[] inventory = new Text[Math.Min(2 + content.Count + 2, 11)];
+
+            Text[] inventory = new Text[Math.Min(content.Count + 4, 11)];
             bool canScrollDown = (content.Count - Offset) - (Console.WindowHeight - 5) > 0;
             bool canScrollUp = Offset > 0;
-
-            inventory[0] = new Text($"{myName}                                💰 ".Substring(myName.Length, myName.Length * 2) + $"({myPlayer.GetMoney()})");
-            inventory[1] = new Text("     Item                           Price");
+            
+            inventory[0] = new Text($"{myName}                           ({myPlayer.Money})", ColorCode.RESET);
+            inventory[1] = new Text("     Item                            Price");
             inventory[2] = new Text(canScrollUp ? "           ↑" : "            ");
 
-            for (var i = 0; i < Math.Min(inventory.Length - Offset, 6); i++)
+            for (var i = 0; i < Math.Min(content.Count - Offset, 6); i++)
             {
                 IBaseItem item = content.ElementAt(i);
                 inventory[i + 3] = new Text(GetItemName(item, Selection == i));
                 inventory[i + 4] = new Text(canScrollDown ? "           ↓" : "            ");
             }
+            myPlayer.SendPaused();
+            myPlayer.SendControls(Controls);
+            myPlayer.SendInventory(inventory);
+        }
 
+        public void ReloadInventory(int aSelection, int aOffset)
+        {
+            myPlayer.InventoryOpened(this);
+            Selection = aSelection;
+            Offset = aOffset;
+
+            Text[] inventory = new Text[Math.Min(content.Count + 4, 11)];
+            bool canScrollDown = (content.Count - Offset) - (Console.WindowHeight - 5) > 0;
+            bool canScrollUp = Offset > 0;
+
+            inventory[0] = new Text($"{myName}                           ({myPlayer.Money})", ColorCode.RESET);
+            inventory[1] = new Text("     Item                            Price");
+            inventory[2] = new Text(canScrollUp ? "           ↑" : "            ");
+
+            for (var i = 0; i < Math.Min(content.Count - Offset, 6); i++)
+            {
+                IBaseItem item = content.ElementAt(i);
+                inventory[i + 3] = new Text(GetItemName(item, Selection == i));
+                inventory[i + 4] = new Text(canScrollDown ? "           ↓" : "            ");
+            }
             myPlayer.SendInventory(inventory);
         }
 
         public void OpenBankInventory(int aSelection, int aOffset, int aBankMoney)
         {
-            myPlayer.OpenInventory(this);
+            myPlayer.InventoryOpened(this);
             Selection = aSelection;
             Offset = aOffset;
 
@@ -55,9 +80,7 @@ namespace PotterGame.Inventories
             bool canScrollDown = (content.Count - Offset) - (Console.WindowHeight - 5) > 0;
             bool canScrollUp = Offset > 0;
 
-            string myMoneyBag = new Text("💰", ColorCode.YELLOW, true).Message;
-
-            inventory[0] = new Text($"Player                            {myMoneyBag} ({myPlayer.GetMoney()})");
+            inventory[0] = new Text($"Player                            {myMoneyBag} ({myPlayer.Money})");
             inventory[1] = new Text($"     Bank                         {myMoneyBag} ({aBankMoney})");
             inventory[2] = new Text(GetItemName(new WithdrawItem(), Selection == 0).Substring(36));
             inventory[3] = new Text(GetItemName(new DepositItem(), Selection == 1).Substring(36));
@@ -67,20 +90,23 @@ namespace PotterGame.Inventories
 
         private String GetItemName(IBaseItem aItem, bool aSelected)
         {
-            String prefix = new Text("     ", ColorCode.BLACK, true);
+            String prefix = "     ";
             String maxSuffix = "                              ";
             String itemName = $"[{aItem.Name}]";
             if (aSelected)
             {
-                prefix = new Text("  >> ", ColorCode.WHITE, false).Message;
+                prefix = "  >> ";
                 maxSuffix = " <<                           ";
                 Selected = aItem;
+                String s1 = "     ";
+                s1 = s1.Substring(0, Math.Max(s1.Length - String.Concat(aItem.Value).Length, 0));
+                return new Text(prefix + itemName + maxSuffix.Substring(0, maxSuffix.Length - aItem.Name.Length) + $"({aItem.Value})", ColorCode.WHITE).Message;
             }
 
             String s = "     ";
             s = s.Substring(0, Math.Max(s.Length - String.Concat(aItem.Value).Length, 0));
 
-            return prefix + itemName + maxSuffix.Substring(0, maxSuffix.Length - aItem.Name.Length) + $"({aItem.Value})";
+            return new Text(prefix + itemName + maxSuffix.Substring(0, maxSuffix.Length - aItem.Name.Length) + $"({aItem.Value})", 128,128,128, true).Message;
         }
 
         public void AddItem(IBaseItem aItem)
@@ -88,7 +114,10 @@ namespace PotterGame.Inventories
             foreach (IBaseItem item in content)
             {
                 if (item == null)
+                {
+                    content = new List<IBaseItem>(1000);   
                     break;
+                }
                 if (item.Name == aItem.Name)
                 {
                     item.Count++;
@@ -116,12 +145,17 @@ namespace PotterGame.Inventories
 
         public virtual void RunWAction()
         {
-
+            RunReloadAction();
         }
 
         public virtual void RunSAction()
         {
+            RunReloadAction();
+        }
 
+        public void RunReloadAction()
+        {
+            ReloadInventory(Selection, Offset);
         }
     }
 }

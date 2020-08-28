@@ -20,12 +20,6 @@ namespace ConsoleApp
             this.name = name;
         }
 
-        //Används när inventoryt ska öppnas. Den andra används för att man ska kunna scrolla.
-        public void OpenInventory()
-        {
-            OpenInventory(0, 0);
-        }
-
         public override void RunWAction()
         {
             bool canScrollUp = Offset > 0;

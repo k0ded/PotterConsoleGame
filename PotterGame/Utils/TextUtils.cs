@@ -30,7 +30,6 @@ namespace PotterGame.Utils
                 Console.SetCursorPosition(x, y);
                 Console.WriteLine(aMessage[i].Message);
             }
-
         }
 
         public void SendControlsMessage(Text aControls)

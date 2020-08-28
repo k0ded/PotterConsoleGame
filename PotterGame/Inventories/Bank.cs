@@ -29,12 +29,6 @@ namespace ConsoleApp
             content = new List<IBaseItem>();
         }
 
-        //Används när inventoryt ska öppnas. Den andra används för att man ska kunna scrolla.
-        public void OpenInventory()
-        {
-            OpenBankInventory(0, 0, myMoney);
-        }
-
         public override void RunWAction()
         {
             bool canScrollUp = Offset > 0;

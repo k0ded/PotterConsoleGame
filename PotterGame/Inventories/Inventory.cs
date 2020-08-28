@@ -38,14 +38,15 @@ namespace ConsoleApp
             bool canScrollUp = Offset > 0;
             if(canScrollUp && Selection == 1)
             {
-                OpenInventory(Selection, Offset - 1);
+                ReloadInventory(Selection, Offset - 1);
                 return;
             }
             if(Selection == 0)
             {
-                OpenInventory(0, Offset);
+                ReloadInventory(0, Offset);
+                return;
             }
-            OpenInventory(Selection - 1, Offset);
+            ReloadInventory(Selection - 1, Offset);
 
         }
 
@@ -54,15 +55,15 @@ namespace ConsoleApp
             bool canScrollDown = (content.Count - Offset) - (Console.WindowHeight - 5) > 0;
             if (canScrollDown && Selection == 4)
             {
-                OpenInventory(Selection, Offset + 1);
+                ReloadInventory(Selection, Offset + 1);
                 return;
             }
             if (Selection == Console.WindowHeight - 5 || Selection == content.Count - 1)
             {
-                OpenInventory(Selection, Offset);
+                ReloadInventory(Selection, Offset);
                 return;
             }
-            OpenInventory(Selection + 1, Offset);
+            ReloadInventory(Selection + 1, Offset);
 
         }
 

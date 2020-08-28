@@ -3,7 +3,6 @@ using PotterGame.Inventories.Items;
 using PotterGame.Utils;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -36,7 +35,7 @@ namespace PotterGame
         
 
         public static TextUtils TextUtils = new TextUtils();
-        private static Player.Player player;
+        private static Player.Player myPlayer;
 
         static void Main(string[] args)
         {
@@ -61,14 +60,12 @@ namespace PotterGame
                 return;
             }
 
-
-
             Program p = new Program();
 
             Console.CursorVisible = false;
 
-            Console.ReadKey();
-            player = new Player.Player();
+            myPlayer = new Player.Player();
+            myPlayer.Start();
         }
 
         public void StartTicking()
@@ -105,7 +102,7 @@ namespace PotterGame
 
         public static Player.Player getPlayer()
         {
-            return player;
+            return myPlayer;
         }
 
         internal static Shop getShop(IBaseItem item)
