@@ -15,8 +15,6 @@ namespace ConsoleApp
     {
         String name;
 
-        Shop selected;
-
         public ShopSelector(String name)
         {
             this.name = name;
@@ -63,7 +61,7 @@ namespace ConsoleApp
 
         public override void RunInteractAction()
         {
-            selected.openInventory();
+            Selected.InteractEvent();
         }
 
     }

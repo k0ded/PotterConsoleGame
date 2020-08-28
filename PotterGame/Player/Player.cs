@@ -1,6 +1,7 @@
 ﻿using ConsoleApp;
 using PotterGame.Inventories;
 using PotterGame.Player.Story;
+using PotterGame.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,16 +25,18 @@ namespace PotterGame.Player
         {
             playerInventory = new Inventory("Inventory");
             context = new MainStory();
-            context.start();
+            context.Start();
             new PlayerController();
         }
 
-        internal void SendMenu(string[] inventory)
+        internal void SendMessage(Text[] aMessage)
         {
-            foreach(string s in inventory)
-            {
-                Console.WriteLine(s);
-            }
+            Program.TextUtils.SendCenteredMessage(aMessage);
+        }
+
+        internal void SendInventory(Text[] aInventory)
+        {
+            Program.TextUtils.SendInventoryMessage(aInventory);
         }
 
         public BaseInventory GetOpenInventory()
@@ -52,7 +55,7 @@ namespace PotterGame.Player
         internal void CloseInventory()
         {
             isInventoryOpen = false;
-            SendMenu(context.getPreviousStory());
+            SendMessage(context.getPreviousStory());
         }
 
         public int GetMoney()

@@ -10,7 +10,7 @@ namespace PotterGame.Player.Story
     {
         int story = 0;
 
-        public override void start()
+        public override void Start()
         {
             runStory(story);
         }
@@ -20,15 +20,15 @@ namespace PotterGame.Player.Story
             switch (i)
             {
                 case 1:
-                    runStoryTwo();
+                    RunStoryTwo();
                     break;
                 case 0:
-                    runStoryOne();
+                    RunStoryOne();
                     break;
             }
         }
 
-        private void runStoryTwo()
+        private void RunStoryTwo()
         {
             story = 1;
 
@@ -37,16 +37,16 @@ namespace PotterGame.Player.Story
             //runStoryThree();
         }
 
-        private void runStoryOne()
+        private void RunStoryOne()
         {
             story = 0;
 
             // TODO: Make story one
 
-            runStoryTwo();
+            RunStoryTwo();
         }
 
-        public override void tick()
+        public override void Tick()
         {
             
         }

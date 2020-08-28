@@ -33,12 +33,6 @@ namespace ConsoleApp
             content = new List<IBaseItem>();
         }
 
-        //Används när inventoryt ska öppnas. Den andra används för att man ska kunna scrolla.
-        public void openInventory()
-        {
-            OpenInventory(0, 0);
-        }
-
         public override void RunWAction()
         {
             bool canScrollUp = Offset > 0;
@@ -57,13 +51,13 @@ namespace ConsoleApp
 
         public override void RunSAction()
         {
-            bool canScrollDown = (content.Count - Offset) - 6 > 0;
+            bool canScrollDown = (content.Count - Offset) - (Console.WindowHeight - 5) > 0;
             if (canScrollDown && Selection == 4)
             {
                 OpenInventory(Selection, Offset + 1);
                 return;
             }
-            if (Selection == 5 || Selection == content.Count - 1)
+            if (Selection == Console.WindowHeight - 5 || Selection == content.Count - 1)
             {
                 OpenInventory(Selection, Offset);
                 return;

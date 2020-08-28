@@ -8,15 +8,21 @@ namespace PotterGame.Inventories.Items
 {
     class Butterbeer : IBaseItem
     {
-        public int Value { get; set; }
-        public int Count { get; set; }
-        public string Name { get; set; }
+        public bool IsOpened { get; set; } = false;
+
+        public int Value { get; } = 20;
+        public int Count { get; set; } = 1;
+        public string Name { get; } = "Butterbeer";
+        public string Controls { get; } =   "    [ENTER] - Consume                       [BACKSPACE] - Back    ";
 
         public void InteractEvent()
         {
-            string[] butterbeer = { "BUTTERBEER - DEBUG" };
-            Program.getPlayer().SendMenu(butterbeer);
+                   
+        }
 
+        public void ReturnEvent()
+        {
+            IsOpened = false;
         }
     }
 }

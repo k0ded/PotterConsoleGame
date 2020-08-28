@@ -21,19 +21,18 @@ namespace ConsoleApp
         
         // Det här är vad inventoryt borde se ut i slutändan.
 
-        String name;
-        int money = 250;
+        private int myMoney = 250;
 
         public Bank(String name)
         {
-            this.name = name;
+            myName = name;
             content = new List<IBaseItem>();
         }
 
         //Används när inventoryt ska öppnas. Den andra används för att man ska kunna scrolla.
         public void OpenInventory()
         {
-            OpenInventory(0, 0);
+            OpenBankInventory(0, 0, myMoney);
         }
 
         public override void RunWAction()
@@ -41,14 +40,14 @@ namespace ConsoleApp
             bool canScrollUp = Offset > 0;
             if(canScrollUp && Selection == 1)
             {
-                OpenInventory(Selection, Offset - 1);
+                OpenBankInventory(Selection, Offset - 1, myMoney);
                 return;
             }
             if(Selection == 0)
             {
-                OpenInventory(0, Offset);
+                OpenBankInventory(0, Offset, myMoney);
             }
-            OpenInventory(Selection - 1, Offset);
+            OpenBankInventory(Selection - 1, Offset, myMoney);
 
         }
 
@@ -57,15 +56,15 @@ namespace ConsoleApp
             bool canScrollDown = (content.Count - Offset) - 6 > 0;
             if (canScrollDown && Selection == 4)
             {
-                OpenInventory(Selection, Offset + 1);
+                OpenBankInventory(Selection, Offset + 1, myMoney);
                 return;
             }
             if (Selection == 5 || Selection == content.Count - 1)
             {
-                OpenInventory(Selection, Offset);
+                OpenBankInventory(Selection, Offset, myMoney);
                 return;
             }
-            OpenInventory(Selection + 1, Offset);
+            OpenBankInventory(Selection + 1, Offset, myMoney);
 
         }
 

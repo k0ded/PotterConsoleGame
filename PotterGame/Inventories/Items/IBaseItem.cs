@@ -8,10 +8,13 @@ namespace PotterGame.Inventories.Items
 {
     public interface IBaseItem
     {
-        int Value { get; set; }
+        bool IsOpened { get; set; }
+        int Value { get; }
         int Count { get; set; }
-        string Name { get; set; }
+        string Name { get; }
+        string Controls { get; }
 
         void InteractEvent();
+        void ReturnEvent();
     }
 }

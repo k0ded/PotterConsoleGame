@@ -1,56 +1,97 @@
 ﻿using ConsoleApp;
 using PotterGame.Inventories.Items;
-using PotterGame.Player;
+using PotterGame.Utils;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace PotterGame
 {
     class Program
     {
 
+        // Det här gör ANSI färger & maximerat fönster möjligt! - Snott från Google
+        private const int STD_OUTPUT_HANDLE = -11;
+        private const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
+        private const uint DISABLE_NEWLINE_AUTO_RETURN = 0x0008;
+
+        [DllImport("kernel32.dll")]
+        private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+
+        [DllImport("kernel32.dll")]
+        private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr GetStdHandle(int nStdHandle);
+
+        [DllImport("kernel32.dll")]
+        public static extern uint GetLastError();
+
         [DllImport("user32.dll")]
         public static extern bool ShowWindow(System.IntPtr hWnd, int cmdShow);
 
-        static Player.Player player = new Player.Player();
+        
+
+        public static TextUtils TextUtils = new TextUtils();
+        private static Player.Player player;
 
         static void Main(string[] args)
         {
-            // Ser till så att pilarna i inventoryt inte visas som lådor
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-            ConsoleHelper.SetConsoleFont();
+            Console.OutputEncoding = Encoding.UTF8;
+
+
+
+            // Det här gör ANSI färger & maximerat fönster möjligt! - Snott från Google
             Maximize();
-            
+            var iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+            if (!GetConsoleMode(iStdOut, out uint outConsoleMode))
+            {
+                Console.WriteLine("failed to get output console mode");
+                Console.ReadKey();
+                return;
+            }
+            outConsoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
+            if (!SetConsoleMode(iStdOut, outConsoleMode))
+            {
+                Console.WriteLine($"failed to set output console mode, error code: {GetLastError()}");
+                Console.ReadKey();
+                return;
+            }
+
+
+
+            Program p = new Program();
+
+            Console.CursorVisible = false;
+
+            Console.ReadKey();
+            player = new Player.Player();
         }
 
-        public void startTicking()
+        public void StartTicking()
         {
             shouldTick = true;
-            tick();
+            Tick();
         }
 
-        public void stopTicking()
+        public void StopTicking()
         {
             shouldTick = false;
         }
 
 
         bool shouldTick = true;
-        void tick()
+        private void Tick()
         {
             while(true)
             {
                 if (!shouldTick)
                     break;
 
-                getPlayer().GetContext().tick();
+                getPlayer().GetContext().Tick();
 
                 Thread.Sleep(1000 / 128);
             }

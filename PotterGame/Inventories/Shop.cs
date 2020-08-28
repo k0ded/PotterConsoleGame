@@ -15,8 +15,6 @@ namespace ConsoleApp
     {
         String name;
 
-        IBaseItem selected;
-
         public Shop(String name)
         {
             this.name = name;
@@ -84,11 +82,11 @@ namespace ConsoleApp
 
         public override void RunInteractAction()
         {
-            if(selected.Value <= Program.getPlayer().GetMoney())
+            if(Selected.Value <= Program.getPlayer().GetMoney())
             {
-                Program.getPlayer().RemoveMoney(selected.Value);
-                Program.getPlayer().GetPlayerInventory().AddItem(selected);
-                Console.WriteLine("+1 " + selected.Name);
+                Program.getPlayer().RemoveMoney(Selected.Value);
+                Program.getPlayer().GetPlayerInventory().AddItem(Selected);
+                Console.WriteLine("+1 " + Selected.Name);
             }
         }
 

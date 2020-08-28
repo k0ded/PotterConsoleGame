@@ -8,12 +8,12 @@ namespace PotterGame.Player.Story
 {
     class Battle : BaseContext
     {
-        public override void start()
+        public override void Start()
         {
             
         }
 
-        public override void tick()
+        public override void Tick()
         {
 
         }

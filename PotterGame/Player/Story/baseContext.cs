@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PotterGame.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,20 +9,14 @@ namespace PotterGame.Player.Story
 {
     abstract class BaseContext
     {
-        string[] previousStory;
+        private Text[] myPreviousStory;
 
-        public abstract void tick();
-        public abstract void start();
+        public abstract void Tick();
+        public abstract void Start();
 
-        public string[] getPreviousStory()
+        public Text[] getPreviousStory()
         {
-            return previousStory;
-        }
-
-        protected void SendMenu(string[] message)
-        {
-            previousStory = message;
-            Program.getPlayer().SendMenu(message);
+            return myPreviousStory;
         }
     }
 }
