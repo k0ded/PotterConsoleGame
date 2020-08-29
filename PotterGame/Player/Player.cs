@@ -43,18 +43,18 @@ namespace PotterGame.Player
             
         }
 
-        public static void SendInventory(Text[] aInventory)
-        {
-            TextUtils.SendMessage(aInventory, TextType.INVENTORY);
-            PlayerController.MakeSelection();
-        }
-
+        /// <summary>
+        /// Sends a paused message across the screen
+        /// </summary>
         public static void SendPaused()
         {
             TextUtils.SendMessage(new Text[] { new Text("Paused", 255, 215, 0, true), new Text("Harry-Potter", 255, 197, 0, true), new Text("- Liam Sjöholm", ColorCode.GREEN) }, TextType.CENTERED);
         }
 
-        
+        /// <summary>
+        /// Sends controls message in the default format. 
+        /// </summary>
+        /// <param name="s">The message to be sent</param>
         public static void SendControls(string s)
         {
             TextUtils.SendMessage(new Text(s, ColorCode.BLUE), TextType.CONTROLS);

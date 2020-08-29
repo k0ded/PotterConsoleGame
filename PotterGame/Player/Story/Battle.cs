@@ -15,7 +15,7 @@ namespace PotterGame.Player.Story
 
         public override void Tick()
         {
-
+            
         }
 
     }

@@ -49,7 +49,7 @@ namespace PotterGame.Inventories
             }
             PotterGame.Player.Player.SendPaused();
             PotterGame.Player.Player.SendControls(Controls);
-            PotterGame.Player.Player.SendInventory(inventory);
+            TextUtils.SendMessage(inventory, TextType.INVENTORY);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace PotterGame.Inventories
                 inventory[i + 3] = new Text(GetItemName(item, Selection == i));
                 inventory[i + 4] = new Text(canScrollDown ? "           ↓" : "            ");
             }
-            PotterGame.Player.Player.SendInventory(inventory);
+            TextUtils.SendMessage(inventory, TextType.INVENTORY);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace PotterGame.Inventories
             inventory[2] = new Text(GetItemName(new WithdrawItem(), Selection == 0).Substring(36));
             inventory[3] = new Text(GetItemName(new DepositItem(), Selection == 1).Substring(36));
 
-            PotterGame.Player.Player.SendInventory(inventory);
+            TextUtils.SendMessage(inventory, TextType.INVENTORY);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace PotterGame.Inventories
             inventory[2] = new Text(GetItemName(new WithdrawItem(), Selection == 0).Substring(36));
             inventory[3] = new Text(GetItemName(new DepositItem(), Selection == 1).Substring(36));
             
-            PotterGame.Player.Player.SendInventory(inventory);
+            TextUtils.SendMessage(inventory, TextType.INVENTORY);
         }
 
         /// <summary>
