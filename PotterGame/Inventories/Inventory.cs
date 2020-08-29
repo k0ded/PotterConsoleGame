@@ -1,70 +1,16 @@
-﻿using PotterGame;
-using PotterGame.Inventories;
-using PotterGame.Inventories.Items;
-using PotterGame.Player;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PotterGame.Inventories.Items;
 
-namespace ConsoleApp
+namespace PotterGame.Inventories
 {
-    class Inventory : BaseInventory
+    internal class Inventory : BaseInventory
     {
-
-        //Inventory                       💰 (Money)
-        //     Item                           Value  Count
-        //           ↑
-        //     []                              (0)    (1)
-        //  >> [Charms Book] <<                (50)   (1)
-        //     [Butterbeer]                    (5)    (3)
-        //     [Ticket from Ollivanders]       (0)    (1)
-        //     [Charms Book]                   (50)   (1)
-        //     [Butterbeer]                    (5)    (7)
-        //           ↓
-
-        // Det här är vad inventoryt borde se ut i slutändan.
-
-        public Inventory(String aName)
+        public Inventory(string aName)
         {
-            myName = aName;
-            content = new List<IBaseItem>();
-        }
-
-        public override void RunWAction()
-        {
-            bool canScrollUp = Offset > 0;
-            if(canScrollUp && Selection == 1)
-            {
-                ReloadInventory(Selection, Offset - 1);
-                return;
-            }
-            if(Selection == 0)
-            {
-                ReloadInventory(0, Offset);
-                return;
-            }
-            ReloadInventory(Selection - 1, Offset);
-
-        }
-
-        public override void RunSAction()
-        {
-            bool canScrollDown = (content.Count - Offset) - (Console.WindowHeight - 5) > 0;
-            if (canScrollDown && Selection == 4)
-            {
-                ReloadInventory(Selection, Offset + 1);
-                return;
-            }
-            if (Selection == Console.WindowHeight - 5 || Selection == content.Count - 1)
-            {
-                ReloadInventory(Selection, Offset);
-                return;
-            }
-            ReloadInventory(Selection + 1, Offset);
-
+            Name = aName;
+            Content = new List<IBaseItem>();
+            Player = Program.GetPlayer();
         }
 
     }

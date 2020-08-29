@@ -1,93 +1,112 @@
-﻿using ConsoleApp;
-using PotterGame.Inventories;
+﻿using PotterGame.Inventories;
 using PotterGame.Inventories.Items;
 using PotterGame.Player.Story;
 using PotterGame.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
+using PotterGame.Inventories.Items.FoodItems;
 
 namespace PotterGame.Player
 {
-    class Player
+    public class Player
     {
+        public BaseContext Context { get; }
+        public bool IsInventoryOpen;
         
-        private PlayerController myController;
-        private BaseContext myContext;
-
-        public bool IsInventoryOpen = false;
         public BaseInventory OpenInventory { get; set; }
-        public BaseInventory PlayerInventory { get; set; }
-        public int Money { get; set; }
+        public BaseInventory PlayerInventory { get; }
+        public int Money { get; private set; }
+
+        public Player()
+        {
+            Context = new MainStory();
+            PlayerInventory = new Inventory("Inventory");
+        }
 
         public void Start()
         {
-
-            myContext = new MainStory();
-            myContext.Start();
-
-            //PlayerInventory = new Inventory("Inventory");
-            //PlayerInventory.AddItem(new Butterbeer());
-            //PlayerInventory.AddItem(new Tea());
-            //PlayerInventory.OpenInventory(0, 0);
-            myController = new PlayerController();
+            //Context.Start();
+            
+            PlayerInventory.AddItem(new Butterbeer());
+            PlayerInventory.AddItem(new Tea());
+            PlayerInventory.OpenInventory(0, 0);
         }
+       
 
-        internal void SendMessage(Text[] aMessage)
+        private static void SendContext(BaseContext aContext)
         {
-            Program.TextUtils.SendCenteredMessage(aMessage);
+            
         }
 
-        internal void SendInventory(Text[] aInventory)
+        public static void SendInventory(Text[] aInventory)
         {
-            Program.TextUtils.SendInventoryMessage(aInventory);
+            TextUtils.SendMessage(aInventory, TextType.INVENTORY);
+            PlayerController.MakeSelection();
         }
 
-        public void SendPaused()
+        public static void SendPaused()
         {
-            Program.TextUtils.SendCenteredMessage(new Text[] { new Text("Paused", 255, 215, 0, true), new Text("Harry-Potter", 255, 197, 0, true), new Text("- Liam Sjöholm", ColorCode.GREEN) });
+            TextUtils.SendMessage(new Text[] { new Text("Paused", 255, 215, 0, true), new Text("Harry-Potter", 255, 197, 0, true), new Text("- Liam Sjöholm", ColorCode.GREEN) }, TextType.CENTERED);
         }
 
-        public void SendControls(string s)
+        
+        public static void SendControls(string s)
         {
-            Program.TextUtils.SendControlsMessage(new Text(s, ColorCode.BLUE));
+            TextUtils.SendMessage(new Text(s, ColorCode.BLUE), TextType.CONTROLS);
         }
 
-        public BaseInventory GetOpenInventory()
-        {
-            if (IsInventoryOpen)
-                return OpenInventory;
-            return null;
-        }
-
+        /// <summary>
+        /// Opens the <c>BaseInventory</c> -> <paramref name="inventory"/>
+        /// </summary>
+        /// <param name="inventory">Inventory to open</param>
         public void InventoryOpened(BaseInventory inventory)
         {
             OpenInventory = inventory;
             IsInventoryOpen = true;
         }
 
+        /// <summary>
+        /// Closes the current inventory
+        /// </summary>
         internal void CloseInventory()
         {
             IsInventoryOpen = false;
-            SendMessage(myContext.getPreviousStory());
+            SendContext(Context);
         }
 
-        public BaseContext GetContext()
+        /// <summary>
+        /// Adds <paramref name="aMoney"/> amount of money to the players balance.
+        /// </summary>
+        ///
+        /// <param name="aMoney">A non-negative number that is >0</param>
+        /// <exception cref="ArgumentException">thrown when number is negative or 0.</exception>
+        public void AddMoney(int aMoney)
         {
-            return myContext;
+            if(aMoney < 1)
+                throw new ArgumentException("Number must be non-negative and more than 0");
+            Money += aMoney;
         }
 
-        internal void AddMoney(int money)
+        /// <summary>
+        /// Removes <paramref name="aMoney"/> amount of money from the players balance.
+        /// </summary>
+        ///
+        /// <param name="aMoney">A non-negative number that is >0</param>
+        /// <exception cref="ArgumentException">thrown when number is negative or 0.</exception>
+        /// <returns>Boolean, True if players balance > <paramref name="aMoney"/>.</returns>
+        public bool RemoveMoney(int aMoney)
         {
-            Money += money;
-        }
-
-        internal void RemoveMoney(int money)
-        {
-            Money -= money;
+            if(aMoney < 1)
+                throw new ArgumentException("Number must be non-negative and more than 0");
+            if (Money < aMoney)
+                return false;
+            Money -= aMoney;
+            return true;
         }
     }
 }

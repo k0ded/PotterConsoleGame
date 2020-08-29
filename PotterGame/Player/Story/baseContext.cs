@@ -7,9 +7,14 @@ using System.Threading.Tasks;
 
 namespace PotterGame.Player.Story
 {
-    abstract class BaseContext
+    public abstract class BaseContext
     {
-        private Text[] myPreviousStory;
+        public Text[] PreviousCenteredMessage { get; set; }
+        public Text[] PreviousLetterMessage { get; set; }
+        public Text[] PreviousExplorationMessage { get; set; }
+        public Text PreviousMissionMessage { get; set; }
+        public Text PreviousControlsMessage { get; set; }
+        public Boolean Continue { get; set; } = false;
 
         public abstract void Tick();
         public abstract void Start();
@@ -21,6 +26,14 @@ namespace PotterGame.Player.Story
         {
 
         }
+        public virtual void RunQAction()
+        {
+
+        }
+        public virtual void RunEAction()
+        {
+
+        }
         public virtual void RunWAction()
         {
 
@@ -29,15 +42,12 @@ namespace PotterGame.Player.Story
         {
 
         }
-
-        public Text[] getPreviousStory()
+        public virtual void RunInventoryAction()
         {
-            return myPreviousStory;
+            Program.Instance.StopTicking();
+            Program.GetPlayer().PlayerInventory.OpenInventory(0, 0);
         }
 
-        public virtual void RunQAction()
-        {
-            
-        }
+       
     }
 }

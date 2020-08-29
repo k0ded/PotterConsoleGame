@@ -4,158 +4,258 @@ using PotterGame.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using PotterGame.Player;
 
 namespace PotterGame.Inventories
 {
-    class BaseInventory
+    public class BaseInventory
     {
-        public string Controls { get; } = "[W/S] - Scroll        [ENTER] - Interact        [BACKSPACE] - Back";
+        private string Controls { get; } = "[W/S] - Scroll        [ENTER] - Interact        [BACKSPACE] - Back";
+        
+        protected List<IBaseItem> Content;
+        protected int Selection;
+        protected int Offset;
+        protected IBaseItem Selected;
 
-        public List<IBaseItem> content;
+        protected string Name = "DEFAULT";
+        protected Player.Player Player { get; set; }
 
-        public int Selection = 0;
-        public int Offset = 0;
-        public IBaseItem Selected = null;
-
-        protected String myName = "DEFAULT";
-        private Player.Player myPlayer = Program.getPlayer();
-        private string myMoneyBag = "\xfeff \u26f5";
-
+        /// <summary>
+        /// Opens a regular inventory.
+        /// </summary>
+        /// <param name="aSelection">The selected row in the inventory</param>
+        /// <param name="aOffset">The amount the inventory has scrolled down</param>
         public void OpenInventory(int aSelection, int aOffset)
         {
             Console.Clear();
-            myPlayer.InventoryOpened(this);
+            if (Player == null)
+                Player = Program.GetPlayer();
             Selection = aSelection;
             Offset = aOffset;
 
-            Text[] inventory = new Text[Math.Min(content.Count + 4, 11)];
-            bool canScrollDown = (content.Count - Offset) - (Console.WindowHeight - 5) > 0;
-            bool canScrollUp = Offset > 0;
+            var inventory = new Text[Math.Min(Content.Count + 4, 11)];
+            var canScrollDown = (Content.Count - Offset) - (Console.WindowHeight - 5) > 0;
+            var canScrollUp = Offset > 0;
             
-            inventory[0] = new Text($"{myName}                           ({myPlayer.Money})", ColorCode.RESET);
+            inventory[0] = new Text($"{Name}                           ({Player.Money})", ColorCode.RESET);
             inventory[1] = new Text("     Item                            Price");
             inventory[2] = new Text(canScrollUp ? "           ↑" : "            ");
 
-            for (var i = 0; i < Math.Min(content.Count - Offset, 6); i++)
+            for (var i = 0; i < Math.Min(Content.Count - Offset, 6); i++)
             {
-                IBaseItem item = content.ElementAt(i);
+                var item = Content.ElementAt(i);
                 inventory[i + 3] = new Text(GetItemName(item, Selection == i));
                 inventory[i + 4] = new Text(canScrollDown ? "           ↓" : "            ");
             }
-            myPlayer.SendPaused();
-            myPlayer.SendControls(Controls);
-            myPlayer.SendInventory(inventory);
+            PotterGame.Player.Player.SendPaused();
+            PotterGame.Player.Player.SendControls(Controls);
+            PotterGame.Player.Player.SendInventory(inventory);
         }
 
-        public void ReloadInventory(int aSelection, int aOffset)
+        /// <summary>
+        /// Sends an updated inventory without clearing the console.
+        /// Removes the flicker effect when scrolling through the items.
+        /// </summary>
+        /// <param name="aSelection">The selected row in the inventory</param>
+        /// <param name="aOffset">The amount the inventory has scrolled down</param>
+        private void ReloadInventory(int aSelection, int aOffset)
         {
-            myPlayer.InventoryOpened(this);
+            Player.InventoryOpened(this);
             Selection = aSelection;
             Offset = aOffset;
 
-            Text[] inventory = new Text[Math.Min(content.Count + 4, 11)];
-            bool canScrollDown = (content.Count - Offset) - (Console.WindowHeight - 5) > 0;
-            bool canScrollUp = Offset > 0;
+            var inventory = new Text[Math.Min(Content.Count + 4, 11)];
+            var canScrollDown = (Content.Count - Offset) - (Console.WindowHeight - 5) > 0;
+            var canScrollUp = Offset > 0;
 
-            inventory[0] = new Text($"{myName}                           ({myPlayer.Money})", ColorCode.RESET);
+            inventory[0] = new Text($"{Name}                           ({Player.Money})", ColorCode.RESET);
             inventory[1] = new Text("     Item                            Price");
             inventory[2] = new Text(canScrollUp ? "           ↑" : "            ");
-
-            for (var i = 0; i < Math.Min(content.Count - Offset, 6); i++)
+            for (var i = 0; i < Math.Min(Content.Count - Offset, 6); i++)
             {
-                IBaseItem item = content.ElementAt(i);
+                var item = Content.ElementAt(i);
                 inventory[i + 3] = new Text(GetItemName(item, Selection == i));
                 inventory[i + 4] = new Text(canScrollDown ? "           ↓" : "            ");
             }
-            myPlayer.SendInventory(inventory);
+            PotterGame.Player.Player.SendInventory(inventory);
         }
 
-        public void OpenBankInventory(int aSelection, int aOffset, int aBankMoney)
+        /// <summary>
+        /// Opens an inventory of the Bank type. Changes the header.
+        /// </summary>
+        /// 
+        /// <param name="aSelection">The selected row in the inventory</param>
+        /// <param name="aOffset">The amount the inventory has scrolled down</param>
+        /// <param name="aBankMoney">The amount of money the bank has</param>
+        protected void OpenBankInventory(int aSelection, int aOffset, int aBankMoney)
         {
-            myPlayer.InventoryOpened(this);
+            Player.InventoryOpened(this);
             Selection = aSelection;
             Offset = aOffset;
 
-            Text[] inventory = new Text[Math.Min(2 + content.Count + 2, 11)];
-            bool canScrollDown = (content.Count - Offset) - (Console.WindowHeight - 5) > 0;
-            bool canScrollUp = Offset > 0;
+            var inventory = new Text[Math.Min(2 + Content.Count + 2, 11)];
 
-            inventory[0] = new Text($"Player                            {myMoneyBag} ({myPlayer.Money})");
-            inventory[1] = new Text($"     Bank                         {myMoneyBag} ({aBankMoney})");
+            inventory[0] = new Text($"Player                               ({Player.Money})");
+            inventory[1] = new Text($"     Bank                            ({aBankMoney})");
             inventory[2] = new Text(GetItemName(new WithdrawItem(), Selection == 0).Substring(36));
             inventory[3] = new Text(GetItemName(new DepositItem(), Selection == 1).Substring(36));
 
-            myPlayer.SendInventory(inventory);
+            PotterGame.Player.Player.SendInventory(inventory);
         }
 
-        private String GetItemName(IBaseItem aItem, bool aSelected)
+        /// <summary>
+        /// Sends an updated inventory without clearing the console.
+        /// Removes the flicker effect when scrolling through the items.
+        /// </summary>
+        /// <param name="aSelection">The selected row in the inventory</param>
+        /// <param name="aOffset">The amount the inventory has scrolled down</param>
+        /// <param name="aBankMoney">The amount of money the bank has</param>
+        protected void ReloadBankInventory(int aSelection, int aOffset, int aBankMoney)
         {
-            String prefix = "     ";
-            String maxSuffix = "                              ";
-            String itemName = $"[{aItem.Name}]";
-            if (aSelected)
-            {
-                prefix = "  >> ";
-                maxSuffix = " <<                           ";
-                Selected = aItem;
-                String s1 = "     ";
-                s1 = s1.Substring(0, Math.Max(s1.Length - String.Concat(aItem.Value).Length, 0));
-                return new Text(prefix + itemName + maxSuffix.Substring(0, maxSuffix.Length - aItem.Name.Length) + $"({aItem.Value})", ColorCode.WHITE).Message;
-            }
+            Player.InventoryOpened(this);
+            Selection = aSelection;
+            Offset = aOffset;
 
-            String s = "     ";
-            s = s.Substring(0, Math.Max(s.Length - String.Concat(aItem.Value).Length, 0));
+            var inventory = new Text[Math.Min(Content.Count + 4, 11)];
 
-            return new Text(prefix + itemName + maxSuffix.Substring(0, maxSuffix.Length - aItem.Name.Length) + $"({aItem.Value})", 128,128,128, true).Message;
+            inventory[0] = new Text($"Player                               ({Player.Money})");
+            inventory[1] = new Text($"     Bank                            ({aBankMoney})");
+            inventory[2] = new Text(GetItemName(new WithdrawItem(), Selection == 0).Substring(36));
+            inventory[3] = new Text(GetItemName(new DepositItem(), Selection == 1).Substring(36));
+            
+            PotterGame.Player.Player.SendInventory(inventory);
         }
 
+        /// <summary>
+        /// If item is selected its <c>ColorCode.RESET</c> and it has markers
+        /// around its name. Otherwise its RGB: 128,128,128 without markers.
+        /// </summary>
+        /// 
+        /// <param name="aItem">Item to format</param>
+        /// <param name="aSelected">True if the <paramref name="aItem"/> is selected</param>
+        /// <returns><c>string</c> Formatted for use in the Inventory</returns>
+        private string GetItemName(IBaseItem aItem, bool aSelected)
+        {
+            var prefix = "     ";
+            var maxSuffix = "                              ";
+            var itemName = $"[{aItem.Name}]";
+            if (!aSelected)
+                return new Text(
+                    prefix + itemName + maxSuffix.Substring(0, maxSuffix.Length - aItem.Name.Length) +
+                    $"({aItem.Value})", 128, 128, 128, true).Message;
+            prefix = "  >> ";
+            maxSuffix = " <<                           ";
+            Selected = aItem;
+            return new Text(prefix + itemName + maxSuffix.Substring(0, maxSuffix.Length - aItem.Name.Length) + $"({aItem.Value})", ColorCode.WHITE).Message;
+
+        }
+
+        /// <summary>
+        /// Add an Item to the inventory.
+        /// 
+        /// If the same Item already exists within the inventory increment the count.
+        /// otherwise add it to the content list.
+        /// </summary>
+        /// <param name="aItem">Item to be added</param>
         public void AddItem(IBaseItem aItem)
         {
-            foreach (IBaseItem item in content)
+            foreach (var item in Content)
             {
                 if (item == null)
                 {
-                    content = new List<IBaseItem>(1000);   
+                    Content = new List<IBaseItem>(1000);   
                     break;
                 }
-                if (item.Name == aItem.Name)
-                {
-                    item.Count++;
-                    return;
-                }
+
+                if (item.Name != aItem.Name) continue;
+                item.Count++;
+                return;
             }
-            content.Add(aItem);
+            Content.Add(aItem);
         }
-
-        public virtual void RunInteractAction()
+        
+        /// <summary>
+        /// Lets you make another selection.
+        /// </summary>
+        private static void MakeSelection()
         {
-            Selected.InteractEvent();
+            PlayerController.MakeSelection();
         }
 
-        public virtual void RunBackspaceAction()
+        /// <summary>
+        /// Exits out of the inventory or selected <c>BaseItem</c>
+        /// </summary>
+        public void RunBackspaceAction()
         {
             if(Selected.IsOpened)
             {
                 Selected.ReturnEvent();
                 OpenInventory(Selection, Offset);
+                MakeSelection();
                 return;
             }
-            myPlayer.CloseInventory();
+            Player.CloseInventory();
+            MakeSelection();
+            
         }
 
+        /// <summary>
+        /// Scroll up in the inventory.
+        /// </summary>
         public virtual void RunWAction()
         {
-            RunReloadAction();
+            var canScrollUp = Offset > 0;
+            if(canScrollUp && Selection == 1)
+            {
+                ReloadInventory(Selection, Offset - 1);
+                return;
+            }
+            if(Selection == 0)
+            {
+                ReloadInventory(0, Offset);
+                return;
+            }
+            ReloadInventory(Selection - 1, Offset);
+            MakeSelection();
+            
         }
 
+        /// <summary>
+        /// Scroll down in the inventory
+        /// </summary>
         public virtual void RunSAction()
         {
-            RunReloadAction();
+            var canScrollDown = (Content.Count - Offset) - (Console.WindowHeight - 5) > 0;
+            if (canScrollDown && Selection == 4)
+            {
+                ReloadInventory(Selection, Offset + 1);
+                return;
+            }
+            if (Selection == Console.WindowHeight - 5 || Selection == Content.Count - 1)
+            {
+                ReloadInventory(Selection, Offset);
+                return;
+            }
+            ReloadInventory(Selection + 1, Offset);
+            MakeSelection();
+            
+        }
+        
+        /// <summary>
+        /// Control actions -> override in Inventory
+        /// </summary>
+        public virtual void RunInteractAction()
+        {
+            Selected.InteractEvent();
+            MakeSelection();
+            
         }
 
         public void RunReloadAction()
         {
             ReloadInventory(Selection, Offset);
+            MakeSelection();
+            
         }
     }
 }

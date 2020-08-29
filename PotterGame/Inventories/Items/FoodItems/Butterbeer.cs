@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PotterGame.Inventories.Items
+﻿namespace PotterGame.Inventories.Items.FoodItems
 {
-    class Butterbeer : IBaseItem
+    internal class Butterbeer : IBaseItem
     {
         public bool IsOpened { get; set; } = false;
 

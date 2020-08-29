@@ -1,5 +1,4 @@
-﻿using ConsoleApp;
-using PotterGame.Inventories.Items;
+﻿using PotterGame.Inventories.Items;
 using PotterGame.Utils;
 using System;
 using System.Diagnostics;
@@ -9,13 +8,15 @@ using System.Threading;
 
 namespace PotterGame
 {
-    class Program
+    internal class Program
     {
 
-        // Det här gör ANSI färger & maximerat fönster möjligt! - Snott från Google
-        private const int STD_OUTPUT_HANDLE = -11;
-        private const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
-        private const uint DISABLE_NEWLINE_AUTO_RETURN = 0x0008;
+        /// <summary>
+        /// Makes ANSI-Color Codes Possible - STOLEN FROM GOOGLE
+        /// </summary>
+        private const int StdOutputHandle = -11;
+        private const uint EnableVirtualTerminalProcessing = 0x0004;
+        private const uint DisableNewlineAutoReturn = 0x0008;
 
         [DllImport("kernel32.dll")]
         private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
@@ -27,32 +28,31 @@ namespace PotterGame
         private static extern IntPtr GetStdHandle(int nStdHandle);
 
         [DllImport("kernel32.dll")]
-        public static extern uint GetLastError();
+        private static extern uint GetLastError();
 
         [DllImport("user32.dll")]
-        public static extern bool ShowWindow(System.IntPtr hWnd, int cmdShow);
+        private static extern bool ShowWindow(IntPtr hWnd, int cmdShow);
 
-        
 
-        public static TextUtils TextUtils = new TextUtils();
-        private static Player.Player myPlayer;
+        public static Program Instance;
 
-        static void Main(string[] args)
+        private static Player.Player _player;
+
+        public static void Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
             Console.BufferHeight = Console.WindowHeight;
 
-
-            // Det här gör ANSI färger & maximerat fönster möjligt! - Snott från Google
+            // These lines maximize the window and allows ANSI Colors to be displayed! - Stolen from Google
             Maximize();
-            var iStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-            if (!GetConsoleMode(iStdOut, out uint outConsoleMode))
+            var iStdOut = GetStdHandle(StdOutputHandle);
+            if (!GetConsoleMode(iStdOut, out var outConsoleMode))
             {
                 Console.WriteLine("failed to get output console mode");
                 Console.ReadKey();
                 return;
             }
-            outConsoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
+            outConsoleMode |= EnableVirtualTerminalProcessing | DisableNewlineAutoReturn;
             if (!SetConsoleMode(iStdOut, outConsoleMode))
             {
                 Console.WriteLine($"failed to set output console mode, error code: {GetLastError()}");
@@ -60,54 +60,66 @@ namespace PotterGame
                 return;
             }
 
-            Program p = new Program();
+            Instance = new Program();
 
             Console.CursorVisible = false;
-
-            myPlayer = new Player.Player();
-            myPlayer.Start();
+            _player = new Player.Player();
+            _player.Start();
         }
 
+        /// <summary>
+        /// Starts ticking realtime battles
+        /// </summary>
         public void StartTicking()
         {
-            shouldTick = true;
+            myShouldTick = true;
             Tick();
         }
 
+        /// <summary>
+        /// Stops ticking realtime battles
+        /// *Used for pausing the game/going into the inventory*
+        /// </summary>
         public void StopTicking()
         {
-            shouldTick = false;
+            myShouldTick = false;
         }
 
 
-        bool shouldTick = true;
+        private bool myShouldTick = true;
+        /// <summary>
+        /// Ticks for realtime battles
+        /// </summary>
         private void Tick()
         {
             while(true)
             {
-                if (!shouldTick)
+                if (!myShouldTick)
                     break;
 
-                getPlayer().GetContext().Tick();
+                GetPlayer().Context.Tick();
 
                 Thread.Sleep(1000 / 128);
             }
         }
 
+        /// <summary>
+        /// This maximizes the window.
+        /// </summary>
         private static void Maximize()
         {
-            Process p = Process.GetCurrentProcess();
-            ShowWindow(p.MainWindowHandle, 3); //SW_MAXIMIZE = 3
+            var p = Process.GetCurrentProcess();
+            ShowWindow(p.MainWindowHandle, 3); 
+            //SW_MAXIMIZE = 3
         }
 
-        public static Player.Player getPlayer()
+        /// <summary>
+        /// Gives you the instance of the Player playing the game to get certain values
+        /// </summary>
+        /// <returns><c>Player.Player</c>, The player playing the game.</returns>
+        public static Player.Player GetPlayer()
         {
-            return myPlayer;
-        }
-
-        internal static Shop getShop(IBaseItem item)
-        {
-            throw new NotImplementedException();
+            return _player;
         }
     }
 }

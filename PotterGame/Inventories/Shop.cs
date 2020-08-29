@@ -1,87 +1,26 @@
-﻿using ConsoleApp;
-using PotterGame;
-using PotterGame.Inventories;
-using PotterGame.Inventories.Items;
-using PotterGame.Player;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PotterGame.Inventories.Items;
 
-namespace ConsoleApp
+namespace PotterGame.Inventories
 {
-    class Shop : BaseInventory
+    internal class Shop : BaseInventory
     {
-        String name;
 
-        public Shop(String name)
+        public Shop(string aName)
         {
-            this.name = name;
-            content = new List<IBaseItem>();
-        }
-
-        internal string GetName()
-        {
-            return name;
-        }
-
-        public void addItem(IBaseItem i)
-        {
-            foreach (IBaseItem item in content)
-            {
-                if (item == null)
-                    break;
-                if (item.Name == i.Name)
-                {
-                    item.Count++;
-                    return;
-                }
-            }
-            content.Add(i);
-        }
-
-        public override void RunWAction()
-        {
-            bool canScrollUp = Offset > 0;
-            if (canScrollUp && Selection == 1)
-            {
-                OpenInventory(Selection, Offset - 1);
-                return;
-            }
-            if (Selection == 0)
-            {
-                OpenInventory(0, Offset);
-            }
-            OpenInventory(Selection - 1, Offset);
-
-        }
-
-        public override void RunSAction()
-        {
-            bool canScrollDown = (content.Count - Offset) - 6 > 0;
-            if (canScrollDown && Selection == 4)
-            {
-                OpenInventory(Selection, Offset + 1);
-                return;
-            }
-            if (Selection == 5 || Selection == content.Count - 1)
-            {
-                OpenInventory(Selection, Offset);
-                return;
-            }
-            OpenInventory(Selection + 1, Offset);
-
+            Name = aName;
+            Content = new List<IBaseItem>();
+            Player = Program.GetPlayer();
         }
 
         public override void RunInteractAction()
         {
-            if(Selected.Value <= Program.getPlayer().Money)
-            {
-                Program.getPlayer().RemoveMoney(Selected.Value);
-                Program.getPlayer().PlayerInventory.AddItem(Selected);
-                Console.WriteLine("+1 " + Selected.Name);
-            }
+            if (Selected.Value > Program.GetPlayer().Money) return;
+            if (!Program.GetPlayer().RemoveMoney(Selected.Value)) return;
+            
+            Program.GetPlayer().PlayerInventory.AddItem(Selected);
+            Console.WriteLine("+1 " + Selected.Name);
         }
 
     }

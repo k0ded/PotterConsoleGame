@@ -1,64 +1,56 @@
-﻿using PotterGame;
-using PotterGame.Inventories;
+﻿using System.Collections.Generic;
 using PotterGame.Inventories.Items;
-using PotterGame.Player;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ConsoleApp
+namespace PotterGame.Inventories
 {
-    class Bank : BaseInventory
+    internal class Bank : BaseInventory
     {
 
-        //Player                            (Money)
-        //    Bank                          (Money)                      
-        //   [Withdraw]
-        //   [Deposit]
-        
-        // Det här är vad inventoryt borde se ut i slutändan.
+        private int Money { get; set; } = 250;
 
-        private int myMoney = 250;
-
-        public Bank(String name)
+        public Bank(string name)
         {
-            myName = name;
-            content = new List<IBaseItem>();
+            Name = name;
+            Content = new List<IBaseItem>();
+            Player = Program.GetPlayer();
         }
 
+        /// <summary>
+        /// Scroll up in the inventory.
+        /// </summary>
         public override void RunWAction()
         {
-            bool canScrollUp = Offset > 0;
+            var canScrollUp = Offset > 0;
             if(canScrollUp && Selection == 1)
             {
-                OpenBankInventory(Selection, Offset - 1, myMoney);
+                ReloadBankInventory(Selection, Offset - 1, Money);
                 return;
             }
             if(Selection == 0)
             {
-                OpenBankInventory(0, Offset, myMoney);
+                ReloadBankInventory(0, Offset, Money);
             }
-            OpenBankInventory(Selection - 1, Offset, myMoney);
+            ReloadBankInventory(Selection - 1, Offset, Money);
 
         }
 
+        /// <summary>
+        /// Scroll down in the inventory.
+        /// </summary>
         public override void RunSAction()
         {
-            bool canScrollDown = (content.Count - Offset) - 6 > 0;
+            var canScrollDown = (Content.Count - Offset) - 6 > 0;
             if (canScrollDown && Selection == 4)
             {
-                OpenBankInventory(Selection, Offset + 1, myMoney);
+                ReloadBankInventory(Selection, Offset + 1, Money);
                 return;
             }
-            if (Selection == 5 || Selection == content.Count - 1)
+            if (Selection == 5 || Selection == Content.Count - 1)
             {
-                OpenBankInventory(Selection, Offset, myMoney);
+                ReloadBankInventory(Selection, Offset, Money);
                 return;
             }
-            OpenBankInventory(Selection + 1, Offset, myMoney);
+            ReloadBankInventory(Selection + 1, Offset, Money);
 
         }
 

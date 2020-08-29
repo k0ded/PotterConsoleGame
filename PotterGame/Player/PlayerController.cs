@@ -1,74 +1,71 @@
-﻿using PotterGame.Inventories;
-using PotterGame.Player.Story;
-using PotterGame.Utils;
+﻿using PotterGame.Utils;
 using System;
-using System.Threading;
 
 namespace PotterGame.Player
 {
-    class PlayerController
+    public static class PlayerController
     {
 
-        public PlayerController()
-        {
-            MakeSelection();
-        }
-
-        public void MakeSelection()
+        /// <summary>
+        /// Handles the input of the player.
+        /// </summary>
+        public static void MakeSelection()
         {
             Console.SetCursorPosition(0, Console.CursorTop);
             Console.Write(new Text("", 12, 12, 12, false).Message);
-            ConsoleKey key = Console.ReadKey(true).Key;
+            var key = Console.ReadKey(true).Key;
 
-            if (Program.getPlayer().IsInventoryOpen)
+            if (Program.GetPlayer().IsInventoryOpen)
             {
-                BaseInventory openInventory = Program.getPlayer().OpenInventory;
+                var openInventory = Program.GetPlayer().OpenInventory;
 
-                if (key.Equals(ConsoleKey.Enter))
+                // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+                switch (key)
                 {
-                    openInventory.RunInteractAction();
-                }else if(key.Equals(ConsoleKey.Backspace))
-                {
-                    openInventory.RunBackspaceAction();
-                }else if(key.Equals(ConsoleKey.W))
-                {
-                    openInventory.RunWAction();
-                }else if(key.Equals(ConsoleKey.S))
-                {
-                    openInventory.RunSAction();
-                }
-                else
-                {
-                    openInventory.RunReloadAction();
+                    case ConsoleKey.Enter:
+                        openInventory.RunInteractAction();
+                        break;
+                    case ConsoleKey.Backspace:
+                        openInventory.RunBackspaceAction();
+                        break;
+                    case ConsoleKey.W:
+                        openInventory.RunWAction();
+                        break;
+                    case ConsoleKey.S:
+                        openInventory.RunSAction();
+                        break;
+                    default:
+                        openInventory.RunReloadAction();
+                        break;
                 }
             }
             else
             {
-                BaseContext Story = Program.getPlayer().GetContext();
+                var story = Program.GetPlayer().Context;
 
-                if (key.Equals(ConsoleKey.Enter))
+                // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+                switch (key)
                 {
-                    Story.RunInteractAction();
-                }
-                else if (key.Equals(ConsoleKey.Backspace))
-                {
-                    Story.RunBackspaceAction();
-                }
-                else if (key.Equals(ConsoleKey.W))
-                {
-                    Story.RunWAction();
-                }
-                else if (key.Equals(ConsoleKey.E))
-                {
-                    Story.RunSAction();
-                }
-                else if(key.Equals(ConsoleKey.Q))
-                {
-                    Story.RunQAction();
+                    case ConsoleKey.Enter:
+                        story.RunInteractAction();
+                        break;
+                    case ConsoleKey.Backspace:
+                        story.RunBackspaceAction();
+                        break;
+                    case ConsoleKey.W:
+                        story.RunWAction();
+                        break;
+                    case ConsoleKey.E:
+                        story.RunSAction();
+                        break;
+                    case ConsoleKey.Q:
+                        story.RunQAction();
+                        break;
+                    case ConsoleKey.I:
+                        story.RunInventoryAction();
+                        break;
                 }
             }
-
-            MakeSelection();
         }
 
     }

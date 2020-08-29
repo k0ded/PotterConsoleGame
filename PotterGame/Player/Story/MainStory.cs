@@ -12,9 +12,7 @@ namespace PotterGame.Player.Story
     {
 
         private int myStory = 0;
-        private bool myContinue = false;
         private Exploration myExploration = new Exploration();
-
         public string Controls { get; } = "[ENTER] - Continue";
 
         public override void Start()
@@ -40,20 +38,32 @@ namespace PotterGame.Player.Story
         private void RunStoryTwo()
         {
             myStory = 1;
+            ResetPrevious();
 
             Text[] mission = new Text[1];
             mission[0] = new Text("Get to Diagon Alley!");
-            Program.TextUtils.SendLetterMessage(mission);
-            Thread.Sleep(1000);
-            Program.TextUtils.SendExplorationMessage(myExploration.GetMessage());
-            Program.TextUtils.SendMissionMessage(mission[0]);
+            TextUtils.SendMessage(mission, TextType.LETTER_SLOW);
+            Thread.Sleep(3000);
+
+            Explore();
+
+            PreviousMissionMessage = mission[0];
+            TextUtils.SendMessage(mission[0], TextType.MISSION);
+            
 
             //runStoryThree();
+        }
+
+        public void Explore()
+        {
+            PreviousExplorationMessage = myExploration.GetMessage();
+            TextUtils.SendMessage(myExploration.GetMessage(), TextType.EXPLORATION);
         }
 
         private void RunStoryOne()
         {
             myStory = 0;
+            ResetPrevious();
 
             Text[] letter = new Text[13];
             letter[0] = new Text("Dear Mr. Potter,");
@@ -69,9 +79,18 @@ namespace PotterGame.Player.Story
             letter[10] = new Text("Madam McGonagall");
             letter[11] = new Text("Minerva McGonagall");
             letter[12] = new Text("Deputy Headmistress");
-            Program.TextUtils.SendLetterMessage(letter);
-            myContinue = true;
-            Program.TextUtils.FadeInControls(Controls, 0, 0, 128, 10000);
+
+            PreviousLetterMessage = letter;
+            TextUtils.SendMessage(letter, TextType.LETTER_SLOW);
+        }
+
+        private void ResetPrevious()
+        {
+            PreviousCenteredMessage = null;
+            PreviousControlsMessage = null;
+            PreviousExplorationMessage = null;
+            PreviousLetterMessage = null;
+            PreviousMissionMessage = null;
         }
 
         public override void Tick()
@@ -81,13 +100,49 @@ namespace PotterGame.Player.Story
 
         public override void RunInteractAction()
         {
-            Program.TextUtils.StopFadeIn();
-            if (myContinue)
+            if (TextUtils.IsWritingMessage())
             {
-                runStory(myStory + 1);
-                myContinue = false;
+                TextUtils.FinishLetterMessage();
+            }else if (TextUtils.IsFadingIn())
+            {
+                TextUtils.StopFadeIn();
             }
 
+            if (!Continue) return;
+            runStory(myStory + 1);
+            Continue = false;
+
+        }
+
+        public override void RunQAction()
+        {
+            if (myExploration.RunQAction())
+                Explore();
+        }
+        public override void RunWAction()
+        {
+            if (myExploration.RunWAction())
+                Explore();
+        }
+        public override void RunEAction()
+        {
+            if (myExploration.RunEAction())
+                Explore();
+        }
+        public override void RunSAction()
+        {
+            base.RunSAction();
+        }
+        public override void RunBackspaceAction()
+        {
+            base.RunBackspaceAction();
+        }
+        public override void RunInventoryAction()
+        {
+            if(Continue != false)
+            {
+                base.RunInventoryAction();
+            }
         }
 
     }

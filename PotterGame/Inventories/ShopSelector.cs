@@ -1,56 +1,12 @@
-﻿using ConsoleApp;
-using PotterGame;
-using PotterGame.Inventories;
-using PotterGame.Inventories.Items;
-using PotterGame.Player;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ConsoleApp
+﻿namespace PotterGame.Inventories
 {
-    class ShopSelector : BaseInventory
+    internal class ShopSelector : BaseInventory
     {
-        String name;
 
-        public ShopSelector(String name)
+        public ShopSelector(string aName)
         {
-            this.name = name;
-        }
-
-        public override void RunWAction()
-        {
-            bool canScrollUp = Offset > 0;
-            if (canScrollUp && Selection == 1)
-            {
-                OpenInventory(Selection, Offset - 1);
-                return;
-            }
-            if (Selection == 0)
-            {
-                OpenInventory(0, Offset);
-            }
-            OpenInventory(Selection - 1, Offset);
-
-        }
-
-        public override void RunSAction()
-        {
-            bool canScrollDown = (content.Count - Offset) - 6 > 0;
-            if (canScrollDown && Selection == 4)
-            {
-                OpenInventory(Selection, Offset + 1);
-                return;
-            }
-            if (Selection == 5 || Selection == content.Count - 1)
-            {
-                OpenInventory(Selection, Offset);
-                return;
-            }
-            OpenInventory(Selection + 1, Offset);
-
+            Name = aName;
+            Player = Program.GetPlayer();
         }
 
         public override void RunInteractAction()
