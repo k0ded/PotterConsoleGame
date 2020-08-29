@@ -40,7 +40,7 @@ namespace PotterGame
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
-
+            Console.BufferHeight = Console.WindowHeight;
 
 
             // Det här gör ANSI färger & maximerat fönster möjligt! - Snott från Google

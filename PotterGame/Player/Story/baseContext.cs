@@ -13,10 +13,31 @@ namespace PotterGame.Player.Story
 
         public abstract void Tick();
         public abstract void Start();
+        public virtual void RunInteractAction()
+        {
+
+        }
+        public virtual void RunBackspaceAction()
+        {
+
+        }
+        public virtual void RunWAction()
+        {
+
+        }
+        public virtual void RunSAction()
+        {
+
+        }
 
         public Text[] getPreviousStory()
         {
             return myPreviousStory;
+        }
+
+        public virtual void RunQAction()
+        {
+            
         }
     }
 }

@@ -83,6 +83,7 @@
     <Compile Include="Player\PlayerController.cs" />
     <Compile Include="Player\Story\BaseContext.cs" />
     <Compile Include="Player\Story\Battle.cs" />
+    <Compile Include="Player\Story\Exploration.cs" />
     <Compile Include="Player\Story\MainStory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -94,6 +95,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Data\" />
     <Folder Include="Inventories\Items\Potions\" />
     <Folder Include="Inventories\Items\ShopItem\" />
   </ItemGroup>

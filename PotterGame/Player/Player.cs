@@ -25,10 +25,14 @@ namespace PotterGame.Player
 
         public void Start()
         {
-            PlayerInventory = new Inventory("Inventory");
-            PlayerInventory.AddItem(new Butterbeer());
-            PlayerInventory.AddItem(new Tea());
-            PlayerInventory.OpenInventory(0, 0);
+
+            myContext = new MainStory();
+            myContext.Start();
+
+            //PlayerInventory = new Inventory("Inventory");
+            //PlayerInventory.AddItem(new Butterbeer());
+            //PlayerInventory.AddItem(new Tea());
+            //PlayerInventory.OpenInventory(0, 0);
             myController = new PlayerController();
         }
 
