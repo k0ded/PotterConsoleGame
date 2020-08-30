@@ -64,16 +64,24 @@ namespace PotterGame
 
             Console.CursorVisible = false;
             _player = new Player.Player();
+            Instance.StartTicking();
             _player.Start();
         }
 
+        private Thread myThread;
+        private bool myShouldTick;
+        
         /// <summary>
         /// Starts ticking realtime battles
         /// </summary>
         public void StartTicking()
         {
+            if(myShouldTick)
+                throw new Exception("Cannot start ticking when already ticking. Stop ticking when not needed");
             myShouldTick = true;
-            Tick();
+            myThread = new Thread(Tick);
+            myThread.IsBackground = true;
+            myThread.Start();
         }
 
         /// <summary>
@@ -83,23 +91,27 @@ namespace PotterGame
         public void StopTicking()
         {
             myShouldTick = false;
+            if (myThread.Join(200) == false)
+            {
+                myThread.Abort();
+            }
+
+            myThread = null;
         }
-
-
-        private bool myShouldTick = true;
+        
         /// <summary>
-        /// Ticks for realtime battles
+        /// Ticks realtime battles
         /// </summary>
         private void Tick()
         {
-            while(true)
+            var i = 0;
+            while(myShouldTick)
             {
-                if (!myShouldTick)
-                    break;
-
-                GetPlayer().Context.Tick();
-
+                GetPlayer().CurrentBattle.Tick();
+                
+                TextUtils.SendMessage(new Text("Ticking: " + i, ColorCode.RESET), TextType.DEBUG);
                 Thread.Sleep(1000 / 128);
+                i++;
             }
         }
 

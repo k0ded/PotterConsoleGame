@@ -17,30 +17,43 @@ namespace PotterGame.Utils
         /// </summary>
         /// <param name="aMessage">A List of <c>Text</c> objects to be displayed on the screen!</param>
         /// <param name="aType">A <c>TextType</c> which decides what type of format to use!</param>
+        /// <exception cref="ArgumentException">Exception gets thrown when the list is either empty or only contains null values</exception>
         public static void SendMessage(IReadOnlyList<Text> aMessage, TextType aType)
         {
+            // Makes sure the message is Non Null!
+            IReadOnlyList<Text> message = aMessage.Where(m => m != null).ToArray();
+            
+            if (message.Count == 0)
+                throw new ArgumentException("Value cannot be an empty collection.", nameof(aMessage));
+            
             switch (aType)
             {
+                case TextType.DEBUG:
+                    SendDebugMessage(message[0]);
+                    break;
                 case TextType.CENTERED:
-                    SendCenteredMessage(aMessage);
+                    SendCenteredMessage(message);
                     break;
                 case TextType.EXPLORATION:
-                    SendExplorationMessage(aMessage);
+                    SendExplorationMessage(message);
                     break;
                 case TextType.INVENTORY:
-                    SendInventoryMessage(aMessage);
+                    SendInventoryMessage(message);
                     break;
                 case TextType.CONTROLS:
-                    SendControlsMessage(aMessage);
-                    break;
-                case TextType.LETTER_SLOW:
-                    SendLetterMessage(aMessage, true);
-                    break;
-                case TextType.LETTER_INSTANT:
-                    SendLetterMessage(aMessage, false);
+                    SendControlsMessage(message);
                     break;
                 case TextType.MISSION:
-                    SendMissionMessage(aMessage);
+                    SendMissionMessage(message);
+                    break;
+                case TextType.EXPLANATION:
+                    SendExplanationMessage(message);
+                    break;
+                case TextType.LETTER_SLOW:
+                    SendLetterMessage(message, true);
+                    break;
+                case TextType.LETTER_INSTANT:
+                    SendLetterMessage(message, false);
                     break;
                 default:
                     Console.WriteLine("CHECK CODE, TEXT TYPE IS NULL OR NOT ADDED IN TEXT UTILS");
@@ -51,19 +64,13 @@ namespace PotterGame.Utils
         /// <summary>
         /// Sends a one-line message in the <c>TextType</c> format!
         /// </summary>
-        /// <param name="aMessage">A <c>Text</c> object to be displayed on the screen!</param>
+        /// <param name="aMessage">A NonNull <c>Text</c> object to display in the Console</param>
         /// <param name="aType">A <c>TextType</c> which decides what type of format to use!</param>
         public static void SendMessage(Text aMessage, TextType aType)
         {
             SendMessage(new[] { aMessage }, aType);
         }
-
-        /// <summary>
-        /// Sends a message on screen in the "Centered" format
-        /// Which is a message in the middle of the screen.
-        /// </summary>
-        /// 
-        /// <param name="aMessage">A List of <c>Text</c> objects to display in the Console</param>
+        
         private static void SendCenteredMessage(IReadOnlyList<Text>  aMessage)
         {
             for (var i = 0; i < aMessage.Count; i++)
@@ -76,16 +83,8 @@ namespace PotterGame.Utils
 
         }
         
-        /// <summary>
-        /// Sends a message on screen in the "Exploration" format
-        /// Which is a message in the middle of the screen with
-        /// All of the text starting at the same x position
-        /// </summary>
-        /// 
-        /// <param name="aMessage">A List of <c>Text</c> objects to display in the Console</param>
         private static void SendExplorationMessage(IReadOnlyList<Text> aMessage)
         {
-
             var largestStringLength = aMessage.Select(m => m.OriginalMessage.Length).Prepend(0).Max();
 
             for (var i = 0; i < aMessage.Count; i++)
@@ -95,21 +94,32 @@ namespace PotterGame.Utils
                 var y = Console.WindowHeight / 2 - aMessage.Count / 2 + i;
 
                 Console.SetCursorPosition(x, y);
-                Console.WriteLine(aMessage[i].Message + "                                 ");
+                Console.WriteLine(aMessage[i].Message);
             }
 
         }
+        
+        private static void SendExplanationMessage(IReadOnlyList<Text> aMessage)
+        {
+            var largestStringLength = aMessage.Select(m => m.OriginalMessage.Length).Prepend(0).Max();
+            
+            for (var i = 0; i < aMessage.Count; i++)
+            {
+                var x = Console.WindowWidth - (largestStringLength + 1) / 2 - (aMessage[i].OriginalMessage.Length + 1) / 2 ;
+                var y = Console.WindowHeight / 2 - aMessage.Count / 2 + i;
 
-        /// <summary>
-        /// Sends a message on screen in the "Inventory" format
-        /// Which is a message on the left hand side of the screen
-        /// Going top to bottom.
-        /// </summary>
-        /// 
-        /// <param name="aMessage">A List of <c>Text</c> objects to display in the Console</param>
+                if (i != 0)
+                    x = Console.WindowWidth - (largestStringLength + 1);
+
+                Console.SetCursorPosition(x, y);
+                Console.WriteLine(aMessage[i].Message);
+            }
+
+        }
+        
         private static void SendInventoryMessage(IReadOnlyList<Text> aMessage)
         {
-            
+            _debugLine = 2;
             for (var i = 0; i < aMessage.Count; i++)
             {
                 
@@ -117,19 +127,25 @@ namespace PotterGame.Utils
                 var y = Math.Min(i, Console.WindowHeight - 2);
 
                 Console.SetCursorPosition(x, y);
-                Console.WriteLine(aMessage[i].Message);
+                if(aMessage[i] != null)
+                    Console.WriteLine(aMessage[i].Message);
             
             }
         
         }
 
-        /// <summary>
-        /// Sends a message on screen in the "Controls" format
-        /// Which is a message in the middle of the screen
-        /// right at the bottom
-        /// </summary>
-        /// 
-        /// <param name="aControls">A List of <c>Text</c> objects to display in the Console</param>
+        private static int _debugLine = 2;
+        private static void SendDebugMessage(Text aMessage)
+        {
+            const int x = 2;
+            var y = Math.Min(_debugLine, Console.WindowHeight - 2);
+
+            Console.SetCursorPosition(x,y);
+            Console.WriteLine(aMessage.OriginalMessage);
+            
+            _debugLine++;
+        }
+        
         private static void SendControlsMessage(IReadOnlyList<Text> aControls)
         {
             
@@ -140,7 +156,7 @@ namespace PotterGame.Utils
             }
 
             var x = Console.WindowWidth / 2 - aControls[0].OriginalMessage.Length / 2;
-            const int y = 62;
+            var y = Console.WindowHeight - 4;
 
             Console.SetCursorPosition(x, y);
             Console.Write(aControls[0].Message);
@@ -153,11 +169,10 @@ namespace PotterGame.Utils
         /// longest <c>string</c>
         /// </summary>
         /// 
-        /// <param name="aLetter">A List of <c>Text</c> objects to display in the Console</param>
+        /// <param name="aLetter">A List of NonNull <c>Text</c> objects to display in the Console</param>
         /// <param name="aSlow">TRUE: Character by character. FALSE: Instant.</param>
         private static void SendLetterMessage(IReadOnlyList<Text> aLetter, bool aSlow)
         {
-            
             var largestStringLength = aLetter.Select(m => m.OriginalMessage.Length).Prepend(0).Max();
 
             if (aSlow)
@@ -191,14 +206,14 @@ namespace PotterGame.Utils
         /// Fades a Text from black into desired RGB values!
         /// </summary>
         /// 
-        /// <param name="aText">The Text that should be Faded in</param>
+        /// <param name="aText">A NonNull Text Object that should be Faded in</param>
         /// <param name="aRed">Red value in RGB values.</param>
         /// <param name="aGreen">Green value in RGB values.</param>
         /// <param name="aBlue">Blue value in RGB values</param>
         /// <param name="aFadeInMilliseconds">Time in Milliseconds for the fade complete.</param>
         public static void FadeInControlMessage(Text aText, int aRed, int aGreen, int aBlue, int aFadeInMilliseconds)
         {
-            Fader.FadeInControls(aText,aRed, aGreen, aBlue, aFadeInMilliseconds);
+            Fader.FadeInControls(aText, aRed, aGreen, aBlue, aFadeInMilliseconds);
         }
 
         /// <summary>
@@ -217,7 +232,7 @@ namespace PotterGame.Utils
         /// This place is reserved for different Missions
         /// </summary>
         /// 
-        /// <param name="aMission">NOTE: This should never be longer than one Text object!</param>
+        /// <param name="aMission">NOTE: This should never be longer than one NonNull Text object!</param>
         private static void SendMissionMessage(IReadOnlyList<Text> aMission)
         {
 
@@ -338,9 +353,12 @@ namespace PotterGame.Utils
         private IReadOnlyList<Text> myFinishedLetter;
         internal bool IsWritingMessage;
 
+        /// <summary>
+        /// Starts 
+        /// </summary>
+        /// <param name="aFinishedLetter"></param>
         public void StartWritingLetter(IReadOnlyList<Text> aFinishedLetter)
         {
-            
             IsWritingMessage = true;
             myFinishedLetter = aFinishedLetter;
 
@@ -349,6 +367,10 @@ namespace PotterGame.Utils
             myLetterMessageWorker.RunWorkerAsync();
             
         }
+        
+        /// <summary>
+        /// Handles the writing of the SLOW_LETTER type
+        /// </summary>
         private void WriteLetter(object sender, DoWorkEventArgs e)
         {
             
@@ -367,7 +389,8 @@ namespace PotterGame.Utils
                 Console.SetCursorPosition(x, y);
                 Console.Write(myFinishedLetter[i].Message.Replace(myFinishedLetter[i].OriginalMessage, ""));
                 
-                foreach (var c in myFinishedLetter[i].OriginalMessage)
+                // Gets each individual character and prints it to the screen but wont fire if a cancellation is pending.
+                foreach (var c in myFinishedLetter[i].OriginalMessage.TakeWhile(c => !worker.CancellationPending))
                 {
                     switch (c)
                     {

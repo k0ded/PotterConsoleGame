@@ -4,27 +4,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PotterGame.Enemies;
 
 namespace PotterGame.Player.Story
 {
     public abstract class BaseContext
     {
-        public Text[] PreviousCenteredMessage { get; set; }
-        public Text[] PreviousLetterMessage { get; set; }
-        public Text[] PreviousExplorationMessage { get; set; }
-        public Text PreviousMissionMessage { get; set; }
-        public Text PreviousControlsMessage { get; set; }
-        public Boolean Continue { get; set; } = false;
+        public Text[] PreviousCenteredMessage { get; protected set; }
+        public Text[] PreviousLetterMessage { get; protected set; }
+        public Text[] PreviousExplorationMessage { get; protected set; }
+        public Text[] PreviousExplanationMessage { get; protected set; }
+        public Text PreviousMissionMessage { get; protected set; }
+        public Text PreviousControlsMessage { get; protected set; }
+        public bool Continue { get; set; }
 
-        public abstract void Tick();
-        public abstract void Start();
+        public virtual void Start() {}
+        public virtual void Start(IBaseEnemy aEnemy) {Start();}
         public virtual void RunInteractAction()
         {
-
+            
         }
         public virtual void RunBackspaceAction()
         {
-
+            
         }
         public virtual void RunQAction()
         {
@@ -45,7 +47,7 @@ namespace PotterGame.Player.Story
         public virtual void RunInventoryAction()
         {
             Program.Instance.StopTicking();
-            Program.GetPlayer().PlayerInventory.OpenInventory(0, 0);
+            Program.GetPlayer().PlayerInventory.OpenInventory();
         }
 
        

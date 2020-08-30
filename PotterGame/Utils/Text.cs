@@ -13,9 +13,15 @@ namespace PotterGame.Utils
             OriginalMessage = aMessage;
             Message = DeserializeColorCode(aColor) + aMessage + DeserializeColorCode(ColorCode.RESET);
         }
+        public Text(string aMessage, ColorCode aColor, ColorCode aBackgroundColor)
+        {
+            OriginalMessage = aMessage;
+            Message = DeserializeColorCode(aColor) + DeserializeColorCode(aBackgroundColor) + aMessage + DeserializeColorCode(ColorCode.RESET);
+        }
         public Text(string aMessage)
         {
             OriginalMessage = aMessage;
+            Message = DeserializeColorCode(ColorCode.RESET) + OriginalMessage;
         }
         public Text(string aMessage, int r, int g, int b, bool reset)
         {

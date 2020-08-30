@@ -14,6 +14,14 @@ namespace PotterGame.Inventories
             Content = new List<IBaseItem>();
             Player = Program.GetPlayer();
         }
+        
+        public override void OpenInventory()
+        {
+            if (Player == null)
+                Player = Program.GetPlayer();
+            Player.InventoryOpened(this);
+            OpenInventory(0,0);
+        }
 
         /// <summary>
         /// Scroll up in the inventory.

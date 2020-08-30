@@ -1,26 +1,22 @@
 ﻿using PotterGame.Utils;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace PotterGame.Player.Story
 {
-    class MainStory : BaseContext
+    internal class MainStory : BaseContext
     {
 
-        private int myStory = 0;
-        private Exploration myExploration = new Exploration();
+        private int myStory;
+        private readonly Exploration myExploration = new Exploration();
         public string Controls { get; } = "[ENTER] - Continue";
 
         public override void Start()
         {
-            runStory(myStory);
+            RunStory(myStory);
         }
 
-        private void runStory(int i)
+        private void RunStory(int i)
         {
             switch (i)
             {
@@ -40,10 +36,10 @@ namespace PotterGame.Player.Story
             myStory = 1;
             ResetPrevious();
 
-            Text[] mission = new Text[1];
+            var mission = new Text[1];
             mission[0] = new Text("Get to Diagon Alley!");
             TextUtils.SendMessage(mission, TextType.LETTER_SLOW);
-            Thread.Sleep(3000);
+            Thread.Sleep(2250);
 
             Explore();
 
@@ -54,18 +50,51 @@ namespace PotterGame.Player.Story
             //runStoryThree();
         }
 
-        public void Explore()
+        private void Explore()
         {
-            PreviousExplorationMessage = myExploration.GetMessage();
-            TextUtils.SendMessage(myExploration.GetMessage(), TextType.EXPLORATION);
+            if (PreviousExplorationMessage != null)
+            {
+                // Makes sure there are no null variables.
+                var prevMessage = PreviousExplorationMessage.Where(m => m != null).ToArray();
+                
+                // Removes previous text by setting it all to whitespaces.
+                for (var i = 0; i < prevMessage.Length; i++)
+                {
+                    var msg = prevMessage[i].OriginalMessage.ToCharArray().Aggregate("", (current, character) => string.Concat(current, ' '));
+                    prevMessage[i] = new Text(msg);
+                }
+                TextUtils.SendMessage(prevMessage, TextType.EXPLORATION);
+            }
+            
+            if (PreviousExplanationMessage != null)
+            {
+                // Makes sure there are no null variables.
+                var prevMessage = PreviousExplanationMessage.Where(m => m != null).ToArray();
+                
+                // Removes previous text by setting it all to whitespaces.
+                for (var i = 0; i < prevMessage.Length; i++)
+                {
+                    var msg = prevMessage[i].OriginalMessage.ToCharArray().Aggregate("", (current, character) => string.Concat(current, ' '));
+                    prevMessage[i] = new Text(msg);
+                }
+                TextUtils.SendMessage(prevMessage, TextType.EXPLANATION);
+            }
+            
+            PreviousExplorationMessage = myExploration.GetExplorationMessage();
+            PreviousExplanationMessage = myExploration.GetExplanationMessage();
+            
+            TextUtils.SendMessage(PreviousExplorationMessage, TextType.EXPLORATION);
+            TextUtils.SendMessage(PreviousExplanationMessage, TextType.EXPLANATION);
+            Program.GetPlayer().SeizeInput = false;
         }
 
         private void RunStoryOne()
         {
             myStory = 0;
+            Program.GetPlayer().SeizeInput = true;
             ResetPrevious();
 
-            Text[] letter = new Text[13];
+            var letter = new Text[13];
             letter[0] = new Text("Dear Mr. Potter,");
             letter[1] = new Text("               We are pleased to inform you that");
             letter[2] = new Text("you have been accepted at Hogwarts School of");
@@ -93,11 +122,6 @@ namespace PotterGame.Player.Story
             PreviousMissionMessage = null;
         }
 
-        public override void Tick()
-        {
-            
-        }
-
         public override void RunInteractAction()
         {
             if (TextUtils.IsWritingMessage())
@@ -109,40 +133,35 @@ namespace PotterGame.Player.Story
             }
 
             if (!Continue) return;
-            runStory(myStory + 1);
+            RunStory(myStory + 1);
+            Program.GetPlayer().SeizeInput = false;
             Continue = false;
 
         }
 
         public override void RunQAction()
         {
+            if(Program.GetPlayer().SeizeInput) return;
             if (myExploration.RunQAction())
                 Explore();
         }
         public override void RunWAction()
         {
-            if (myExploration.RunWAction())
+            if(Program.GetPlayer().SeizeInput) return;
+            if (myExploration.RunWAction()) 
                 Explore();
         }
         public override void RunEAction()
         {
-            if (myExploration.RunEAction())
+            if(Program.GetPlayer().SeizeInput) return;
+            if (myExploration.RunEAction()) 
                 Explore();
         }
-        public override void RunSAction()
-        {
-            base.RunSAction();
-        }
-        public override void RunBackspaceAction()
-        {
-            base.RunBackspaceAction();
-        }
+        
         public override void RunInventoryAction()
         {
-            if(Continue != false)
-            {
-                base.RunInventoryAction();
-            }
+            if (Program.GetPlayer().SeizeInput) return;
+            base.RunInventoryAction();
         }
 
     }
