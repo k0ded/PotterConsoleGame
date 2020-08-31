@@ -69,7 +69,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enemies\IBaseEnemy.cs" />
     <Compile Include="Inventories\Bank.cs" />
     <Compile Include="Inventories\BaseInventory.cs" />
     <Compile Include="Inventories\Inventory.cs" />
@@ -81,6 +80,8 @@
     <Compile Include="Inventories\Shop.cs" />
     <Compile Include="Inventories\ShopSelector.cs" />
     <Compile Include="Player\Battling\Battle.cs" />
+    <Compile Include="Player\Battling\Enemies\IBaseEnemy.cs" />
+    <Compile Include="Player\Battling\Spells.cs" />
     <Compile Include="Player\Player.cs" />
     <Compile Include="Player\PlayerController.cs" />
     <Compile Include="Player\Story\BaseContext.cs" />
@@ -97,7 +98,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Data\" />
     <Folder Include="Inventories\Items\PotionItems" />
     <Folder Include="Inventories\Items\ShopItems" />
   </ItemGroup>

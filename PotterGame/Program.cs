@@ -91,10 +91,8 @@ namespace PotterGame
         public void StopTicking()
         {
             myShouldTick = false;
-            if (myThread.Join(200) == false)
-            {
-                myThread.Abort();
-            }
+            myThread.Interrupt();
+            myThread.Abort();
 
             myThread = null;
         }

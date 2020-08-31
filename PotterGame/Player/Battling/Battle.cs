@@ -8,14 +8,11 @@ namespace PotterGame.Player.Battling
     public class Battle
     {
         private ThreadStart myScheduledAction;
+        private Spells mySpells;
         
         public IBaseEnemy Enemy { get; set; }
         public bool IsBattling { get; set; }
         
-        public static Battle CreateInstance()
-        {
-            return new Battle();
-        }
         private void Start(IBaseEnemy aEnemy)
         {
             Enemy = aEnemy;
@@ -23,19 +20,24 @@ namespace PotterGame.Player.Battling
             EnterStartAnimation();
             IsBattling = true;
             Program.GetPlayer().SeizeInput = false;
+            mySpells = new Spells();
             Program.Instance.StartTicking();
         }
 
 
-        private int myStupefyCooldown = 0;
-        private int myProtegoCooldown = 0;
-        private int myPetrificusCooldown = 0;
+        private int myStupefyCooldown;
+        private int myProtegoCooldown;
+        private int myPetrificusCooldown;
+
+        private Spell[,] myPlayerSpell;
+        private Spell[,] myEnemySpell;
         public void UseStupefy()
         {
             if (myStupefyCooldown > DateTime.Now.Second)
                 return;
             myScheduledAction = Stupefy;
             myStupefyCooldown = DateTime.Now.Second + 3;
+            myPlayerSpell[0,0] = mySpells.GetAsSpell(6, 0, 1, true);
         }
 
         public void UseProtego()
@@ -44,6 +46,7 @@ namespace PotterGame.Player.Battling
                 return;
             myScheduledAction = Protego;
             myProtegoCooldown = DateTime.Now.Second + 3;
+            myPlayerSpell[1,3] = mySpells.GetAsSpell(0, 12, 2, true);
         }
 
         public void UsePetrificus()
@@ -78,6 +81,8 @@ namespace PotterGame.Player.Battling
         /// </summary>
         public void Tick()
         {
+            if(Enemy == null)
+                return;
             // Enemy logic
             // TODO: Implement Enemy actions
             if (Enemy.IsDead)

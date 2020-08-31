@@ -13,7 +13,7 @@ namespace PotterGame.Player
 
         public BaseInventory OpenInventory { get; set; }
         public BaseInventory PlayerInventory { get; }
-        public Battle CurrentBattle { get; set; } = Battle.CreateInstance();
+        public Battle CurrentBattle { get; set; }
         public bool SeizeInput { get; set; }
         public int Money { get; private set; }
         public int Health { get; private set; }
@@ -24,6 +24,7 @@ namespace PotterGame.Player
             Context = new MainStory();
             PlayerInventory = new Inventory("Inventory");
             OpenInventory = PlayerInventory;
+            CurrentBattle = new Battle();
         }
 
         // TODO: Make SendContext
@@ -34,7 +35,10 @@ namespace PotterGame.Player
             PlayerController.MakeSelection();
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="aContext"></param>
         public static void SendContext(BaseContext aContext)
         {
             Console.Clear();
