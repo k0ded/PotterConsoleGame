@@ -1,10 +1,5 @@
 ﻿using PotterGame.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PotterGame.Enemies;
+using PotterGame.Player.Battling.Enemies;
 
 namespace PotterGame.Player.Story
 {

@@ -17,7 +17,8 @@ namespace PotterGame.Player
         public bool SeizeInput { get; set; }
         public int Money { get; private set; }
         public int Health { get; private set; }
-        private const int MaxHealth = 100;
+        public int MaxHealth { get; }= 100;
+        public int StunnedUntil { get; private set; }
 
         public Player()
         {
@@ -171,6 +172,16 @@ namespace PotterGame.Player
 
             Health -= aAmount;
             return true;
+        }
+
+        public void Stun(int aSeconds)
+        {
+            StunnedUntil = DateTime.Now.Second + aSeconds;
+        }
+
+        public bool IsStunned()
+        {
+            return StunnedUntil < DateTime.Now.Second;
         }
     }
 }

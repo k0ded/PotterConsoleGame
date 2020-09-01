@@ -4,27 +4,25 @@ namespace PotterGame.Player.Battling
 {
     public struct Spell
     {
-        public Spell(int aXSpeed, int aYSpeed, int aType, bool aFromPlayer)
+        public Spell(int aXSpeed, int aType, bool aFromPlayer)
         {
-            xSpeed = aXSpeed;
-            ySpeed = aYSpeed;
+            XSpeed = aXSpeed;
             if (aType > 3 || aType < 0)
                 throw new ArgumentException("Cannot choose type " + aType);
-            type = aType;
-            fromPlayer = aFromPlayer;
+            Type = aType;
+            FromPlayer = aFromPlayer;
             
         }
-        int xSpeed { get; set; }
-        int ySpeed { get; set; }
-        private int type { get; set; }
-        bool fromPlayer { get; set; }
+        public int XSpeed { get; set; }
+        public int Type { get; set; }
+        public bool FromPlayer { get; set; }
     }
 
     public class Spells
     {
-        public Spell GetAsSpell(int aXSpeed, int aYSpeed, int aType, bool aFromPlayer)
+        public Spell GetAsSpell(int aXSpeed, int aType, bool aFromPlayer)
         {
-            return new Spell();
+            return new Spell(aXSpeed, aType, aFromPlayer);
         }
     }
 }
