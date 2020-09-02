@@ -86,6 +86,7 @@ namespace PotterGame.Player
                     }
                 }
             }
+            throw new Exception("Exited While loop");
         }
     }
 }

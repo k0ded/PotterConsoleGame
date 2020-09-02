@@ -171,9 +171,9 @@ namespace PotterGame.Inventories
 
             if (Player.CurrentBattle.Enemy != null)
             {
-                
                 return;
             }
+            TextUtils.SendMessage(new Text("CLOSING INVENTORY"), TextType.DEBUG);
             Player.CloseInventory();
             PotterGame.Player.Player.SendContext(Player.Context);
         }

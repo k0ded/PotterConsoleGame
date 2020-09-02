@@ -9,7 +9,7 @@ namespace PotterGame.Player.Battling
     {
         private ThreadStart myScheduledAction;
         private Spells mySpells;
-        
+
         public IBaseEnemy Enemy { get; set; }
         public bool IsBattling { get; set; }
         

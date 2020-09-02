@@ -107,7 +107,7 @@ namespace PotterGame
             {
                 GetPlayer().CurrentBattle.Tick();
                 
-                TextUtils.SendMessage(new Text("Ticking: " + i, ColorCode.RESET), TextType.DEBUG);
+                //TextUtils.SendMessage(new Text("Ticking: " + i, ColorCode.RESET), TextType.DEBUG);
                 Thread.Sleep(1000 / 128);
                 i++;
             }
