@@ -9,7 +9,7 @@ namespace PotterGame.Player
     public class Player
     {
         public BaseContext Context { get; }
-        public bool IsInventoryOpen;
+        public bool IsInventoryOpen { get; set; }
 
         public BaseInventory OpenInventory { get; set; }
         public BaseInventory PlayerInventory { get; }
@@ -17,7 +17,9 @@ namespace PotterGame.Player
         public bool SeizeInput { get; set; }
         public int Money { get; private set; }
         public int Health { get; private set; }
-        private const int MaxHealth = 100;
+        public int DamageAmount { get; private set; }
+        public int MaxHealth { get; }= 100;
+        public int StunnedUntil { get; private set; }
 
         public Player()
         {
@@ -36,10 +38,10 @@ namespace PotterGame.Player
         }
 
         /// <summary>
-        /// 
+        /// Sends the previous state of the context to the screen.
         /// </summary>
         /// <param name="aContext"></param>
-        public static void SendContext(BaseContext aContext)
+        private static void SendContext(BaseContext aContext)
         {
             Console.Clear();
             var previousCenteredMessage = aContext.PreviousCenteredMessage;
@@ -48,16 +50,20 @@ namespace PotterGame.Player
             var previousLetterMessage = aContext.PreviousLetterMessage;
             var previousMissionMessage = aContext.PreviousMissionMessage;
 
-            if (previousCenteredMessage != null) TextUtils.SendMessage(previousCenteredMessage, TextType.CENTERED);
+            if (previousCenteredMessage != null) 
+                TextUtils.SendMessage(previousCenteredMessage, TextType.CENTERED);
 
-            if (previousControls != null) TextUtils.SendMessage(previousControls, TextType.CONTROLS);
+            if (previousControls != null) 
+                TextUtils.SendMessage(previousControls, TextType.CONTROLS);
 
-            if (previousExplorationMessage != null)
+            if (previousExplorationMessage != null) 
                 TextUtils.SendMessage(previousExplorationMessage, TextType.EXPLORATION);
 
-            if (previousLetterMessage != null) TextUtils.SendMessage(previousLetterMessage, TextType.LETTER_INSTANT);
+            if (previousLetterMessage != null) 
+                TextUtils.SendMessage(previousLetterMessage, TextType.LETTER_INSTANT);
 
-            if (previousMissionMessage != null) TextUtils.SendMessage(previousMissionMessage, TextType.MISSION);
+            if (previousMissionMessage != null) 
+                TextUtils.SendMessage(previousMissionMessage, TextType.MISSION);
         }
 
         /// <summary>
@@ -171,6 +177,21 @@ namespace PotterGame.Player
 
             Health -= aAmount;
             return true;
+        }
+
+        public void Stun(int aSeconds)
+        {
+            StunnedUntil = DateTime.Now.Second + aSeconds;
+        }
+
+        public bool IsStunned()
+        {
+            return StunnedUntil < DateTime.Now.Second;
+        }
+
+        public void SetPlayerDamage(int aAmount)
+        {
+            DamageAmount = aAmount;
         }
     }
 }

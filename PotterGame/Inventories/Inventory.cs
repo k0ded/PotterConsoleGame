@@ -9,7 +9,7 @@ namespace PotterGame.Inventories
         public Inventory(string aName)
         {
             Name = aName;
-            Content = new List<IBaseItem>();
+            Content = new List<BaseItem>();
             Player = Program.GetPlayer();
         }
 
@@ -20,6 +20,5 @@ namespace PotterGame.Inventories
             Player.InventoryOpened(this);
             OpenInventory(0,0);
         }
-
     }
 }

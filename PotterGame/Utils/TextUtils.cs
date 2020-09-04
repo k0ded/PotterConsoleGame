@@ -23,6 +23,7 @@ namespace PotterGame.Utils
             // Makes sure the message is Non Null!
             IReadOnlyList<Text> message = aMessage.Where(m => m != null).ToArray();
             
+            // If the message is null throw exception
             if (message.Count == 0)
                 throw new ArgumentException("Value cannot be an empty collection.", nameof(aMessage));
             
@@ -70,6 +71,10 @@ namespace PotterGame.Utils
         {
             SendMessage(new[] { aMessage }, aType);
         }
+        
+        
+        
+        // These send messages in different ways.
         
         private static void SendCenteredMessage(IReadOnlyList<Text>  aMessage)
         {

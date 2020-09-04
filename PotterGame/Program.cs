@@ -1,6 +1,4 @@
-﻿using PotterGame.Inventories.Items;
-using PotterGame.Utils;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -64,7 +62,6 @@ namespace PotterGame
 
             Console.CursorVisible = false;
             _player = new Player.Player();
-            Instance.StartTicking();
             _player.Start();
         }
 
@@ -90,6 +87,8 @@ namespace PotterGame
         /// </summary>
         public void StopTicking()
         {
+            if (!myShouldTick)
+                return;
             myShouldTick = false;
             myThread.Interrupt();
             myThread.Abort();
@@ -108,7 +107,7 @@ namespace PotterGame
                 GetPlayer().CurrentBattle.Tick();
                 
                 //TextUtils.SendMessage(new Text("Ticking: " + i, ColorCode.RESET), TextType.DEBUG);
-                Thread.Sleep(1000 / 128);
+                Thread.Sleep(1000 / 20);
                 i++;
             }
         }

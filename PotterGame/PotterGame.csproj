@@ -76,11 +76,12 @@
     <Compile Include="Inventories\Items\BankItems\DepositItem.cs" />
     <Compile Include="Inventories\Items\FoodItems\Butterbeer.cs" />
     <Compile Include="Inventories\Items\FoodItems\Tea.cs" />
-    <Compile Include="Inventories\Items\IBaseItem.cs" />
+    <Compile Include="Inventories\Items\BaseItem.cs" />
     <Compile Include="Inventories\Shop.cs" />
     <Compile Include="Inventories\ShopSelector.cs" />
     <Compile Include="Player\Battling\Battle.cs" />
-    <Compile Include="Player\Battling\Enemies\IBaseEnemy.cs" />
+    <Compile Include="Player\Battling\Enemies\Deatheater.cs" />
+    <Compile Include="Player\Battling\Enemies\BaseEnemy.cs" />
     <Compile Include="Player\Battling\Spells.cs" />
     <Compile Include="Player\Player.cs" />
     <Compile Include="Player\PlayerController.cs" />
@@ -96,10 +97,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Inventories\Items\PotionItems" />
-    <Folder Include="Inventories\Items\ShopItems" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

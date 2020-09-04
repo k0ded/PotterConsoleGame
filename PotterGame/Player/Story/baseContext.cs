@@ -1,10 +1,5 @@
 ﻿using PotterGame.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PotterGame.Enemies;
+using PotterGame.Player.Battling.Enemies;
 
 namespace PotterGame.Player.Story
 {
@@ -19,7 +14,7 @@ namespace PotterGame.Player.Story
         public bool Continue { get; set; }
 
         public virtual void Start() {}
-        public virtual void Start(IBaseEnemy aEnemy) {Start();}
+        public virtual void Start(BaseEnemy aEnemy) {Start();}
         public virtual void RunInteractAction()
         {
             

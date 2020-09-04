@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PotterGame.Inventories.Items.BankItems
 {
-    public class WithdrawItem : IBaseItem
+    public class WithdrawItem : BaseItem
     {
         public bool IsOpened { get; set; }
 
@@ -16,12 +16,12 @@ namespace PotterGame.Inventories.Items.BankItems
         public string Name { get; } = "Deposit";
         public string Controls { get; } = "    [ENTER] - Withdraw                      [BACKSPACE] - Back    ";
 
-        public void InteractEvent()
+        public override void InteractEvent()
         {
             
         }
 
-        public void ReturnEvent()
+        public override void ReturnEvent()
         {
             
         }

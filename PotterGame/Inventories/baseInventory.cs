@@ -10,10 +10,10 @@ namespace PotterGame.Inventories
     {
         private string Controls { get; } = "[W/S] - Scroll        [ENTER] - Interact        [BACKSPACE] - Back";
         
-        protected List<IBaseItem> Content;
+        protected List<BaseItem> Content;
         protected int Selection;
         protected int Offset;
-        protected IBaseItem Selected;
+        protected BaseItem Selected;
 
         protected string Name = "DEFAULT";
         protected Player.Player Player { get; set; }
@@ -34,7 +34,6 @@ namespace PotterGame.Inventories
         {
             if (Player == null)
                 Player = Program.GetPlayer();
-            Player.InventoryOpened(this);
             OpenInventory(0,0);
         }
 
@@ -92,6 +91,7 @@ namespace PotterGame.Inventories
             Console.Clear();
             if (Player == null)
                 Player = Program.GetPlayer();
+            Player.InventoryOpened(this);
             Selection = aSelection;
             Offset = aOffset;
 
@@ -122,7 +122,7 @@ namespace PotterGame.Inventories
         /// <param name="aItem">Item to format</param>
         /// <param name="aSelected">True if the <paramref name="aItem"/> is selected</param>
         /// <returns><c>string</c> Formatted for use in the Inventory</returns>
-        private string GetItemName(IBaseItem aItem, bool aSelected)
+        private string GetItemName(BaseItem aItem, bool aSelected)
         {
             var itemName = $"[{aItem.Name}]";
             if (!aSelected)
@@ -141,13 +141,13 @@ namespace PotterGame.Inventories
         /// otherwise add it to the content list.
         /// </summary>
         /// <param name="aItem">Item to be added</param>
-        public void AddItem(IBaseItem aItem)
+        public void AddItem(BaseItem aItem)
         {
             foreach (var item in Content)
             {
                 if (item == null)
                 {
-                    Content = new List<IBaseItem>(1000);   
+                    Content = new List<BaseItem>(1000);   
                     break;
                 }
 
@@ -171,11 +171,10 @@ namespace PotterGame.Inventories
 
             if (Player.CurrentBattle.Enemy != null)
             {
+                // TODO: IMPLEMENT BATTLE CONTROLS
                 return;
             }
-            TextUtils.SendMessage(new Text("CLOSING INVENTORY"), TextType.DEBUG);
             Player.CloseInventory();
-            PotterGame.Player.Player.SendContext(Player.Context);
         }
 
         /// <summary>

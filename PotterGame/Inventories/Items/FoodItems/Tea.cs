@@ -2,7 +2,7 @@
 
 namespace PotterGame.Inventories.Items.FoodItems
 {
-    internal class Tea : IBaseItem
+    internal class Tea : BaseItem
     {
         public bool IsOpened { get; set; }
 
@@ -14,12 +14,12 @@ namespace PotterGame.Inventories.Items.FoodItems
 
         public string Controls { get; } = "    [ENTER] - Consume                       [BACKSPACE] - Back    ";
 
-        public void InteractEvent()
+        public override void InteractEvent()
         {
             throw new NotImplementedException();
         }
 
-        public void ReturnEvent()
+        public override void ReturnEvent()
         {
             throw new NotImplementedException();
         }

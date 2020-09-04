@@ -1,6 +1,6 @@
 ﻿namespace PotterGame.Inventories.Items.FoodItems
 {
-    internal class Butterbeer : IBaseItem
+    internal class Butterbeer : BaseItem
     {
         public bool IsOpened { get; set; } = false;
 
@@ -9,12 +9,12 @@
         public string Name { get; } = "Butterbeer";
         public string Controls { get; } =   "    [ENTER] - Consume                       [BACKSPACE] - Back    ";
 
-        public void InteractEvent()
+        public override void InteractEvent()
         {
                    
         }
 
-        public void ReturnEvent()
+        public override void ReturnEvent()
         {
             IsOpened = false;
         }

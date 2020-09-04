@@ -1,5 +1,4 @@
 ﻿using System;
-using PotterGame.Player.Story;
 
 namespace PotterGame.Player
 {
@@ -68,6 +67,11 @@ namespace PotterGame.Player
                 else
                 {
                     var currentBattle = Program.GetPlayer().CurrentBattle;
+                    
+                    // DOESNT QUEUE THE KEY RRESS IF STUNNED
+                    if (Program.GetPlayer().IsStunned())
+                        continue;
+                    
                     // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                     switch (key)
                     {
@@ -86,7 +90,6 @@ namespace PotterGame.Player
                     }
                 }
             }
-            throw new Exception("Exited While loop");
         }
     }
 }

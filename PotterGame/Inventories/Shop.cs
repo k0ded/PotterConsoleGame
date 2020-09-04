@@ -10,7 +10,7 @@ namespace PotterGame.Inventories
         public Shop(string aName)
         {
             Name = aName;
-            Content = new List<IBaseItem>();
+            Content = new List<BaseItem>();
             Player = Program.GetPlayer();
         }
         

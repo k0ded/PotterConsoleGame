@@ -11,7 +11,7 @@ namespace PotterGame.Inventories
         public Bank(string name)
         {
             Name = name;
-            Content = new List<IBaseItem>();
+            Content = new List<BaseItem>();
             Player = Program.GetPlayer();
         }
         
