@@ -13,7 +13,7 @@
 
         public BaseItem Clone()
         {
-            var cloned = (BaseItem) this.MemberwiseClone();
+            var cloned = (BaseItem) MemberwiseClone();
             cloned.IsOpened = false;
             cloned.Count = 1;
             return cloned;

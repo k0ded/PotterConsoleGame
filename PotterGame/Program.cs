@@ -9,6 +9,8 @@ namespace PotterGame
     internal class Program
     {
 
+        #region Kernell Imports
+        
         /// <summary>
         /// Makes ANSI-Color Codes Possible - STOLEN FROM GOOGLE
         /// </summary>
@@ -30,7 +32,8 @@ namespace PotterGame
 
         [DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int cmdShow);
-
+        
+        #endregion
 
         public static Program Instance;
 
@@ -65,6 +68,8 @@ namespace PotterGame
             _player.Start();
         }
 
+        #region Ticking
+        
         private Thread myThread;
         private bool myShouldTick;
         
@@ -111,6 +116,8 @@ namespace PotterGame
                 i++;
             }
         }
+        
+        #endregion
 
         /// <summary>
         /// This maximizes the window.

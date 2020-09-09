@@ -53,12 +53,9 @@ namespace PotterGame.Player.Story
                 new []
                 {
                     new Text("Privet Drive"), 
-                    new Text("You are standing in the hallway."),
-                    new Text("Next to you there's a staircase with"), 
-                    new Text("a small cupboard underneath it."), 
-                    new Text("At the end of the hallway theres a "),
-                    new Text("small see-through door leading"), 
-                    new Text("into the kitchen") 
+                    new Text("You are standing in the hallway." +
+                             "Next to you there's a staircase with a small cupboard underneath it." +
+                             "At the end of the hallway theres a small see-through door leading into the kitchen."),
                 });
 
             var privetDriveOutside = new Locations(
@@ -69,14 +66,10 @@ namespace PotterGame.Player.Story
                 new []
                 {
                     new Text("Privet Drive"), 
-                    new Text("You are standing in the front yard."),
-                    new Text("The house is made of bricks and it has"),
-                    new Text("a small garage on the right hand side."), 
-                    new Text("The grass in front of the house is tidy"),
-                    new Text("and emerald green."), 
-                    new Text(" "),
-                    new Text("Down the street you see a large purple bus"),
-                    new Text(" with a sign on the front that says: \"Knight Bus\".")
+                    new Text("You are standing in the front yard. " +
+                             "The house is made of bricks and it has a small garage on the right hand side. " +
+                             "The grass in front of the house is tidy and emerald green." +
+                             "Down the street you see a large purple bus with a sign on the front that says: \"Knight Bus\"."),
                 });
 
             var privetDriveSecondFloor = new Locations(

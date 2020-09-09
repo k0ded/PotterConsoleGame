@@ -77,6 +77,8 @@
     <Compile Include="Inventories\Items\FoodItems\Butterbeer.cs" />
     <Compile Include="Inventories\Items\FoodItems\Tea.cs" />
     <Compile Include="Inventories\Items\BaseItem.cs" />
+    <Compile Include="Inventories\Items\ShopItems\IShopItem.cs" />
+    <Compile Include="Inventories\Items\ShopItems\Olivanders.cs" />
     <Compile Include="Inventories\Shop.cs" />
     <Compile Include="Inventories\ShopSelector.cs" />
     <Compile Include="Player\Battling\Battle.cs" />

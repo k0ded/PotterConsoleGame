@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using PotterGame.Inventories.Items;
+using PotterGame.Utils;
 
 namespace PotterGame.Inventories
 {
-    internal class Shop : BaseInventory
+    public class Shop : BaseInventory
     {
 
         public Shop(string aName)
@@ -27,8 +28,8 @@ namespace PotterGame.Inventories
             if (Selected.Value > Program.GetPlayer().Money) return;
             if (!Program.GetPlayer().RemoveMoney(Selected.Value)) return;
             
-            Program.GetPlayer().PlayerInventory.AddItem(Selected);
-            Console.WriteLine("+1 " + Selected.Name);
+            Program.GetPlayer().PlayerInventory.AddItem(Selected.Clone());
+            TextUtils.SendMessage(new Text("+1 " + Selected.Name), TextType.DEBUG);
         }
 
     }

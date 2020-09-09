@@ -47,6 +47,7 @@ namespace PotterGame.Player
             var previousCenteredMessage = aContext.PreviousCenteredMessage;
             var previousControls = aContext.PreviousControlsMessage;
             var previousExplorationMessage = aContext.PreviousExplorationMessage;
+            var previousExplanationMessage = aContext.PreviousExplanationMessage;
             var previousLetterMessage = aContext.PreviousLetterMessage;
             var previousMissionMessage = aContext.PreviousMissionMessage;
 
@@ -58,6 +59,9 @@ namespace PotterGame.Player
 
             if (previousExplorationMessage != null) 
                 TextUtils.SendMessage(previousExplorationMessage, TextType.EXPLORATION);
+            
+            if(previousExplanationMessage != null)
+                TextUtils.SendMessage(previousExplanationMessage, TextType.EXPLANATION);
 
             if (previousLetterMessage != null) 
                 TextUtils.SendMessage(previousLetterMessage, TextType.LETTER_INSTANT);

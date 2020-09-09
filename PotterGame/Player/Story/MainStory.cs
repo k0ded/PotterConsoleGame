@@ -1,4 +1,5 @@
-﻿using PotterGame.Utils;
+﻿using System.Collections.Generic;
+using PotterGame.Utils;
 using System.Linq;
 using System.Threading;
 
@@ -54,30 +55,12 @@ namespace PotterGame.Player.Story
         {
             if (PreviousExplorationMessage != null)
             {
-                // Makes sure there are no null variables.
-                var prevMessage = PreviousExplorationMessage.Where(m => m != null).ToArray();
-                
-                // Removes previous text by setting it all to whitespaces.
-                for (var i = 0; i < prevMessage.Length; i++)
-                {
-                    var msg = prevMessage[i].OriginalMessage.ToCharArray().Aggregate("", (current, character) => string.Concat(current, ' '));
-                    prevMessage[i] = new Text(msg);
-                }
-                TextUtils.SendMessage(prevMessage, TextType.EXPLORATION);
+                ClearMessage(PreviousExplorationMessage, TextType.EXPLORATION);
             }
             
             if (PreviousExplanationMessage != null)
             {
-                // Makes sure there are no null variables.
-                var prevMessage = PreviousExplanationMessage.Where(m => m != null).ToArray();
-                
-                // Removes previous text by setting it all to whitespaces.
-                for (var i = 0; i < prevMessage.Length; i++)
-                {
-                    var msg = prevMessage[i].OriginalMessage.ToCharArray().Aggregate("", (current, character) => string.Concat(current, ' '));
-                    prevMessage[i] = new Text(msg);
-                }
-                TextUtils.SendMessage(prevMessage, TextType.EXPLANATION);
+                ClearMessage(PreviousExplanationMessage, TextType.EXPLANATION);
             }
             
             PreviousExplorationMessage = myExploration.GetExplorationMessage();
@@ -86,6 +69,17 @@ namespace PotterGame.Player.Story
             TextUtils.SendMessage(PreviousExplorationMessage, TextType.EXPLORATION);
             TextUtils.SendMessage(PreviousExplanationMessage, TextType.EXPLANATION);
             Program.GetPlayer().SeizeInput = false;
+        }
+
+        private void ClearMessage(IEnumerable<Text> aPrevText, TextType type)
+        {
+            // Makes sure there are no null variables.
+            var prevMessage = aPrevText.Where(m => m != null).ToArray();
+                
+            // Removes previous text by setting the color to 12, 12, 12 which is the console background color.
+            var tempMessage = prevMessage.Select(text => new Text(text.OriginalMessage, 12, 12, 12, true)).ToList();
+
+            TextUtils.SendMessage(tempMessage, type);
         }
 
         private void RunStoryOne()

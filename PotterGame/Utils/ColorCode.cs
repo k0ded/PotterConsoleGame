@@ -12,6 +12,7 @@
         CYAN = 1832268635,
         WHITE = 1832334171,
         
+        // Resets the color to normal
         RESET = 7155803,
         
         // Background color

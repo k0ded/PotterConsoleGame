@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Threading;
 
 namespace PotterGame.Utils
@@ -48,7 +49,7 @@ namespace PotterGame.Utils
                     SendMissionMessage(message);
                     break;
                 case TextType.EXPLANATION:
-                    SendExplanationMessage(message);
+                    SendExplanationMessage(message[0], message[1]);
                     break;
                 case TextType.LETTER_SLOW:
                     SendLetterMessage(message, true);
@@ -104,22 +105,46 @@ namespace PotterGame.Utils
 
         }
         
-        private static void SendExplanationMessage(IReadOnlyList<Text> aMessage)
+        private static void SendExplanationMessage(Text aTitle, Text aMessage)
         {
-            var largestStringLength = aMessage.Select(m => m.OriginalMessage.Length).Prepend(0).Max();
-            
-            for (var i = 0; i < aMessage.Count; i++)
+            const int maxCharactersPerLine = 40;
+            var amountOfBreakLines = 0;
+
+            var indexOfLastBreakLine = 0;
+
+            var finishedTextBuilder = new StringBuilder(aMessage.OriginalMessage);
+            for (var i = 0; i < aMessage.OriginalMessage.Length; i++)
             {
-                var x = Console.WindowWidth - (largestStringLength + 1) / 2 - (aMessage[i].OriginalMessage.Length + 1) / 2 ;
-                var y = Console.WindowHeight / 2 - aMessage.Count / 2 + i;
-
-                if (i != 0)
-                    x = Console.WindowWidth - (largestStringLength + 1);
-
-                Console.SetCursorPosition(x, y);
-                Console.WriteLine(aMessage[i].Message);
+                if (aMessage.OriginalMessage[i] == ' ')
+                {
+                    indexOfLastBreakLine = i;
+                }
+                
+                if (i - (amountOfBreakLines * maxCharactersPerLine) <= maxCharactersPerLine) continue;
+                finishedTextBuilder.Replace(" ", "§", indexOfLastBreakLine, 1);
+                amountOfBreakLines++;
             }
+            
+            var titleX = Console.WindowWidth - (maxCharactersPerLine / 2 + aTitle.OriginalMessage.Length / 2) - 2;
+            var x = Console.WindowWidth - maxCharactersPerLine - 2;
+            var y = Console.WindowHeight / 2 - amountOfBreakLines / 2;
 
+            // Needed to put the message in the right position
+            var textList = finishedTextBuilder.ToString().Split('§');
+
+            if(titleX < x)
+                throw new ArgumentException("Title too long");
+            
+            // Paste the title of the explanation message
+            Console.SetCursorPosition(titleX, y - 1);
+            Console.WriteLine(aTitle.Message);
+            
+            // Paste the explanation message.
+            for (var i = 0; i < textList.Length; i++)
+            {
+                Console.SetCursorPosition(x, y + i);
+                Console.WriteLine(textList[i]);
+            }
         }
         
         private static void SendInventoryMessage(IReadOnlyList<Text> aMessage)

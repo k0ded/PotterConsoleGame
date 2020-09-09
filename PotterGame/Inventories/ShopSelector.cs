@@ -1,8 +1,11 @@
-﻿namespace PotterGame.Inventories
+﻿using System.Collections.Generic;
+using PotterGame.Inventories.Items;
+using PotterGame.Inventories.Items.ShopItems;
+
+namespace PotterGame.Inventories
 {
     internal class ShopSelector : BaseInventory
     {
-
         public ShopSelector(string aName)
         {
             Name = aName;
@@ -19,7 +22,7 @@
 
         public override void RunInteractAction()
         {
-            Selected.InteractEvent();
+            ((IShopItem) Selected).InteractEvent();
         }
 
     }
