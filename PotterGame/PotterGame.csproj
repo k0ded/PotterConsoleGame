@@ -77,11 +77,15 @@
     <Compile Include="Inventories\Items\FoodItems\Butterbeer.cs" />
     <Compile Include="Inventories\Items\FoodItems\Tea.cs" />
     <Compile Include="Inventories\Items\BaseItem.cs" />
+    <Compile Include="Inventories\Items\GenericItem.cs" />
     <Compile Include="Inventories\Items\ShopItems\IShopItem.cs" />
     <Compile Include="Inventories\Items\ShopItems\Olivanders.cs" />
+    <Compile Include="Inventories\Menu.cs" />
     <Compile Include="Inventories\Shop.cs" />
     <Compile Include="Inventories\ShopSelector.cs" />
     <Compile Include="Player\Battling\Battle.cs" />
+    <Compile Include="Player\Battling\BattleRenderHandler.cs" />
+    <Compile Include="Player\Battling\BattleTickHandler.cs" />
     <Compile Include="Player\Battling\Enemies\Deatheater.cs" />
     <Compile Include="Player\Battling\Enemies\BaseEnemy.cs" />
     <Compile Include="Player\Battling\Spells.cs" />

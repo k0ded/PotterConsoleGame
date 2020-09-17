@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using PotterGame.Inventories.Items;
+using PotterGame.Utils;
 
 namespace PotterGame.Inventories
 {
@@ -10,15 +11,13 @@ namespace PotterGame.Inventories
         {
             Name = aName;
             Content = new List<BaseItem>();
-            Player = Program.GetPlayer();
+            Header = new Text("Player".PadRight(45).PadLeft(0) + $"({Program.Player.Money})");
+            HeaderFoot = new Text("     Item".PadRight(45) + "Price");
         }
 
-        public override void OpenInventory()
+        public override void OpenInventory(bool aSetOpened)
         {
-            if (Player == null)
-                Player = Program.GetPlayer();
-            Player.InventoryOpened(this);
-            OpenInventory(0,0);
+            OpenInventory(0,0, aSetOpened);
         }
     }
 }

@@ -111,6 +111,7 @@ namespace PotterGame.Utils
             var amountOfBreakLines = 0;
 
             var indexOfLastBreakLine = 0;
+            var previousCharacters = 0;
 
             var finishedTextBuilder = new StringBuilder(aMessage.OriginalMessage);
             for (var i = 0; i < aMessage.OriginalMessage.Length; i++)
@@ -120,13 +121,14 @@ namespace PotterGame.Utils
                     indexOfLastBreakLine = i;
                 }
                 
-                if (i - (amountOfBreakLines * maxCharactersPerLine) <= maxCharactersPerLine) continue;
+                if (i - (previousCharacters) <= maxCharactersPerLine) continue;
                 finishedTextBuilder.Replace(" ", "§", indexOfLastBreakLine, 1);
+                previousCharacters = i;
                 amountOfBreakLines++;
             }
             
-            var titleX = Console.WindowWidth - (maxCharactersPerLine / 2 + aTitle.OriginalMessage.Length / 2) - 2;
-            var x = Console.WindowWidth - maxCharactersPerLine - 2;
+            var titleX = Console.WindowWidth - (maxCharactersPerLine / 2 + aTitle.OriginalMessage.Length / 2) - 10;
+            var x = Console.WindowWidth - maxCharactersPerLine - 10;
             var y = Console.WindowHeight / 2 - amountOfBreakLines / 2;
 
             // Needed to put the message in the right position
@@ -193,6 +195,7 @@ namespace PotterGame.Utils
         
         }
 
+
         /// <summary>
         /// Sends a message on screen in the "Letter" format
         /// Which is a message from left to right centered on the
@@ -231,6 +234,25 @@ namespace PotterGame.Utils
         {
             Writer.FinishLetterMessage();
         }
+        
+        /// <summary>
+        /// Sends a message in the bottom left part of the screen,
+        /// This place is reserved for different Missions
+        /// </summary>
+        /// 
+        /// <param name="aMission">NOTE: This should never be longer than one NonNull Text object!</param>
+        private static void SendMissionMessage(IReadOnlyList<Text> aMission)
+        {
+
+            if (aMission.Count > 1)
+                throw new ArgumentException("Too many lines of text!");
+            const int x = 2;
+            var y = Console.WindowHeight - 1;
+
+            Console.SetCursorPosition(x, y);
+            Console.Write(aMission[0].Message);
+            
+        }
 
         /// <summary>
         /// Fades a Text from black into desired RGB values!
@@ -257,24 +279,7 @@ namespace PotterGame.Utils
 
         }
 
-        /// <summary>
-        /// Sends a message in the bottom left part of the screen,
-        /// This place is reserved for different Missions
-        /// </summary>
-        /// 
-        /// <param name="aMission">NOTE: This should never be longer than one NonNull Text object!</param>
-        private static void SendMissionMessage(IReadOnlyList<Text> aMission)
-        {
-
-            if (aMission.Count > 1)
-                throw new ArgumentException("Too many lines of text!");
-            const int x = 2;
-            var y = Console.WindowHeight - 1;
-
-            Console.SetCursorPosition(x, y);
-            Console.Write(aMission[0].Message);
-            
-        }
+        
 
         /// <summary>
         /// This gets the state of <c>LetterWriter</c> and
@@ -300,6 +305,7 @@ namespace PotterGame.Utils
 
     }
 
+    #region Async Messages
 
     /// <summary>
     /// Class <c>ControlsFader</c> is in this
@@ -452,7 +458,10 @@ namespace PotterGame.Utils
             
             IsWritingMessage = false;
             TextUtils.FadeInControlMessage(new Text("[ENTER] - Continue"), 0, 0, 200, 7500);
-            Program.GetPlayer().Context.Continue = true;
+            Program.Player.Context.Continue = true;
         }
     }
+    
+    #endregion
+    
 }

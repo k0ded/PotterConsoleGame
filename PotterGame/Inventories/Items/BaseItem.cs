@@ -3,10 +3,10 @@
     public abstract class BaseItem
     {
         public bool IsOpened { get; set; }
-        public int Value { get; }
+        public int Value { get; set; }
         public int Count { get; set; }
-        public string Name { get; }
-        public string Controls { get; }
+        public string Name { get; set; }
+        public string Controls { get; set; }
 
         public abstract void InteractEvent();
         public abstract void ReturnEvent();

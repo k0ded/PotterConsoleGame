@@ -12,25 +12,28 @@ namespace PotterGame.Inventories
         {
             Name = aName;
             Content = new List<BaseItem>();
-            Player = Program.GetPlayer();
-        }
-        
-        public override void OpenInventory()
-        {
-            if (Player == null)
-                Player = Program.GetPlayer();
-            Player.InventoryOpened(this);
-            OpenInventory(0,0);
+            Player = Program.Player;
+            Header = new Text(Name.PadRight(45).PadLeft(0) + $"({Player.Money})");
+            HeaderFoot = new Text("     Item".PadRight(45) + "Price");
         }
 
         public override void RunInteractAction()
         {
-            if (Selected.Value > Program.GetPlayer().Money) return;
-            if (!Program.GetPlayer().RemoveMoney(Selected.Value)) return;
+            if (Selected.Value > Program.Player.Money) return;
+            if (!Program.Player.RemoveMoney(Selected.Value)) return;
             
-            Program.GetPlayer().PlayerInventory.AddItem(Selected.Clone());
+            Program.Player.PlayerInventory.AddItem(Selected.Clone());
             TextUtils.SendMessage(new Text("+1 " + Selected.Name), TextType.DEBUG);
         }
 
+        public override void RunBackspaceAction()
+        {
+            if (Program.Player.OpenInventory == this)
+            {
+                base.RunBackspaceAction();
+                return;
+            }
+            Program.Player.OpenInventory.OpenInventory(true);
+        }
     }
 }

@@ -8,14 +8,14 @@ namespace PotterGame.Inventories.Items.BankItems
 {
     public class DepositItem : BaseItem
     {
-        public bool IsOpened { get; set; }
-
-        public int Value { get; } = 0;
-        public int Count { get; set; } = 1;
-
-        public string Name { get; } = "Deposit";
-        public string Controls { get; } = "    [ENTER] - Deposit                       [BACKSPACE] - Back    ";
-
+        public DepositItem()
+        {
+            Value = 0;
+            Count = 1;
+            Name = "Deposit";
+            Controls = "    [ENTER] - Deposit                       [BACKSPACE] - Back    ";
+        }
+        
         public override void InteractEvent()
         {
             

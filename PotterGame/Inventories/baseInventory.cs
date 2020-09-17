@@ -6,14 +6,17 @@ using System.Linq;
 
 namespace PotterGame.Inventories
 {
-    public class BaseInventory
+    public abstract class BaseInventory
     {
         private string Controls { get; } = "[W/S] - Scroll        [ENTER] - Interact        [BACKSPACE] - Back";
         
         protected List<BaseItem> Content;
-        protected int Selection;
-        protected int Offset;
+        private int mySelection;
+        private int myOffset;
         protected BaseItem Selected;
+        protected Text Header { get; set; }
+        protected Text HeaderFoot { get; set; }
+        protected TextType myTextType = TextType.INVENTORY;
 
         protected string Name = "DEFAULT";
         protected Player.Player Player { get; set; }
@@ -23,18 +26,16 @@ namespace PotterGame.Inventories
         /// </summary>
         /// <param name="aSelection">The selected row in the inventory</param>
         /// <param name="aOffset">The amount the inventory has scrolled down</param>
-        protected void OpenInventory(int aSelection, int aOffset)
+        protected void OpenInventory(int aSelection, int aOffset, bool aSetOpened)
         {
-            var header = new Text("Player".PadRight(45).PadLeft(0) + $"({Player.Money})");
-            var headerFoot = new Text("     Item".PadRight(45) + "Price");
-            OpenInventory(header, headerFoot, aSelection, aOffset);
+            OpenInventory(aSelection, aOffset, myTextType, aSetOpened);
         }
 
-        public virtual void OpenInventory()
+        public virtual void OpenInventory(bool aSetOpened)
         {
             if (Player == null)
-                Player = Program.GetPlayer();
-            OpenInventory(0,0);
+                Player = Program.Player;
+            OpenInventory(0,0, aSetOpened);
         }
 
         /// <summary>
@@ -43,40 +44,9 @@ namespace PotterGame.Inventories
         /// </summary>
         /// <param name="aSelection">The selected row in the inventory</param>
         /// <param name="aOffset">The amount the inventory has scrolled down</param>
-        private void ReloadInventory(int aSelection, int aOffset)
+        private void ReloadInventory(int aSelection, int aOffset, bool aSetOpened)
         {
-            var header = new Text("Player".PadRight(45) + $"({Player.Money})");
-            var headerFoot = new Text("     Item".PadRight(45) + "Price");
-            OpenInventory(header, headerFoot, aSelection, aOffset);
-        }
-
-        /// <summary>
-        /// Opens an inventory of the Bank type. Changes the header.
-        /// </summary>
-        /// 
-        /// <param name="aSelection">The selected row in the inventory</param>
-        /// <param name="aOffset">The amount the inventory has scrolled down</param>
-        /// <param name="aBankMoney">The amount of money the bank has</param>
-        protected void OpenBankInventory(int aSelection, int aOffset, int aBankMoney)
-        {
-            Console.Clear();
-            var header = new Text("Player".PadRight(45) + $"({Player.Money})");
-            var headerFoot = new Text("     Bank".PadRight(45) + $"({aBankMoney})");
-            OpenInventory(header, headerFoot, aSelection, aOffset);
-        }
-
-        /// <summary>
-        /// Sends an updated inventory without clearing the console.
-        /// Removes the flicker effect when scrolling through the items.
-        /// </summary>
-        /// <param name="aSelection">The selected row in the inventory</param>
-        /// <param name="aOffset">The amount the inventory has scrolled down</param>
-        /// <param name="aBankMoney">The amount of money the bank has</param>
-        protected void ReloadBankInventory(int aSelection, int aOffset, int aBankMoney)
-        {
-            var header = new Text("Player".PadRight(45) + $"({Player.Money})");
-            var headerFoot = new Text("     Bank".PadRight(45) + $"({aBankMoney})");
-            OpenInventory(header, headerFoot, aSelection, aOffset);
+            OpenInventory(aSelection, aOffset, myTextType, aSetOpened);
         }
 
         /// <summary>
@@ -86,32 +56,32 @@ namespace PotterGame.Inventories
         /// <param name="aHeaderFoot">A Non Null <c>Text</c> object displayed on the second line of the inventory menu</param>
         /// <param name="aSelection">Which Item's selected</param>
         /// <param name="aOffset">How much the inventory has scrolled down</param>
-        private void OpenInventory(Text aHeader, Text aHeaderFoot, int aSelection, int aOffset)
+        private void OpenInventory(int aSelection, int aOffset, TextType aType, bool aSetOpened)
         {
             Console.Clear();
             if (Player == null)
-                Player = Program.GetPlayer();
-            Player.InventoryOpened(this);
-            Selection = aSelection;
-            Offset = aOffset;
+                Player = Program.Player;
+            if(aSetOpened)
+                Player.InventoryOpened(this);
+            mySelection = aSelection;
+            myOffset = aOffset;
 
             var inventory = new Text[Math.Min(Content.Count + 4, 11)];
-            var canScrollDown = (Content.Count - Offset) - (Console.WindowHeight - 5) > 0;
-            var canScrollUp = Offset > 0;
+            var canScrollDown = (Content.Count - myOffset) - (Console.WindowHeight - 5) > 0;
+            var canScrollUp = myOffset > 0;
 
-            inventory[0] = aHeader;
-            inventory[1] = aHeaderFoot;
+            inventory[0] = Header;
+            inventory[1] = HeaderFoot;
             inventory[2] = new Text(canScrollUp ? "           ↑" : "            ");
-            for (var i = 0; i < Math.Min(Content.Count - Offset, 6); i++)
+            for (var i = 0; i < Math.Min(Content.Count - myOffset, 6); i++)
             {
                 var item = Content.ElementAt(i);
-                inventory[i + 3] = new Text(GetItemName(item, Selection == i));
+                inventory[i + 3] = GetItemName(item, mySelection == i);
                 inventory[i + 4] = new Text(canScrollDown ? "           ↓" : "            ");
             }
             
-            PotterGame.Player.Player.SendPaused();
             PotterGame.Player.Player.SendControls(Controls);
-            TextUtils.SendMessage(inventory, TextType.INVENTORY);
+            TextUtils.SendMessage(inventory, aType);
         }
 
         /// <summary>
@@ -122,16 +92,15 @@ namespace PotterGame.Inventories
         /// <param name="aItem">Item to format</param>
         /// <param name="aSelected">True if the <paramref name="aItem"/> is selected</param>
         /// <returns><c>string</c> Formatted for use in the Inventory</returns>
-        private string GetItemName(BaseItem aItem, bool aSelected)
+        protected virtual Text GetItemName(BaseItem aItem, bool aSelected)
         {
             var itemName = $"[{aItem.Name}]";
             if (!aSelected)
-                return new Text(itemName.PadRight(30) + $"({aItem.Value})", 128, 128, 128, true).Message;
+                return new Text(("   " + itemName + "   ").PadRight(30) + $"({aItem.Value})", 128, 128, 128, true);
             const string prefix = ">> ";
             const string suffix = " <<";
             Selected = aItem;
-            return new Text((prefix + itemName + suffix).PadRight(30) + $"({aItem.Value})", ColorCode.WHITE).Message;
-
+            return new Text((prefix + itemName + suffix).PadRight(30) + $"({aItem.Value})", ColorCode.WHITE);
         }
 
         /// <summary>
@@ -160,12 +129,12 @@ namespace PotterGame.Inventories
         /// <summary>
         /// Exits out of the inventory or selected <c>BaseItem</c>
         /// </summary>
-        public void RunBackspaceAction()
+        public virtual void RunBackspaceAction()
         {
             if(Selected != null && Selected.IsOpened)
             {
                 Selected.ReturnEvent();
-                OpenInventory(Selection, Offset);
+                OpenInventory(mySelection, myOffset, false);
                 return;
             }
 
@@ -182,18 +151,18 @@ namespace PotterGame.Inventories
         /// </summary>
         public virtual void RunWAction()
         {
-            var canScrollUp = Offset > 0;
-            if(canScrollUp && Selection == 1)
+            var canScrollUp = myOffset > 0;
+            if(canScrollUp && mySelection == 1)
             {
-                ReloadInventory(Selection, Offset - 1);
+                ReloadInventory(mySelection, myOffset - 1, false);
                 return;
             }
-            if(Selection == 0)
+            if(mySelection == 0)
             {
-                ReloadInventory(0, Offset);
+                ReloadInventory(0, myOffset, false);
                 return;
             }
-            ReloadInventory(Selection - 1, Offset);
+            ReloadInventory(mySelection - 1, myOffset, false);
 
         }
 
@@ -202,18 +171,18 @@ namespace PotterGame.Inventories
         /// </summary>
         public virtual void RunSAction()
         {
-            var canScrollDown = (Content.Count - Offset) - (Console.WindowHeight - 5) > 0;
-            if (canScrollDown && Selection == 4)
+            var canScrollDown = (Content.Count - myOffset) - (Console.WindowHeight - 5) > 0;
+            if (canScrollDown && mySelection == 4)
             {
-                ReloadInventory(Selection, Offset + 1);
+                ReloadInventory(mySelection, myOffset + 1, false);
                 return;
             }
-            if (Selection == Console.WindowHeight - 5 || Selection == Content.Count - 1)
+            if (mySelection == Console.WindowHeight - 5 || mySelection == Content.Count - 1)
             {
-                ReloadInventory(Selection, Offset);
+                ReloadInventory(mySelection, myOffset, false);
                 return;
             }
-            ReloadInventory(Selection + 1, Offset);
+            ReloadInventory(mySelection + 1, myOffset, false);
 
         }
         
@@ -228,7 +197,7 @@ namespace PotterGame.Inventories
 
         public void RunReloadAction()
         {
-            ReloadInventory(Selection, Offset);
+            ReloadInventory(mySelection, myOffset, false);
 
         }
     }

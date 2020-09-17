@@ -1,17 +1,26 @@
 ﻿namespace PotterGame.Inventories.Items.ShopItems
 {
-    public abstract class IShopItem : BaseItem
+    public abstract class ShopItem : BaseItem
     {
         protected Shop myShop;
 
         public override void InteractEvent()
         {
-            throw new System.NotImplementedException();
+            if (IsOpened)
+            {
+                myShop.RunInteractAction();
+                return;
+            }
+            myShop.OpenInventory(false);
+            IsOpened = true;
         }
 
         public override void ReturnEvent()
         {
-            throw new System.NotImplementedException();
+            if (IsOpened)
+            {
+                myShop.RunBackspaceAction();
+            }
         }
     }
 }

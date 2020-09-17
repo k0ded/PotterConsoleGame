@@ -8,13 +8,13 @@ namespace PotterGame.Inventories.Items.BankItems
 {
     public class WithdrawItem : BaseItem
     {
-        public bool IsOpened { get; set; }
-
-        public int Value { get; } = 0;
-        public int Count { get; set; } = 1;
-
-        public string Name { get; } = "Deposit";
-        public string Controls { get; } = "    [ENTER] - Withdraw                      [BACKSPACE] - Back    ";
+        public WithdrawItem()
+        {
+            Value = 0;
+            Count = 1;
+            Name = "Deposit";
+            Controls = "    [ENTER] - Withdraw                      [BACKSPACE] - Back    ";
+        }
 
         public override void InteractEvent()
         {

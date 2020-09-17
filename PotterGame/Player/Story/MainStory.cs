@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using PotterGame.Utils;
 using System.Linq;
+using System.Text;
 using System.Threading;
 
 namespace PotterGame.Player.Story
@@ -32,6 +34,8 @@ namespace PotterGame.Player.Story
             }
         }
 
+        
+        // Bug: If you spam space "Get to Diagon Alley!" will stay in the middle of the screen.
         private void RunStoryTwo()
         {
             myStory = 1;
@@ -41,10 +45,9 @@ namespace PotterGame.Player.Story
             mission[0] = new Text("Get to Diagon Alley!");
             TextUtils.SendMessage(mission, TextType.LETTER_SLOW);
             Thread.Sleep(2250);
-
-            Explore();
-
+            
             PreviousMissionMessage = mission[0];
+            Explore();
             TextUtils.SendMessage(mission[0], TextType.MISSION);
             
 
@@ -53,39 +56,19 @@ namespace PotterGame.Player.Story
 
         private void Explore()
         {
-            if (PreviousExplorationMessage != null)
-            {
-                ClearMessage(PreviousExplorationMessage, TextType.EXPLORATION);
-            }
-            
-            if (PreviousExplanationMessage != null)
-            {
-                ClearMessage(PreviousExplanationMessage, TextType.EXPLANATION);
-            }
-            
+            Console.Clear();
             PreviousExplorationMessage = myExploration.GetExplorationMessage();
             PreviousExplanationMessage = myExploration.GetExplanationMessage();
             
             TextUtils.SendMessage(PreviousExplorationMessage, TextType.EXPLORATION);
             TextUtils.SendMessage(PreviousExplanationMessage, TextType.EXPLANATION);
-            Program.GetPlayer().SeizeInput = false;
-        }
-
-        private void ClearMessage(IEnumerable<Text> aPrevText, TextType type)
-        {
-            // Makes sure there are no null variables.
-            var prevMessage = aPrevText.Where(m => m != null).ToArray();
-                
-            // Removes previous text by setting the color to 12, 12, 12 which is the console background color.
-            var tempMessage = prevMessage.Select(text => new Text(text.OriginalMessage, 12, 12, 12, true)).ToList();
-
-            TextUtils.SendMessage(tempMessage, type);
+            Program.Player.SeizeInput = false;
         }
 
         private void RunStoryOne()
         {
             myStory = 0;
-            Program.GetPlayer().SeizeInput = true;
+            Program.Player.SeizeInput = true;
             ResetPrevious();
 
             var letter = new Text[13];
@@ -128,35 +111,34 @@ namespace PotterGame.Player.Story
 
             if (!Continue) return;
             RunStory(myStory + 1);
-            Program.GetPlayer().SeizeInput = false;
+            Program.Player.SeizeInput = false;
             Continue = false;
 
         }
 
         public override void RunQAction()
         {
-            if(Program.GetPlayer().SeizeInput) return;
+            if (Program.Player.SeizeInput)
+                return;
+            
             if (myExploration.RunQAction())
                 Explore();
         }
         public override void RunWAction()
         {
-            if(Program.GetPlayer().SeizeInput) return;
+            if (Program.Player.SeizeInput)
+                return;
+
             if (myExploration.RunWAction()) 
                 Explore();
         }
         public override void RunEAction()
         {
-            if(Program.GetPlayer().SeizeInput) return;
+            if (Program.Player.SeizeInput)
+                return;
+
             if (myExploration.RunEAction()) 
                 Explore();
         }
-        
-        public override void RunInventoryAction()
-        {
-            if (Program.GetPlayer().SeizeInput) return;
-            base.RunInventoryAction();
-        }
-
     }
 }

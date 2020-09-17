@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using PotterGame.Inventories;
 
 namespace PotterGame
 {
@@ -37,7 +38,7 @@ namespace PotterGame
 
         public static Program Instance;
 
-        private static Player.Player _player;
+        public static Player.Player Player;
 
         public static void Main()
         {
@@ -64,8 +65,8 @@ namespace PotterGame
             Instance = new Program();
 
             Console.CursorVisible = false;
-            _player = new Player.Player();
-            _player.Start();
+            Player = new Player.Player();
+            Player.StartMenu();
         }
 
         #region Ticking
@@ -109,7 +110,7 @@ namespace PotterGame
             var i = 0;
             while(myShouldTick)
             {
-                GetPlayer().CurrentBattle.Tick();
+                Player.CurrentBattle.Tick();
                 
                 //TextUtils.SendMessage(new Text("Ticking: " + i, ColorCode.RESET), TextType.DEBUG);
                 Thread.Sleep(1000 / 20);
@@ -127,15 +128,6 @@ namespace PotterGame
             var p = Process.GetCurrentProcess();
             ShowWindow(p.MainWindowHandle, 3); 
             //SW_MAXIMIZE = 3
-        }
-
-        /// <summary>
-        /// Gives you the instance of the Player playing the game to get certain values
-        /// </summary>
-        /// <returns><c>Player.Player</c>, The player playing the game.</returns>
-        public static Player.Player GetPlayer()
-        {
-            return _player;
         }
     }
 }

@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using PotterGame.Inventories.Items;
-using PotterGame.Inventories.Items.ShopItems;
+﻿using PotterGame.Inventories.Items.ShopItems;
+using PotterGame.Utils;
 
 namespace PotterGame.Inventories
 {
@@ -9,20 +8,14 @@ namespace PotterGame.Inventories
         public ShopSelector(string aName)
         {
             Name = aName;
-            Player = Program.GetPlayer();
-        }
-        
-        public override void OpenInventory()
-        {
-            if (Player == null)
-                Player = Program.GetPlayer();
-            Player.InventoryOpened(this);
-            OpenInventory(0,0);
+            Player = Program.Player;
+            Header = new Text(Name.PadRight(45).PadLeft(0) + $"({Player.Money})");
+            HeaderFoot = new Text("     Item".PadRight(45) + "Price");
         }
 
         public override void RunInteractAction()
         {
-            ((IShopItem) Selected).InteractEvent();
+            ((ShopItem) Selected).InteractEvent();
         }
 
     }

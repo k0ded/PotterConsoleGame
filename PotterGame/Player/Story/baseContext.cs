@@ -42,7 +42,7 @@ namespace PotterGame.Player.Story
         public virtual void RunInventoryAction()
         {
             Program.Instance.StopTicking();
-            Program.GetPlayer().PlayerInventory.OpenInventory();
+            Program.Player.PlayerInventory.OpenInventory(true);
         }
 
        

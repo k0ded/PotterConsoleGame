@@ -8,21 +8,44 @@ namespace PotterGame.Utils
         public string OriginalMessage { get; }
         public string Message { get; }
 
+        /// <summary>
+        /// The simplest way to get a color on your text using <c>ColorCode</c>.
+        /// </summary>
+        /// <param name="aMessage">
+        /// The message you'd like to display to the screen.
+        /// </param>
+        /// <param name="aColor">
+        /// The <c>ColorCode</c> you'd like to use for the text.
+        /// </param>
         public Text(string aMessage, ColorCode aColor)
         {
             OriginalMessage = aMessage;
             Message = DeserializeColorCode(aColor) + aMessage + DeserializeColorCode(ColorCode.RESET);
         }
-        public Text(string aMessage, ColorCode aColor, ColorCode aBackgroundColor)
-        {
-            OriginalMessage = aMessage;
-            Message = DeserializeColorCode(aColor) + DeserializeColorCode(aBackgroundColor) + aMessage + DeserializeColorCode(ColorCode.RESET);
-        }
+
+        /// <summary>
+        /// The simplest form of a <c>Text</c> message. Its plain white.
+        /// </summary>
+        /// <param name="aMessage">
+        /// The message you'd like to display to the screen.
+        /// </param>
         public Text(string aMessage)
         {
             OriginalMessage = aMessage;
             Message = DeserializeColorCode(ColorCode.RESET) + OriginalMessage;
         }
+        
+        /// <summary>
+        /// Sets the <c>Text</c> color to an rgb value and decides
+        /// if it should <paramref name="reset"/> the color to white or not
+        /// </summary>
+        /// <param name="aMessage">
+        /// The <c>string</c> message you want to send
+        /// </param>
+        /// <param name="r">Red in RGB values</param>
+        /// <param name="g">Green in RGB values</param>
+        /// <param name="b">Blue in RGB values</param>
+        /// <param name="reset">If the message should return to white after sending</param>
         public Text(string aMessage, int r, int g, int b, bool reset)
         {
             OriginalMessage = aMessage;

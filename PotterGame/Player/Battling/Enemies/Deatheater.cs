@@ -7,7 +7,7 @@ namespace PotterGame.Player.Battling.Enemies
 
         public override void GiveRewards()
         {
-            Program.GetPlayer().PlayerInventory.AddItem(new Tea());
+            Program.Player.PlayerInventory.AddItem(new Tea());
         }
     }
 }

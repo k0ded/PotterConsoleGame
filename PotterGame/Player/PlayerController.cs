@@ -13,9 +13,9 @@ namespace PotterGame.Player
             {
                 var key = Console.ReadKey(true).Key;
 
-                if (Program.GetPlayer().IsInventoryOpen)
+                if (Program.Player.IsInventoryOpen)
                 {
-                    var openInventory = Program.GetPlayer().OpenInventory;
+                    var openInventory = Program.Player.OpenInventory;
 
                     // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                     switch (key)
@@ -37,9 +37,9 @@ namespace PotterGame.Player
                             break;
                     }
                 }
-                else if(!Program.GetPlayer().CurrentBattle.IsBattling)
+                else if(!Program.Player.CurrentBattle.IsBattling)
                 {
-                    var story = Program.GetPlayer().Context;
+                    var story = Program.Player.Context;
 
                     // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                     switch (key)
@@ -54,7 +54,7 @@ namespace PotterGame.Player
                             story.RunWAction();
                             break;
                         case ConsoleKey.E:
-                            story.RunSAction();
+                            story.RunEAction();
                             break;
                         case ConsoleKey.Q:
                             story.RunQAction();
@@ -66,10 +66,10 @@ namespace PotterGame.Player
                 }
                 else
                 {
-                    var currentBattle = Program.GetPlayer().CurrentBattle;
+                    var currentBattle = Program.Player.CurrentBattle;
                     
                     // DOESNT QUEUE THE KEY RRESS IF STUNNED
-                    if (Program.GetPlayer().IsStunned())
+                    if (Program.Player.IsStunned())
                         continue;
                     
                     // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault

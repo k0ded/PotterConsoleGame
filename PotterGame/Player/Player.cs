@@ -33,7 +33,15 @@ namespace PotterGame.Player
 
         public void Start()
         {
+            OpenInventory = PlayerInventory;
+            IsInventoryOpen = false;
             Context.Start();
+        }
+
+        public void StartMenu()
+        {
+            var menu = new Menu();
+            menu.OpenInventory(true);
             PlayerController.MakeSelection();
         }
 

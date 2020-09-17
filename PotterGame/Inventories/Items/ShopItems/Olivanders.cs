@@ -1,6 +1,6 @@
 ﻿namespace PotterGame.Inventories.Items.ShopItems
 {
-    public class Olivanders : IShopItem
+    public class Olivanders : ShopItem
     {
         public Olivanders()
         {
