@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using PotterGame.Inventories.Items;
 using PotterGame.Utils;
 
-namespace PotterGame.Inventories
+namespace PotterGame.Inventories.InventoryTypes
 {
     public class Menu : BaseInventory
     {
@@ -14,10 +13,9 @@ namespace PotterGame.Inventories
         {
             Name = "Menu";
             Content = new List<BaseItem>();
-            Player = Program.Player;
             Header = new Text("");
             HeaderFoot = new Text("");
-            myTextType = TextType.CENTERED;
+            InventoryTextType = TextType.CENTERED;
 
             Content.Add(GetStartItem());
             Content.Add(GetExitItem());
@@ -26,17 +24,27 @@ namespace PotterGame.Inventories
         private GenericItem GetStartItem()
         {
             var item = GenericItem.CreateItem("Start");
-            item.InteractEventTask = new Task(Program.Player.Start);
+            item.InteractEventTask = Program.Player.Start;
+            return item;
+        }
+
+        private GenericItem GetLoadItem()
+        {
+            var item = GenericItem.CreateItem("Load");
+            item.InteractEventTask = delegate
+            {
+                
+            };
             return item;
         }
         
         private GenericItem GetExitItem()
         {
             var item = GenericItem.CreateItem("Exit");
-            item.InteractEventTask = new Task(delegate
+            item.InteractEventTask = delegate
             {
                 Environment.Exit(0);
-            });
+            };
             return item;
         }
 

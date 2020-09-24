@@ -66,6 +66,7 @@ namespace PotterGame
 
             Console.CursorVisible = false;
             Player = new Player.Player();
+            Player.PlayerSetup();
             Player.StartMenu();
         }
 

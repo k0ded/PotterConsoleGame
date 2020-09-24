@@ -11,15 +11,16 @@ namespace PotterGame.Player.Story
     {
 
         private int myStory;
-        private readonly Exploration myExploration = new Exploration();
+        private Exploration myExploration;
         public string Controls { get; } = "[ENTER] - Continue";
 
-        public override void Start()
+        public MainStory()
         {
-            RunStory(myStory);
+            myExploration = new Exploration();
+            myExploration.Load();
         }
 
-        private void RunStory(int i)
+        public void RunStory(int i)
         {
             switch (i)
             {
@@ -28,8 +29,6 @@ namespace PotterGame.Player.Story
                     break;
                 case 0:
                     RunStoryOne();
-                    break;
-                default:
                     break;
             }
         }
@@ -59,14 +58,17 @@ namespace PotterGame.Player.Story
             Console.Clear();
             PreviousExplorationMessage = myExploration.GetExplorationMessage();
             PreviousExplanationMessage = myExploration.GetExplanationMessage();
-            
+
             TextUtils.SendMessage(PreviousExplorationMessage, TextType.EXPLORATION);
             TextUtils.SendMessage(PreviousExplanationMessage, TextType.EXPLANATION);
+            TextUtils.SendMessage(PreviousMissionMessage, TextType.MISSION);
+            Player.SendControls(myExploration.GetControlsMessage());
             Program.Player.SeizeInput = false;
         }
 
         private void RunStoryOne()
         {
+            Console.Clear();
             myStory = 0;
             Program.Player.SeizeInput = true;
             ResetPrevious();

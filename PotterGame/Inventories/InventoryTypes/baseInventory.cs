@@ -1,10 +1,10 @@
-﻿using PotterGame.Inventories.Items;
-using PotterGame.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PotterGame.Inventories.Items;
+using PotterGame.Utils;
 
-namespace PotterGame.Inventories
+namespace PotterGame.Inventories.InventoryTypes
 {
     public abstract class BaseInventory
     {
@@ -16,25 +16,26 @@ namespace PotterGame.Inventories
         protected BaseItem Selected;
         protected Text Header { get; set; }
         protected Text HeaderFoot { get; set; }
-        protected TextType myTextType = TextType.INVENTORY;
+        protected TextType InventoryTextType = TextType.INVENTORY;
 
         protected string Name = "DEFAULT";
-        protected Player.Player Player { get; set; }
 
         /// <summary>
         /// Opens a regular inventory.
         /// </summary>
         /// <param name="aSelection">The selected row in the inventory</param>
         /// <param name="aOffset">The amount the inventory has scrolled down</param>
+        /// <param name="aSetOpened">
+        /// Asks if you want to set the open inventory to this specific one.
+        /// Should be false if you're in subinventory of a normal inventory.
+        /// </param>
         protected void OpenInventory(int aSelection, int aOffset, bool aSetOpened)
         {
-            OpenInventory(aSelection, aOffset, myTextType, aSetOpened);
+            OpenInventory(aSelection, aOffset, InventoryTextType, aSetOpened);
         }
 
         public virtual void OpenInventory(bool aSetOpened)
         {
-            if (Player == null)
-                Player = Program.Player;
             OpenInventory(0,0, aSetOpened);
         }
 
@@ -44,25 +45,30 @@ namespace PotterGame.Inventories
         /// </summary>
         /// <param name="aSelection">The selected row in the inventory</param>
         /// <param name="aOffset">The amount the inventory has scrolled down</param>
+        /// <param name="aSetOpened">
+        /// Asks if you want to set the open inventory to this specific one.
+        /// Should be false if you're in subinventory of a normal inventory.
+        /// </param>
         private void ReloadInventory(int aSelection, int aOffset, bool aSetOpened)
         {
-            OpenInventory(aSelection, aOffset, myTextType, aSetOpened);
+            OpenInventory(aSelection, aOffset, InventoryTextType, aSetOpened);
         }
 
         /// <summary>
         /// Generic Inventory Opener
         /// </summary>
-        /// <param name="aHeader">A Non Null <c>Text</c> object displayed on the first line of the inventory menu</param>
-        /// <param name="aHeaderFoot">A Non Null <c>Text</c> object displayed on the second line of the inventory menu</param>
         /// <param name="aSelection">Which Item's selected</param>
         /// <param name="aOffset">How much the inventory has scrolled down</param>
+        /// <param name="aType">Tells what type text should be sent in</param>
+        /// <param name="aSetOpened">
+        /// Asks if you want to set the open inventory to this specific one.
+        /// Should be false if you're in subinventory of a normal inventory.
+        /// </param>
         private void OpenInventory(int aSelection, int aOffset, TextType aType, bool aSetOpened)
         {
             Console.Clear();
-            if (Player == null)
-                Player = Program.Player;
             if(aSetOpened)
-                Player.InventoryOpened(this);
+                Program.Player.InventoryOpened(this);
             mySelection = aSelection;
             myOffset = aOffset;
 
@@ -80,7 +86,7 @@ namespace PotterGame.Inventories
                 inventory[i + 4] = new Text(canScrollDown ? "           ↓" : "            ");
             }
             
-            PotterGame.Player.Player.SendControls(Controls);
+            Player.Player.SendControls(Controls);
             TextUtils.SendMessage(inventory, aType);
         }
 
@@ -112,19 +118,22 @@ namespace PotterGame.Inventories
         /// <param name="aItem">Item to be added</param>
         public void AddItem(BaseItem aItem)
         {
-            foreach (var item in Content)
+            if (Content != null)
             {
-                if (item == null)
+                foreach (var item in Content)
                 {
-                    Content = new List<BaseItem>(1000);   
-                    break;
-                }
+                    if (item == null)
+                    {
+                        Content = new List<BaseItem>(1000);
+                        break;
+                    }
 
-                if (item.Name != aItem.Name) continue;
-                item.Count++;
-                return;
+                    if (item.Name != aItem.Name) continue;
+                    item.Count++;
+                    return;
+                }
             }
-            Content.Add(aItem);
+            Content = new List<BaseItem> {aItem};
         }
         /// <summary>
         /// Exits out of the inventory or selected <c>BaseItem</c>
@@ -138,12 +147,12 @@ namespace PotterGame.Inventories
                 return;
             }
 
-            if (Player.CurrentBattle.Enemy != null)
+            if (Program.Player.CurrentBattle.Enemy != null)
             {
                 // TODO: IMPLEMENT BATTLE CONTROLS
                 return;
             }
-            Player.CloseInventory();
+            Program.Player.CloseInventory();
         }
 
         /// <summary>
@@ -192,7 +201,6 @@ namespace PotterGame.Inventories
         public virtual void RunInteractAction()
         {
             Selected.InteractEvent();
-
         }
 
         public void RunReloadAction()

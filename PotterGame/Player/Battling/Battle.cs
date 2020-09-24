@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using PotterGame.Inventories;
 using PotterGame.Player.Battling.Enemies;
 using PotterGame.Player.Story;
 using PotterGame.Utils;
@@ -83,7 +84,7 @@ namespace PotterGame.Player.Battling
         public void OpenPlayerInventory()
         {
             IsBattling = false;
-            Program.Player.PlayerInventory.OpenInventory(true);
+            InventoryManager.PlayerInventory.OpenInventory(true);
         }
 
         private void EnterStartAnimation()

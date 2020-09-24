@@ -1,4 +1,5 @@
-﻿using PotterGame.Inventories.Items.FoodItems;
+﻿using PotterGame.Inventories;
+using PotterGame.Inventories.Items.FoodItems;
 
 namespace PotterGame.Player.Battling.Enemies
 {
@@ -7,7 +8,7 @@ namespace PotterGame.Player.Battling.Enemies
 
         public override void GiveRewards()
         {
-            Program.Player.PlayerInventory.AddItem(new Tea());
+            InventoryManager.PlayerInventory.AddItem(new Tea());
         }
     }
 }

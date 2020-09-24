@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using System;
 
 namespace PotterGame.Inventories.Items
 {
@@ -8,8 +8,8 @@ namespace PotterGame.Inventories.Items
         {
             return new GenericItem(aName);
         }
-        public Task InteractEventTask { get; set; }
-        public Task ReturnEventTask { get; set; }
+        public Action InteractEventTask { get; set; }
+        public Action ReturnEventTask { get; set; }
         
         public GenericItem(string aName)
         {
@@ -18,12 +18,12 @@ namespace PotterGame.Inventories.Items
 
         public override void InteractEvent()
         {
-            InteractEventTask?.Start();
+            InteractEventTask?.Invoke();
         }
 
         public override void ReturnEvent()
         {
-            ReturnEventTask?.Start();
+            ReturnEventTask?.Invoke();
         }
     }
 }

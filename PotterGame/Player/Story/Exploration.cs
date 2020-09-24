@@ -1,6 +1,10 @@
 ﻿using PotterGame.Utils;
 using System;
 using System.Collections.Generic;
+using PotterGame.Inventories;
+using PotterGame.Inventories.InventoryTypes;
+using PotterGame.Inventories.Items.FoodItems;
+using PotterGame.Inventories.Items.ShopItems;
 
 namespace PotterGame.Player.Story
 {
@@ -78,11 +82,16 @@ namespace PotterGame.Player.Story
     internal class Exploration
     {
         private readonly Dictionary<ELocations, Locations> myLocations = new Dictionary<ELocations, Locations>();
+        private Dictionary<ELocations, Shop> myShops = new Dictionary<ELocations, Shop>();
+        private Dictionary<ELocations, ShopSelector> myShopSelectors = new Dictionary<ELocations, ShopSelector>();
         private ELocations myCurrentLocation = ELocations.PRIVET_DRIVE_HALL;
 
-        public Exploration()
+        private const string Controls = "[Q-D] Exploring";
+
+        public void Load()
         {
             LoadLocations();
+            LoadShops();
         }
 
         /// <summary>
@@ -109,7 +118,7 @@ namespace PotterGame.Player.Story
             var privetDriveOutside = new Locations(
                 "4. Privet Drive - Outside",
                 ELocations.PRIVET_DRIVE_HALL,
-                ELocations.PRIVET_DRIVE_SECOND_FLOOR,
+                ELocations.LONDON_KNIGHTBUS,
                 ELocations.NONE,
                 new []
                 {
@@ -180,8 +189,6 @@ namespace PotterGame.Player.Story
             
             #endregion
 
-            
-            
             #region London
 
             var londonKnightBus = new Locations(
@@ -216,7 +223,7 @@ namespace PotterGame.Player.Story
 
             var diagonAlley = new Locations(
                 "London - Diagon Alley",
-                ELocations.LONDON_DIAGONALLEY,
+                ELocations.LONDON_LEAKYCAULDRON,
                 ELocations.DIAGON_ALLEY_SHOP,
                 ELocations.NONE,
                 new []
@@ -239,8 +246,28 @@ namespace PotterGame.Player.Story
                     new Text(""), 
                 });
             
-            #endregion
+            // TODO: ADD PLATFORM 9 3/4
+            var londonKingsCross = new Locations(
+                "London - Kings Cross",
+                ELocations.LONDON_KNIGHTBUS,
+                ELocations.NONE,
+                ELocations.NONE,
+                new []
+                {
+                    new Text(""),
+                    new Text(""), 
+                });
             
+            myLocations.Add(ELocations.LONDON_KNIGHTBUS, londonKnightBus);
+            myLocations.Add(ELocations.LONDON_LEAKYCAULDRON, leakyCauldron);
+            myLocations.Add(ELocations.LONDON_LEAKYCAULDRON_APPARTMENTS, leakyCauldronApartments);
+            myLocations.Add(ELocations.LONDON_DIAGONALLEY, diagonAlley);
+            myLocations.Add(ELocations.LONDON_KINGSCROSS, londonKingsCross);
+
+            #endregion
+
+            #region Generic
+
             var none = new Locations(
                 " - ",
                 ELocations.NONE,
@@ -252,33 +279,65 @@ namespace PotterGame.Player.Story
                 });
             
             myLocations.Add(ELocations.NONE, none);
+
+            #endregion
+            
         }
+
+        private void LoadShops()
+        {
+            #region Shop Locations
+
+            Shop leakyCauldronBar = new Shop("Leaky Cauldron Bar");
+            leakyCauldronBar.AddItem(new Butterbeer());
+            leakyCauldronBar.AddItem(new Tea());
+            myShops.Add(ELocations.LEAKY_CAULDRON_SHOP, leakyCauldronBar);
+
+            #endregion
+            
+            
+            #region Shop Selector
+            
+            
+            
+            ShopSelector DiagonAlley = new ShopSelector("Diagon Alley");
+            DiagonAlley.AddItem(new OlivandersItem());
+            DiagonAlley.AddItem(new GringottsItem());
+            myShopSelectors.Add(ELocations.DIAGON_ALLEY_SHOP, DiagonAlley);
+            
+            #endregion
+        } 
 
         public Text[] GetExplorationMessage()
         {
-            var messages = new Text[4];
+            var messages = new Text[7];
             var loc = myLocations[myCurrentLocation];
-            var qloc = myLocations[loc.QLoc];
 
             messages[0] = new Text(loc.Name);
-            messages[1] = GetLocationMessage("[Q] - Go -> ", loc.QLoc);
-            if (loc.WLoc == ELocations.NONE)
-                return messages;
-            messages[2] = GetLocationMessage("[W] - Go -> ", loc.WLoc);
-            if (loc.ELoc == ELocations.NONE)
-                return messages;
-            messages[3] = GetLocationMessage("[E] - Go -> ", loc.ELoc);
+            messages[1] = loc.QLoc != ELocations.NONE ? GetLocationMessage('Q', loc.QLoc) : null;
+            messages[2] = loc.WLoc != ELocations.NONE ? GetLocationMessage('W', loc.WLoc) : null;
+            messages[3] = loc.ELoc != ELocations.NONE ? GetLocationMessage('E', loc.ELoc) : null;
+            messages[4] = loc.ALoc != ELocations.NONE ? GetLocationMessage('A', loc.ALoc) : null;
+            messages[5] = loc.SLoc != ELocations.NONE ? GetLocationMessage('S', loc.SLoc) : null;
+            messages[6] = loc.DLoc != ELocations.NONE ? GetLocationMessage('D', loc.DLoc) : null;
             return messages;
         }
 
-        private Text GetLocationMessage(string prefix, ELocations aLocation)
+        public string GetControlsMessage()
         {
+            return Controls;
+        }
+
+        private Text GetLocationMessage(char selectionLetter, ELocations aLocation)
+        {
+            string prefix = $"[{selectionLetter}] - Go -> ";
+            
             switch (aLocation)
             {
-                case(ELocations.DIAGON_ALLEY_SHOP):
-                    return new Text(prefix + "Shop Selector");
+                case ELocations.DIAGON_ALLEY_SHOP:
+                    return new Text( prefix + "Diagon Alley Shop Selector");
                 
-                case(ELocations.LEAKY_CAULDRON_SHOP):
+                case ELocations.LEAKY_CAULDRON_SHOP:
                     return new Text(prefix + "Leaky Cauldron Bar");
                 
                 //MORE SHOPS...
@@ -294,32 +353,70 @@ namespace PotterGame.Player.Story
         {
             return myLocations[myCurrentLocation].Explanation;
         }
-    
+
+        /// <summary>
+        /// Gets the correct action for the location, such as setting the <c>myCurrentLocation</c> to
+        /// something and executing the explore code by returning true
+        /// </summary>
+        /// <param name="aRunLocation">
+        /// The location you want to get the action of (Like exploring to).
+        /// </param>
+        /// <returns> if it should explore or not (It shouldnt explore if it isnt a location but a shop instead) </returns>
+        private bool RunAction(ELocations aRunLocation)
+        {
+            switch (aRunLocation)
+            {
+                case ELocations.DIAGON_ALLEY_SHOP:
+                    myShopSelectors[aRunLocation].OpenInventory(true);
+                    return false;
+                case ELocations.LEAKY_CAULDRON_SHOP:
+                    myShops[aRunLocation].OpenInventory(true);
+                    return false;
+                case ELocations.LEAKY_CAULDRON_APARTMENT_SHOP:
+                    
+                    return false;
+                case ELocations.NONE:
+                    return false;
+                default:
+                    myCurrentLocation = aRunLocation;
+                    return true;
+            }
+        }
+
         public bool RunQAction()
-        { ;
+        {
             var location = myLocations[myCurrentLocation];
-            if (location.QLoc == ELocations.NONE)
-                return false;
-            myCurrentLocation = location.QLoc;
-            return true;
+            return RunAction(location.QLoc);
         }
 
         public bool RunWAction()
         {
             var location = myLocations[myCurrentLocation];
-            if (location.WLoc == ELocations.NONE)
-                return false;
-            myCurrentLocation = location.WLoc;
-            return true;
+            return RunAction(location.WLoc);
         }
 
         public bool RunEAction()
         {
             var location = myLocations[myCurrentLocation];
-            if (location.ELoc == ELocations.NONE)
-                return false;
-            myCurrentLocation = location.ELoc;
-            return true;
+            return RunAction(location.ELoc);
+        }
+        
+        public bool RunAAction()
+        {
+            var location = myLocations[myCurrentLocation];
+            return RunAction(location.ALoc);
+        }
+
+        public bool RunSAction()
+        {
+            var location = myLocations[myCurrentLocation];
+            return RunAction(location.SLoc);
+        }
+
+        public bool RunDAction()
+        {
+            var location = myLocations[myCurrentLocation];
+            return RunAction(location.DLoc);
         }
     }
 }

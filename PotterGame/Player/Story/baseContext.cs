@@ -1,4 +1,5 @@
-﻿using PotterGame.Utils;
+﻿using PotterGame.Inventories;
+using PotterGame.Utils;
 using PotterGame.Player.Battling.Enemies;
 
 namespace PotterGame.Player.Story
@@ -12,7 +13,7 @@ namespace PotterGame.Player.Story
         public Text PreviousMissionMessage { get; protected set; }
         public Text PreviousControlsMessage { get; protected set; }
         public bool Continue { get; set; }
-
+        
         public virtual void Start() {}
         public virtual void Start(BaseEnemy aEnemy) {Start();}
         public virtual void RunInteractAction()
@@ -42,7 +43,7 @@ namespace PotterGame.Player.Story
         public virtual void RunInventoryAction()
         {
             Program.Instance.StopTicking();
-            Program.Player.PlayerInventory.OpenInventory(true);
+            InventoryManager.PlayerInventory.OpenInventory(true);
         }
 
        

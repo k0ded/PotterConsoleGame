@@ -2,20 +2,17 @@
 using PotterGame.Player.Story;
 using PotterGame.Utils;
 using System;
+using PotterGame.Inventories.InventoryTypes;
 using PotterGame.Player.Battling;
 
 namespace PotterGame.Player
 {
     public class Player
     {
-        public BaseContext Context { get; }
-        public bool IsInventoryOpen { get; set; }
-
-        public BaseInventory OpenInventory { get; set; }
-        public BaseInventory PlayerInventory { get; }
+        public BaseContext Context { get; set; }
         public Battle CurrentBattle { get; set; }
         public bool SeizeInput { get; set; }
-        public int Money { get; private set; }
+        public static int Money { get; private set; }
         public int Health { get; private set; }
         public int DamageAmount { get; private set; }
         public int MaxHealth { get; }= 100;
@@ -24,18 +21,27 @@ namespace PotterGame.Player
         public Player()
         {
             Context = new MainStory();
-            PlayerInventory = new Inventory("Inventory");
-            OpenInventory = PlayerInventory;
             CurrentBattle = new Battle();
+            Program.Player = this;
+        }
+        public void PlayerSetup()
+        {
+            InventoryManager.PlayerInventory = new Inventory("Inventory");
+            InventoryManager.OpenInventory = InventoryManager.PlayerInventory;
         }
 
         // TODO: Make SendContext
 
         public void Start()
         {
-            OpenInventory = PlayerInventory;
-            IsInventoryOpen = false;
-            Context.Start();
+            InventoryManager.OpenInventory = InventoryManager.PlayerInventory;
+            InventoryManager.IsInventoryOpen = false;
+            Console.Clear();
+            if (Context is MainStory)
+            {
+                MainStory story = (MainStory) Context;
+                story.RunStory(0);
+            }
         }
 
         public void StartMenu()
@@ -106,8 +112,8 @@ namespace PotterGame.Player
         /// <param name="inventory">Inventory to open</param>
         public void InventoryOpened(BaseInventory inventory)
         {
-            OpenInventory = inventory;
-            IsInventoryOpen = true;
+            InventoryManager.OpenInventory = inventory;
+            InventoryManager.IsInventoryOpen = true;
         }
 
         /// <summary>
@@ -115,7 +121,7 @@ namespace PotterGame.Player
         /// </summary>
         internal void CloseInventory()
         {
-            IsInventoryOpen = false;
+            InventoryManager.IsInventoryOpen = false;
             SendContext(Context);
         }
 

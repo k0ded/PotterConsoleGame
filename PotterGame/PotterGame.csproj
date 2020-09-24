@@ -69,20 +69,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Inventories\Bank.cs" />
-    <Compile Include="Inventories\BaseInventory.cs" />
-    <Compile Include="Inventories\Inventory.cs" />
+    <Compile Include="Inventories\InventoryManager.cs" />
+    <Compile Include="Inventories\InventoryTypes\Bank.cs" />
+    <Compile Include="Inventories\InventoryTypes\BaseInventory.cs" />
+    <Compile Include="Inventories\InventoryTypes\Inventory.cs" />
+    <Compile Include="Inventories\InventoryTypes\Menu.cs" />
+    <Compile Include="Inventories\InventoryTypes\Shop.cs" />
+    <Compile Include="Inventories\InventoryTypes\ShopSelector.cs" />
     <Compile Include="Inventories\Items\BankItems\WithdrawItem.cs" />
     <Compile Include="Inventories\Items\BankItems\DepositItem.cs" />
     <Compile Include="Inventories\Items\FoodItems\Butterbeer.cs" />
     <Compile Include="Inventories\Items\FoodItems\Tea.cs" />
     <Compile Include="Inventories\Items\BaseItem.cs" />
     <Compile Include="Inventories\Items\GenericItem.cs" />
-    <Compile Include="Inventories\Items\ShopItems\IShopItem.cs" />
-    <Compile Include="Inventories\Items\ShopItems\Olivanders.cs" />
-    <Compile Include="Inventories\Menu.cs" />
-    <Compile Include="Inventories\Shop.cs" />
-    <Compile Include="Inventories\ShopSelector.cs" />
+    <Compile Include="Inventories\Items\ShopItems\GringottsItem.cs" />
+    <Compile Include="Inventories\Items\ShopItems\GringottsItems\DepositItem.cs" />
+    <Compile Include="Inventories\Items\ShopItems\GringottsItems\WithdrawItem.cs" />
+    <Compile Include="Inventories\Items\ShopItems\OlivandersItem.cs" />
+    <Compile Include="Inventories\Items\ShopItems\BaseShopItem.cs" />
+    <Compile Include="Inventories\Items\ShopItems\OlivandersItems\WandItem.cs" />
     <Compile Include="Player\Battling\Battle.cs" />
     <Compile Include="Player\Battling\BattleRenderHandler.cs" />
     <Compile Include="Player\Battling\BattleTickHandler.cs" />

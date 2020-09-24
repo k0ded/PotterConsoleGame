@@ -95,8 +95,8 @@ namespace PotterGame.Utils
 
             for (var i = 0; i < aMessage.Count; i++)
             {
-
-                var x = Console.WindowWidth / 2 - largestStringLength / 2;
+                var xFactor = i == 0 ? aMessage[i].OriginalMessage.Length / 2 : largestStringLength / 2;
+                var x = Console.WindowWidth / 2 - xFactor;
                 var y = Console.WindowHeight / 2 - aMessage.Count / 2 + i;
 
                 Console.SetCursorPosition(x, y);

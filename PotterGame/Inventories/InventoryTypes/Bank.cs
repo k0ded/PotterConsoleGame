@@ -2,7 +2,7 @@
 using PotterGame.Inventories.Items;
 using PotterGame.Utils;
 
-namespace PotterGame.Inventories
+namespace PotterGame.Inventories.InventoryTypes
 {
     internal class Bank : BaseInventory
     {
@@ -13,8 +13,7 @@ namespace PotterGame.Inventories
         {
             Name = name;
             Content = new List<BaseItem>();
-            Player = Program.Player;
-            Header = new Text("Bank".PadRight(45).PadLeft(0) + $"({Player.Money})");
+            Header = new Text("Bank".PadRight(45).PadLeft(0) + $"({Player.Player.Money})");
             HeaderFoot = new Text("     Action".PadRight(45) + $"({Money})");
             
         }

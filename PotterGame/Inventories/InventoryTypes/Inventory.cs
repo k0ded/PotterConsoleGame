@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PotterGame.Inventories.Items;
 using PotterGame.Utils;
 
-namespace PotterGame.Inventories
+namespace PotterGame.Inventories.InventoryTypes
 {
     internal class Inventory : BaseInventory
     {
@@ -11,7 +10,7 @@ namespace PotterGame.Inventories
         {
             Name = aName;
             Content = new List<BaseItem>();
-            Header = new Text("Player".PadRight(45).PadLeft(0) + $"({Program.Player.Money})");
+            Header = new Text("Player".PadRight(45).PadLeft(0) + $"({Player.Player.Money})");
             HeaderFoot = new Text("     Item".PadRight(45) + "Price");
         }
 

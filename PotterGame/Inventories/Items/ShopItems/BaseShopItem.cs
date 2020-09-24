@@ -1,6 +1,8 @@
-﻿namespace PotterGame.Inventories.Items.ShopItems
+﻿using PotterGame.Inventories.InventoryTypes;
+
+namespace PotterGame.Inventories.Items.ShopItems
 {
-    public abstract class ShopItem : BaseItem
+    public class BaseShopItem : BaseItem
     {
         protected Shop myShop;
 

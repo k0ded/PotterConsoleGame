@@ -1,4 +1,5 @@
 ﻿using System;
+using PotterGame.Inventories;
 
 namespace PotterGame.Player
 {
@@ -13,9 +14,9 @@ namespace PotterGame.Player
             {
                 var key = Console.ReadKey(true).Key;
 
-                if (Program.Player.IsInventoryOpen)
+                if (InventoryManager.IsInventoryOpen)
                 {
-                    var openInventory = Program.Player.OpenInventory;
+                    var openInventory = InventoryManager.OpenInventory;
 
                     // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                     switch (key)
