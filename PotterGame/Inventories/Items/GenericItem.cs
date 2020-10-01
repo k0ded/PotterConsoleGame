@@ -4,10 +4,6 @@ namespace PotterGame.Inventories.Items
 {
     public class GenericItem : BaseItem
     {
-        public static GenericItem CreateItem(string aName)
-        {
-            return new GenericItem(aName);
-        }
         public Action InteractEventTask { get; set; }
         public Action ReturnEventTask { get; set; }
         

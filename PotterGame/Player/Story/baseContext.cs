@@ -32,6 +32,7 @@ namespace PotterGame.Player.Story
         {
 
         }
+        public virtual void RunAAction() {}
         public virtual void RunWAction()
         {
 
@@ -40,6 +41,7 @@ namespace PotterGame.Player.Story
         {
 
         }
+        public virtual void RunDAction() {}
         public virtual void RunInventoryAction()
         {
             Program.Instance.StopTicking();

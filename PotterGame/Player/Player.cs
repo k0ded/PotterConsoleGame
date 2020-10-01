@@ -17,6 +17,7 @@ namespace PotterGame.Player
         public int DamageAmount { get; private set; }
         public int MaxHealth { get; }= 100;
         public int StunnedUntil { get; private set; }
+        public bool HasWand { get; set; }
 
         public Player()
         {

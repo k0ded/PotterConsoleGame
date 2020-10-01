@@ -23,14 +23,14 @@ namespace PotterGame.Inventories.InventoryTypes
 
         private GenericItem GetStartItem()
         {
-            var item = GenericItem.CreateItem("Start");
+            var item = new GenericItem("Start");
             item.InteractEventTask = Program.Player.Start;
             return item;
         }
 
         private GenericItem GetLoadItem()
         {
-            var item = GenericItem.CreateItem("Load");
+            var item = new GenericItem("Load");
             item.InteractEventTask = delegate
             {
                 
@@ -40,7 +40,7 @@ namespace PotterGame.Inventories.InventoryTypes
         
         private GenericItem GetExitItem()
         {
-            var item = GenericItem.CreateItem("Exit");
+            var item = new GenericItem("Exit");
             item.InteractEventTask = delegate
             {
                 Environment.Exit(0);

@@ -4,16 +4,16 @@ namespace PotterGame.Inventories.Items.ShopItems
 {
     public class BaseShopItem : BaseItem
     {
-        protected Shop myShop;
+        public Shop Shop;
 
         public override void InteractEvent()
         {
             if (IsOpened)
             {
-                myShop.RunInteractAction();
+                Shop.RunInteractAction();
                 return;
             }
-            myShop.OpenInventory(false);
+            Shop.OpenInventory(false);
             IsOpened = true;
         }
 
@@ -21,7 +21,7 @@ namespace PotterGame.Inventories.Items.ShopItems
         {
             if (IsOpened)
             {
-                myShop.RunBackspaceAction();
+                Shop.RunBackspaceAction();
             }
         }
     }

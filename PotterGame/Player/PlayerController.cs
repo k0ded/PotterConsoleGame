@@ -60,6 +60,15 @@ namespace PotterGame.Player
                         case ConsoleKey.Q:
                             story.RunQAction();
                             break;
+                        case ConsoleKey.A:
+                            story.RunAAction();
+                            break;
+                        case ConsoleKey.S:
+                            story.RunSAction();
+                            break;
+                        case ConsoleKey.D:
+                            story.RunDAction();
+                            break;
                         case ConsoleKey.I:
                             story.RunInventoryAction();
                             break;

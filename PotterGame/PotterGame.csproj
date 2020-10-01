@@ -87,7 +87,9 @@
     <Compile Include="Inventories\Items\ShopItems\GringottsItems\WithdrawItem.cs" />
     <Compile Include="Inventories\Items\ShopItems\OlivandersItem.cs" />
     <Compile Include="Inventories\Items\ShopItems\BaseShopItem.cs" />
-    <Compile Include="Inventories\Items\ShopItems\OlivandersItems\WandItem.cs" />
+    <Compile Include="Inventories\Items\ShopItems\OlivandersItems\Wands\Wand.cs" />
+    <Compile Include="Inventories\Items\ShopItems\OlivandersItems\Wands\WandCores.cs" />
+    <Compile Include="Inventories\Items\ShopItems\OlivandersItems\Wands\WandWoods.cs" />
     <Compile Include="Player\Battling\Battle.cs" />
     <Compile Include="Player\Battling\BattleRenderHandler.cs" />
     <Compile Include="Player\Battling\BattleTickHandler.cs" />

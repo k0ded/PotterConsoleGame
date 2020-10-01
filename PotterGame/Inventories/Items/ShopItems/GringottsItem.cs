@@ -8,9 +8,9 @@ namespace PotterGame.Inventories.Items.ShopItems
     {
         public GringottsItem()
         {
-            myShop = new Shop("Gringotts Bank");
-            myShop.AddItem(new WithdrawItem());
-            myShop.AddItem(new DepositItem());
+            Shop = new Shop("Gringotts Bank");
+            Shop.AddItem(new WithdrawItem());
+            Shop.AddItem(new DepositItem());
         }
     }
 }

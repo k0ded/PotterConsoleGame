@@ -142,5 +142,29 @@ namespace PotterGame.Player.Story
             if (myExploration.RunEAction()) 
                 Explore();
         }
+        public override void RunAAction()
+        {
+            if (Program.Player.SeizeInput)
+                return;
+            
+            if (myExploration.RunAAction())
+                Explore();
+        }
+        public override void RunSAction()
+        {
+            if (Program.Player.SeizeInput)
+                return;
+
+            if (myExploration.RunSAction()) 
+                Explore();
+        }
+        public override void RunDAction()
+        {
+            if (Program.Player.SeizeInput)
+                return;
+
+            if (myExploration.RunDAction()) 
+                Explore();
+        }
     }
 }
