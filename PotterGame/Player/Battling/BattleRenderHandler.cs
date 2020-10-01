@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using PotterGame.Utils;
+using PotterGame.Utils.Text;
 
 namespace PotterGame.Player.Battling
 {

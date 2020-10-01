@@ -4,6 +4,7 @@ using PotterGame.Utils;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using PotterGame.Utils.Text;
 
 namespace PotterGame.Player.Story
 {
@@ -24,6 +25,9 @@ namespace PotterGame.Player.Story
         {
             switch (i)
             {
+                case 2:
+                    RunStoryThree();
+                    break;
                 case 1:
                     RunStoryTwo();
                     break;
@@ -33,24 +37,26 @@ namespace PotterGame.Player.Story
             }
         }
 
+        private void RunStoryThree()
+        {
+            myStory = 2;
+            ResetPrevious();
+        }
         
-        // Bug: If you spam space "Get to Diagon Alley!" will stay in the middle of the screen.
+        // Bug: If you spam space or enter "Get to Olivanders' and buy your wand!" will stay in the middle of the screen.
         private void RunStoryTwo()
         {
             myStory = 1;
             ResetPrevious();
 
             var mission = new Text[1];
-            mission[0] = new Text("Get to Diagon Alley!");
+            mission[0] = new Text("Get to Olivanders' and buy your wand!");
             TextUtils.SendMessage(mission, TextType.LETTER_SLOW);
             Thread.Sleep(2250);
             
             PreviousMissionMessage = mission[0];
             Explore();
             TextUtils.SendMessage(mission[0], TextType.MISSION);
-            
-
-            //runStoryThree();
         }
 
         private void Explore()

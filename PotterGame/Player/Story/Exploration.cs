@@ -5,6 +5,7 @@ using PotterGame.Inventories;
 using PotterGame.Inventories.InventoryTypes;
 using PotterGame.Inventories.Items.FoodItems;
 using PotterGame.Inventories.Items.ShopItems;
+using PotterGame.Utils.Text;
 
 namespace PotterGame.Player.Story
 {

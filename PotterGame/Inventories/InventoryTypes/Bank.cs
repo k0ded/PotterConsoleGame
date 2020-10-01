@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using PotterGame.Inventories.Items;
 using PotterGame.Utils;
+using PotterGame.Utils.Text;
 
 namespace PotterGame.Inventories.InventoryTypes
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace PotterGame.Utils
+namespace PotterGame.Utils.Text
 {
     public class Text
     {

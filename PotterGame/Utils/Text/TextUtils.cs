@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace PotterGame.Utils
+namespace PotterGame.Utils.Text
 {
     public static class TextUtils
     {
@@ -412,11 +412,11 @@ namespace PotterGame.Utils
             
             Console.Clear();
             var worker = sender as BackgroundWorker;
-            var i = 0;
 
             var largestStringLength = myFinishedLetter.Select(m => m.OriginalMessage.Length).Prepend(0).Max();
 
-            while (worker != null && !worker.CancellationPending)
+            //while (worker != null && !worker.CancellationPending)
+            for(var i = 0; i < myFinishedLetter.Count && worker != null && !worker.CancellationPending; i++)
             {
 
                 var x = Console.WindowWidth / 2 - largestStringLength / 2;
@@ -450,10 +450,6 @@ namespace PotterGame.Utils
                 }
                 
                 Thread.Sleep(1000 / 4);
-                
-                if (i >= myFinishedLetter.Count)
-                    return;
-                i++;
             }
             
             IsWritingMessage = false;

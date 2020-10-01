@@ -1,6 +1,7 @@
 ﻿using PotterGame.Inventories;
 using PotterGame.Utils;
 using PotterGame.Player.Battling.Enemies;
+using PotterGame.Utils.Text;
 
 namespace PotterGame.Player.Story
 {

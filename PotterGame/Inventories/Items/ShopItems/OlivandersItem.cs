@@ -1,7 +1,5 @@
-﻿using System;
-using PotterGame.Inventories.InventoryTypes;
-using PotterGame.Inventories.Items.ShopItems.OlivandersItems.Wands;
-using PotterGame.Utils;
+﻿using PotterGame.Inventories.InventoryTypes;
+using PotterGame.Player.Story;
 
 namespace PotterGame.Inventories.Items.ShopItems
 {
@@ -10,29 +8,33 @@ namespace PotterGame.Inventories.Items.ShopItems
         public OlivandersItem()
         {
             Shop = new Shop("Olivanders' Wands");
-            Shop.AddItem(GetWandItem());
+            GenericItem item = new GenericItem("Wand");
+            item.InteractEventTask = DecideWandInteractEvent;
         }
 
-        private GenericItem GetWandItem()
+        private void DecideWandInteractEvent()
         {
-            var wand = new GenericItem("Get your wand");
-            var r = new Random();
-            wand.InteractEventTask = () =>
-            {
-                if (Program.Player.HasWand)
-                {
-                    TextUtils.SendMessage(new Text("You already have a wand!"), TextType.EXPLANATION);
-                }
-                var wandWood = r.Next(0, 9);
-                var wandCore = r.Next(0, 3);
-                var wandStruct = new Wand
-                {
-                    Wood = (WandWoods) wandWood,
-                    Core = (WandCores) wandCore
-                };
-            };
+            if (Program.Player.PlayerWand != null)
+                SendWandTraits();
+            else 
+                BuyWand();
+        }
+
+        private void BuyWand()
+        {
             
-            return wand;
+            
+            
+            
+            
+            
+            if(Program.Player.Context is MainStory)
+                ((MainStory)Program.Player.Context).RunStory(2);
+        }
+
+        private void SendWandTraits()
+        {
+            
         }
     }
 }

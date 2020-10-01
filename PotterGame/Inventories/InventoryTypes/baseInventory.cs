@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PotterGame.Inventories.Items;
 using PotterGame.Utils;
+using PotterGame.Utils.Text;
 
 namespace PotterGame.Inventories.InventoryTypes
 {

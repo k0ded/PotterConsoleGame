@@ -3,7 +3,10 @@ using PotterGame.Player.Story;
 using PotterGame.Utils;
 using System;
 using PotterGame.Inventories.InventoryTypes;
+using PotterGame.Inventories.Items.ShopItems.OlivandersItems.Wands;
 using PotterGame.Player.Battling;
+using PotterGame.Utils.AudioPlayer;
+using PotterGame.Utils.Text;
 
 namespace PotterGame.Player
 {
@@ -17,7 +20,7 @@ namespace PotterGame.Player
         public int DamageAmount { get; private set; }
         public int MaxHealth { get; }= 100;
         public int StunnedUntil { get; private set; }
-        public bool HasWand { get; set; }
+        public Wand? PlayerWand { get; set; }
 
         public Player()
         {
@@ -38,6 +41,7 @@ namespace PotterGame.Player
             InventoryManager.OpenInventory = InventoryManager.PlayerInventory;
             InventoryManager.IsInventoryOpen = false;
             Console.Clear();
+            AudioWrapper.PlayAudioWithFilename("mainmenu.wav");
             if (Context is MainStory)
             {
                 MainStory story = (MainStory) Context;
@@ -134,8 +138,6 @@ namespace PotterGame.Player
         /// <exception cref="ArgumentException">thrown when number is negative or 0.</exception>
         public void AddMoney(int aMoney)
         {
-            if (aMoney < 1)
-                throw new ArgumentException("Number must be non-negative and more than 0");
             Money += aMoney;
         }
 
@@ -148,8 +150,6 @@ namespace PotterGame.Player
         /// <returns>Boolean, True if players balance > <paramref name="aMoney"/>.</returns>
         public bool RemoveMoney(int aMoney)
         {
-            if (aMoney < 1)
-                throw new ArgumentException("Number must be non-negative and more than 0");
             if (Money < aMoney)
                 return false;
             Money -= aMoney;
