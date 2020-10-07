@@ -3,122 +3,203 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using PotterGame.Inventories;
+using PotterGame.Inventories.Items.ShopItems.OlivandersItems.Wands;
 using PotterGame.Player.Battling.Enemies;
 using PotterGame.Player.Story;
 using PotterGame.Utils;
+using PotterGame.Utils.Text;
 
 namespace PotterGame.Player.Battling
 {
-    public partial class Battle : BaseContext
+    public class Battle : BaseContext
     {
-        private ThreadStart myScheduledAction;
-        private Spells mySpells;
-        
+
         public BaseEnemy Enemy { get; private set; }
         public bool IsBattling { get; private set; }
+        public Text Controls { get; } = new Text("[Q] - Stupefy (Attack) [W] - Episkey (Heal)");
+        public static int FightingConstant = 25; 
         
+        private Random myRandom = new Random();
+
         public override void Start(BaseEnemy aEnemy)
         {
             Enemy = aEnemy;
             Program.Player.SeizeInput = true;
-            EnterStartAnimation();
             IsBattling = true;
             Program.Player.SeizeInput = false;
-            mySpells = new Spells();
-            Program.Instance.StartTicking();
         }
-
-
-        private int myStupefyCooldown;
-        private int myProtegoCooldown;
-        private int myPetrificusCooldown;
-
-        private int myVirtualPlayerHealth;
-        private int myVirtualEnemyHealth;
-
-        private Spell[] myPlayerSpell = new Spell[53];
-        private Spell[] myEnemySpell = new Spell[53];
         
-        // STUPEFY = 1, PROTEGO = 2, PETRIFICUS = 3.
-
-        #region Input
         
-        /// <summary>
-        /// Uses the Stupefy spell (Type 1)
-        /// </summary>
-        public void UseStupefy()
+        //       -25
+        //(∩｀-´)⊃━☆                    ☆━⊂(｀-´∩)
+        
+        //                                   -25
+        //    (∩｀-´)⊃━☆                    ☆━⊂(｀-´∩)
+        
+        //
+        //(∩｀-´)⊃━☆                        ☆━⊂(｀-´∩)
+        //++++++++++                        ++++++++++
+        private void RunSpell(bool aIsDamage)
         {
-            if (myStupefyCooldown > DateTime.Now.Second)
-                return;
-            myScheduledAction = Stupefy;
-            myStupefyCooldown = DateTime.Now.Second + 5;
-            myPlayerSpell[0] = mySpells.GetAsSpell(6, 1, true);
-        }
-
-        /// <summary>
-        /// Uses the Protego spell (Type 2)
-        /// </summary>
-        public void UseProtego()
-        {
-            if (myProtegoCooldown > DateTime.Now.Second)
-                return;
-            myScheduledAction = Protego;
-            myProtegoCooldown = DateTime.Now.Second + 7;
-            myPlayerSpell[1] = mySpells.GetAsSpell(0, 2, true);
-        }
-
-        /// <summary>
-        /// Uses the Petrificus spell (Type 3)
-        /// </summary>
-        public void UsePetrificus()
-        {
-            if (myPetrificusCooldown > DateTime.Now.Second)
-                return;
-            myScheduledAction = Petrificus;
-            myPetrificusCooldown = DateTime.Now.Second + 7;
-            myPlayerSpell[0] = mySpells.GetAsSpell(8, 3, true);
-        }
-        #endregion
-
-        public void OpenPlayerInventory()
-        {
-            IsBattling = false;
-            InventoryManager.PlayerInventory.OpenInventory(true);
-        }
-
-        private void EnterStartAnimation()
-        {
-            var startPlayerHealth = Program.Player.Health;
-            var largestMaxHealth = Math.Max(Program.Player.MaxHealth, Enemy.MaxHealth);
-
-            for (var i = 0; i < largestMaxHealth + 1; i++)
+            Program.Player.SeizeInput = true;
+            if (aIsDamage)
             {
-                Render();
-                myVirtualPlayerHealth = Math.Min(i / 35, Program.Player.Health / 35);
-                myVirtualEnemyHealth = Math.Min(i / 35, Enemy.Health / 35);
-                Thread.Sleep(500);
+                int damage = 0;
+                if (Program.Player.PlayerWand != null)
+                {
+                    damage = (int) (myRandom.Next(5, FightingConstant) *
+                                    FromCoreToDamageFactor(Program.Player.PlayerWand.Value.Core));
+                }
+                else if (!Program.Player.Damage(Program.Player.MaxHealth))
+                    return;
+                        
+                Enemy.Damage(damage);
+                RunAnimation(false, damage);
+            }
+            else
+            {
+                if (Program.Player.PlayerWand != null)
+                {
+                    var healAmount = (int) (myRandom.Next(5, FightingConstant) *
+                                    FromCoreToDamageFactor(Program.Player.PlayerWand.Value.Core));
+                    Program.Player.Heal(healAmount);
+                }
+                else if (!Program.Player.Damage(Program.Player.MaxHealth))
+                    return;
+            }
+
+            Program.Player.SeizeInput = false;
+        }
+
+        public void RunAnimation(bool aIsEnemy, int damage)
+        {
+
+            if (aIsEnemy)
+            {
+                Text[] msg =
+                {
+                    new Text("      -" + damage),
+                    new Text("(∩｀-´)⊃━☆                    ☆━⊂(｀-´∩)"),
+                    GetHealthbar()
+                };
+            }
+            else
+            {
+                Text[] msg = {
+                    new Text("                                  -" + damage),
+                    new Text("    (∩｀-´)⊃━☆                    ☆━⊂(｀-´∩)"),
+                    GetHealthbar()
+                };
+                TextUtils.SendMessage(msg, TextType.CENTERED);
+                Task.Delay(500);
+                TextUtils.SendMessage(GetBattleText(), TextType.CENTERED);
+                Enemy.RunLogic();
+                Task.Delay(500);
+                TextUtils.SendMessage(GetBattleText(), TextType.CENTERED);
+            }
+            
+        }
+        
+        public Text[] GetBattleText()
+        {
+            return new[]
+            {
+                new Text(" "),
+                new Text("(∩｀-´)⊃━☆                        ☆━⊂(｀-´∩)"),
+                GetHealthbar()
+            };
+        }
+
+        private Text GetHealthbar()
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < Program.Player.Health / Program.Player.MaxHealth * 11; i++)
+            {
+                sb.Append("+");
+            }
+            
+            var txt = new Text(sb.ToString(), ColorCode.B_RED);
+            sb.Clear();
+            for (int i = 0; i < 11 - Program.Player.Health / Program.Player.MaxHealth * 11; i++)
+            {
+                sb.Append("+");
+            }
+            var nText = new Text(sb.ToString());
+
+            sb.Clear();
+            for (int i = 0; i < Enemy.Health / Enemy.MaxHealth * 11; i++)
+            {
+                sb.Append("+");
+            }
+            
+            var etxt = new Text(sb.ToString(), ColorCode.B_RED);
+            sb.Clear();
+            for (int i = 0; i < 11 - Enemy.Health / Enemy.MaxHealth * 11; i++)
+            {
+                sb.Append("+");
+            }
+            var enText = new Text(sb.ToString());
+            return new Text(txt.Message + nText.Message + "                        " + etxt.Message + enText.Message);
+        }
+
+        private double FromCoreToDamageFactor(WandCores core)
+        {
+            switch (core)
+            {
+                case WandCores.THESTRAL_HAIR:
+                    return 1;
+                case WandCores.PHOENIX_FEATHER:
+                    return 0.8;
+                case WandCores.DRAGON_HEARTSTRING:
+                    return 0.6;
+                case WandCores.UNICORN_HAIR:
+                    return 0.5;
+                default:
+                    return 0;
+            }
+        }
+        private double FromWoodToHealFactor(WandWoods wood)
+        {
+            switch (wood)
+            {
+                case WandWoods.ELDER:
+                    return 1;
+                case WandWoods.ASH:
+                    return 0.2;
+                case WandWoods.FIR:
+                    return 0.9;
+                case WandWoods.YEW:
+                    return 0.8;
+                case WandWoods.VINE:
+                    return 0.85;
+                case WandWoods.HOLLY:
+                    return 0.95;
+                case WandWoods.CHERRY:
+                    return 0.6;
+                case WandWoods.WALNUT:
+                    return 0.5;
+                case WandWoods.WILLOW:
+                    return 0.55;
+                case WandWoods.HAWTHORN:
+                    return 0.45;
+                default:
+                    return 0;
             }
         }
 
-
-        #region Spells
-        
-        private static void Stupefy()
+        public void UseEpiskey()
         {
-            
+            if (Program.Player.SeizeInput)
+                return;
         }
 
-        private static void Protego()
+        public void UseStupefy()
         {
-            
-        }
-
-        private static void Petrificus()
-        {
-            
+            if (Program.Player.SeizeInput)
+                return;
         }
         
-        #endregion
     }
 }

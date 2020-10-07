@@ -6,9 +6,15 @@ namespace PotterGame.Player.Battling.Enemies
     public class Deatheater : BaseEnemy
     {
 
+        public Deatheater()
+        {
+            HealDamageAmount = 0.6;
+        }
+
         public override void GiveRewards()
         {
             InventoryManager.PlayerInventory.AddItem(new Tea());
+            Program.Player.AddMoney(50);
         }
     }
 }

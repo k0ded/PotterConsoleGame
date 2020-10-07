@@ -355,6 +355,11 @@ namespace PotterGame.Player.Story
             return myLocations[myCurrentLocation].Explanation;
         }
 
+        public void SetLocation(ELocations loc)
+        {
+            RunAction(loc);
+        }
+
         /// <summary>
         /// Gets the correct action for the location, such as setting the <c>myCurrentLocation</c> to
         /// something and executing the explore code by returning true
@@ -368,13 +373,15 @@ namespace PotterGame.Player.Story
             switch (aRunLocation)
             {
                 case ELocations.DIAGON_ALLEY_SHOP:
-                    myShopSelectors[aRunLocation].OpenInventory(true);
+                    myShopSelectors[ELocations.DIAGON_ALLEY_SHOP].OpenInventory(true);
+                    TextUtils.SendMessage(new Text("DiagonAlleyShop"), TextType.DEBUG);
                     return false;
                 case ELocations.LEAKY_CAULDRON_SHOP:
-                    myShops[aRunLocation].OpenInventory(true);
+                    myShops[ELocations.LEAKY_CAULDRON_SHOP].OpenInventory(true);
+                    TextUtils.SendMessage(new Text("LeakyCauldronShop"), TextType.DEBUG);
                     return false;
                 case ELocations.LEAKY_CAULDRON_APARTMENT_SHOP:
-                    
+                    myShops[ELocations.LONDON_LEAKYCAULDRON_APPARTMENTS].OpenInventory(true);
                     return false;
                 case ELocations.NONE:
                     return false;

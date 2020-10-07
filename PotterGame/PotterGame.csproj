@@ -91,11 +91,8 @@
     <Compile Include="Inventories\Items\ShopItems\OlivandersItems\Wands\WandCores.cs" />
     <Compile Include="Inventories\Items\ShopItems\OlivandersItems\Wands\WandWoods.cs" />
     <Compile Include="Player\Battling\Battle.cs" />
-    <Compile Include="Player\Battling\BattleRenderHandler.cs" />
-    <Compile Include="Player\Battling\BattleTickHandler.cs" />
     <Compile Include="Player\Battling\Enemies\Deatheater.cs" />
     <Compile Include="Player\Battling\Enemies\BaseEnemy.cs" />
-    <Compile Include="Player\Battling\Spells.cs" />
     <Compile Include="Player\Player.cs" />
     <Compile Include="Player\PlayerController.cs" />
     <Compile Include="Player\Story\BaseContext.cs" />

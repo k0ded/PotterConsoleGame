@@ -12,13 +12,18 @@ namespace PotterGame.Player.Story
     {
 
         private int myStory;
-        private Exploration myExploration;
+        public Exploration Exploration;
         public string Controls { get; } = "[ENTER] - Continue";
 
         public MainStory()
         {
-            myExploration = new Exploration();
-            myExploration.Load();
+            Exploration = new Exploration();
+            Exploration.Load();
+        }
+
+        public override void Start()
+        {
+            RunStory(0);
         }
 
         public void RunStory(int i)
@@ -44,32 +49,19 @@ namespace PotterGame.Player.Story
         }
         
         // Bug: If you spam space or enter "Get to Olivanders' and buy your wand!" will stay in the middle of the screen.
+        // Bug: Currently writes this twice???
         private void RunStoryTwo()
         {
             myStory = 1;
             ResetPrevious();
 
-            var mission = new Text[1];
-            mission[0] = new Text("Get to Olivanders' and buy your wand!");
-            TextUtils.SendMessage(mission, TextType.LETTER_SLOW);
+            Text message = new Text("Get to Olivanders' and buy your wand!");
+            TextUtils.SendMessage(message, TextType.LETTER_SLOW);
             Thread.Sleep(2250);
             
-            PreviousMissionMessage = mission[0];
+            PreviousMissionMessage = message;
             Explore();
-            TextUtils.SendMessage(mission[0], TextType.MISSION);
-        }
-
-        private void Explore()
-        {
-            Console.Clear();
-            PreviousExplorationMessage = myExploration.GetExplorationMessage();
-            PreviousExplanationMessage = myExploration.GetExplanationMessage();
-
-            TextUtils.SendMessage(PreviousExplorationMessage, TextType.EXPLORATION);
-            TextUtils.SendMessage(PreviousExplanationMessage, TextType.EXPLANATION);
-            TextUtils.SendMessage(PreviousMissionMessage, TextType.MISSION);
-            Player.SendControls(myExploration.GetControlsMessage());
-            Program.Player.SeizeInput = false;
+            TextUtils.SendMessage(message, TextType.MISSION);
         }
 
         private void RunStoryOne()
@@ -95,7 +87,20 @@ namespace PotterGame.Player.Story
             letter[12] = new Text("Deputy Headmistress");
 
             PreviousLetterMessage = letter;
-            TextUtils.SendMessage(letter, TextType.LETTER_SLOW);
+            TextUtils.SendMessage(letter, TextType.LETTER_SLOW, true);
+        }
+        
+        public void Explore()
+        {
+            Console.Clear();
+            PreviousExplorationMessage = Exploration.GetExplorationMessage();
+            PreviousExplanationMessage = Exploration.GetExplanationMessage();
+
+            TextUtils.SendMessage(PreviousExplorationMessage, TextType.EXPLORATION);
+            TextUtils.SendMessage(PreviousExplanationMessage, TextType.EXPLANATION);
+            TextUtils.SendMessage(PreviousMissionMessage, TextType.MISSION);
+            Player.SendControls(Exploration.GetControlsMessage());
+            Program.Player.SeizeInput = false;
         }
 
         private void ResetPrevious()
@@ -121,7 +126,6 @@ namespace PotterGame.Player.Story
             RunStory(myStory + 1);
             Program.Player.SeizeInput = false;
             Continue = false;
-
         }
 
         public override void RunQAction()
@@ -129,7 +133,7 @@ namespace PotterGame.Player.Story
             if (Program.Player.SeizeInput)
                 return;
             
-            if (myExploration.RunQAction())
+            if (Exploration.RunQAction())
                 Explore();
         }
         public override void RunWAction()
@@ -137,7 +141,7 @@ namespace PotterGame.Player.Story
             if (Program.Player.SeizeInput)
                 return;
 
-            if (myExploration.RunWAction()) 
+            if (Exploration.RunWAction()) 
                 Explore();
         }
         public override void RunEAction()
@@ -145,7 +149,7 @@ namespace PotterGame.Player.Story
             if (Program.Player.SeizeInput)
                 return;
 
-            if (myExploration.RunEAction()) 
+            if (Exploration.RunEAction()) 
                 Explore();
         }
         public override void RunAAction()
@@ -153,7 +157,7 @@ namespace PotterGame.Player.Story
             if (Program.Player.SeizeInput)
                 return;
             
-            if (myExploration.RunAAction())
+            if (Exploration.RunAAction())
                 Explore();
         }
         public override void RunSAction()
@@ -161,7 +165,7 @@ namespace PotterGame.Player.Story
             if (Program.Player.SeizeInput)
                 return;
 
-            if (myExploration.RunSAction()) 
+            if (Exploration.RunSAction()) 
                 Explore();
         }
         public override void RunDAction()
@@ -169,7 +173,7 @@ namespace PotterGame.Player.Story
             if (Program.Player.SeizeInput)
                 return;
 
-            if (myExploration.RunDAction()) 
+            if (Exploration.RunDAction()) 
                 Explore();
         }
     }

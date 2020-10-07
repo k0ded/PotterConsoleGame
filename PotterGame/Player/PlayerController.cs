@@ -77,25 +77,18 @@ namespace PotterGame.Player
                 else
                 {
                     var currentBattle = Program.Player.CurrentBattle;
-                    
-                    // DOESNT QUEUE THE KEY RRESS IF STUNNED
-                    if (Program.Player.IsStunned())
-                        continue;
-                    
+
                     // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                     switch (key)
                     {
                         case ConsoleKey.W:
-                            currentBattle.UseProtego();
-                            break;
-                        case ConsoleKey.E:
-                            currentBattle.UsePetrificus();
-                            break;
-                        case ConsoleKey.Q:
                             currentBattle.UseStupefy();
                             break;
+                        case ConsoleKey.E:
+                            currentBattle.UseEpiskey();
+                            break;
                         case ConsoleKey.I:
-                            currentBattle.OpenPlayerInventory();
+                            currentBattle.RunInventoryAction();
                             break;
                     }
                 }

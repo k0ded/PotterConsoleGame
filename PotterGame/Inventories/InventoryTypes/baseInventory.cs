@@ -55,6 +55,14 @@ namespace PotterGame.Inventories.InventoryTypes
             OpenInventory(aSelection, aOffset, InventoryTextType, aSetOpened);
         }
 
+        protected BaseInventory(string name, Text aHeader = null, Text aHeaderFoot = null)
+        {
+            Name = name;
+            Header = aHeader;
+            HeaderFoot = aHeaderFoot;
+            Content = new List<BaseItem>();
+        }
+
         /// <summary>
         /// Generic Inventory Opener
         /// </summary>
@@ -119,22 +127,13 @@ namespace PotterGame.Inventories.InventoryTypes
         /// <param name="aItem">Item to be added</param>
         public void AddItem(BaseItem aItem)
         {
-            if (Content != null)
+            foreach (var item in Content.Where(item => item.Name == aItem.Name))
             {
-                foreach (var item in Content)
-                {
-                    if (item == null)
-                    {
-                        Content = new List<BaseItem>(1000);
-                        break;
-                    }
-
-                    if (item.Name != aItem.Name) continue;
-                    item.Count++;
-                    return;
-                }
+                item.Count++;
+                return;
             }
-            Content = new List<BaseItem> {aItem};
+
+            Content.Add(aItem);
         }
         /// <summary>
         /// Exits out of the inventory or selected <c>BaseItem</c>
@@ -201,13 +200,12 @@ namespace PotterGame.Inventories.InventoryTypes
         /// </summary>
         public virtual void RunInteractAction()
         {
-            Selected.InteractEvent();
+            Selected?.InteractEvent();
         }
 
         public void RunReloadAction()
         {
             ReloadInventory(mySelection, myOffset, false);
-
         }
     }
 }

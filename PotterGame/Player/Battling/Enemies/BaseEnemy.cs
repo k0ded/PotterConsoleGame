@@ -8,8 +8,12 @@ namespace PotterGame.Player.Battling.Enemies
         public int Health { get; private set; }
         public int MaxHealth { get; } = 100 + 50 * Difficulty;
         public bool IsDead { get; set; }
-        public int IsStunned { get; private set; }
+        public double HealDamageAmount { get; set; }
+        Random r = new Random();
 
+        /// <summary>
+        /// Gives the player their reward
+        /// </summary>
         public abstract void GiveRewards();
 
         /// <summary>
@@ -40,14 +44,28 @@ namespace PotterGame.Player.Battling.Enemies
         }
 
         /// <summary>
-        /// Stuns the Enemy for <paramref name="aSeconds"/> amount of time
+        /// Takes care of the enemies action during their turn.
         /// </summary>
-        /// <param name="aSeconds">
-        /// Amount of seconds to stun the enemy
-        /// </param>
-        public void Stun(int aSeconds)
+        public void RunLogic()
         {
-            IsStunned = DateTime.Now.Second + aSeconds;
+            if (r.NextDouble() > HealDamageAmount)
+            {
+                //Damage
+                var dmg = (int) (r.Next(5, Battle.FightingConstant) * HealDamageAmount);
+                Program.Player.Damage(dmg);
+                Program.Player.CurrentBattle.RunAnimation(true, dmg);
+
+            }else if (r.NextDouble() < HealDamageAmount)
+            {
+                //Heal
+                var heal = (int) (r.Next(5, Battle.FightingConstant) * HealDamageAmount);
+                Heal(heal);
+            }
+            else
+            {
+                //Reroll if healdamageamount == r.nextdouble.
+                RunLogic();
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ namespace PotterGame.Inventories.Items.ShopItems
 {
     public class OlivandersItem : BaseShopItem
     {
-        public OlivandersItem()
+        public OlivandersItem() : base("Olivanders' Wands")
         {
             Shop = new Shop("Olivanders' Wands");
             GenericItem item = new GenericItem("Wand");

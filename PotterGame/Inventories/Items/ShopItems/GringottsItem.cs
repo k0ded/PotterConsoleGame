@@ -6,7 +6,7 @@ namespace PotterGame.Inventories.Items.ShopItems
 {
     public class GringottsItem : BaseShopItem
     {
-        public GringottsItem()
+        public GringottsItem() : base("Gringotts Bank")
         {
             Shop = new Shop("Gringotts Bank");
             Shop.AddItem(new WithdrawItem());

@@ -5,7 +5,7 @@ namespace PotterGame.Inventories.Items.FoodItems
     internal class Tea : BaseItem
     {
 
-        public Tea()
+        public Tea() : base("Tea")
         {
             Controls = "    [ENTER] - Consume                       [BACKSPACE] - Back    ";
         }

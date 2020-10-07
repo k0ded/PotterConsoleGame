@@ -10,12 +10,10 @@ namespace PotterGame.Inventories.InventoryTypes
     public class Menu : BaseInventory
     {
 
-        public Menu()
+        public Menu() : base(
+            "Menu"
+            )
         {
-            Name = "Menu";
-            Content = new List<BaseItem>();
-            Header = new Text("");
-            HeaderFoot = new Text("");
             InventoryTextType = TextType.CENTERED;
 
             Content.Add(GetStartItem());

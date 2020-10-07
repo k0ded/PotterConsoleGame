@@ -19,7 +19,7 @@ namespace PotterGame.Utils.Text
         /// <param name="aMessage">A List of <c>Text</c> objects to be displayed on the screen!</param>
         /// <param name="aType">A <c>TextType</c> which decides what type of format to use!</param>
         /// <exception cref="ArgumentException">Exception gets thrown when the list is either empty or only contains null values</exception>
-        public static void SendMessage(IReadOnlyList<Text> aMessage, TextType aType)
+        public static void SendMessage(IReadOnlyList<Text> aMessage, TextType aType, bool ShouldWriteContinue = false)
         {
             // Makes sure the message is Non Null!
             IReadOnlyList<Text> message = aMessage.Where(m => m != null).ToArray();
@@ -52,7 +52,7 @@ namespace PotterGame.Utils.Text
                     SendExplanationMessage(message[0], message[1]);
                     break;
                 case TextType.LETTER_SLOW:
-                    SendLetterMessage(message, true);
+                    SendLetterMessage(message, true, ShouldWriteContinue);
                     break;
                 case TextType.LETTER_INSTANT:
                     SendLetterMessage(message, false);
@@ -183,8 +183,7 @@ namespace PotterGame.Utils.Text
             
             if (aControls.Count > 1)
             {
-                Console.WriteLine(" MORE THAN ONE LINE OF CONTROLS!!!!! ");
-                return;
+                throw new ArgumentException("NO MORE THAN ONE LINE OF CONTROLS!!!!!");
             }
 
             var x = Console.WindowWidth / 2 - aControls[0].OriginalMessage.Length / 2;
@@ -204,17 +203,18 @@ namespace PotterGame.Utils.Text
         /// 
         /// <param name="aLetter">A List of NonNull <c>Text</c> objects to display in the Console</param>
         /// <param name="aSlow">TRUE: Character by character. FALSE: Instant.</param>
-        private static void SendLetterMessage(IReadOnlyList<Text> aLetter, bool aSlow)
+        /// <param name="ContinueMessage"></param>
+        private static void SendLetterMessage(IReadOnlyList<Text> aLetter, bool aSlow, bool ContinueMessage = false)
         {
             var largestStringLength = aLetter.Select(m => m.OriginalMessage.Length).Prepend(0).Max();
 
             if (aSlow)
             {
-                Writer.StartWritingLetter(aLetter);
+                Writer.StartWritingLetter(aLetter, ContinueMessage);
                 return;
             }
-
-
+            
+            Console.Clear();
             for (var i = 0; i < aLetter.Count; i++)
             {
 
@@ -223,7 +223,6 @@ namespace PotterGame.Utils.Text
 
                 Console.SetCursorPosition(x, y);
                 Console.WriteLine(aLetter[i].Message);
-
             }
         }
 
@@ -347,7 +346,7 @@ namespace PotterGame.Utils.Text
             myFadeInWorker.DoWork += FadeInControls;
             myFadeInWorker.WorkerSupportsCancellation = true;
             myFadeInWorker.RunWorkerAsync();
-                IsFadingIn = true;
+            IsFadingIn = true;
         }
         private void FadeInControls(object sender, DoWorkEventArgs e)
         {
@@ -389,18 +388,23 @@ namespace PotterGame.Utils.Text
         private IReadOnlyList<Text> myFinishedLetter;
         internal bool IsWritingMessage;
 
+        public LetterWriter()
+        {
+            myLetterMessageWorker.DoWork += WriteLetter;
+            myLetterMessageWorker.WorkerSupportsCancellation = true;
+        }
+
         /// <summary>
-        /// Starts 
+        /// Starts Writing the letter slowly!
         /// </summary>
-        /// <param name="aFinishedLetter"></param>
-        public void StartWritingLetter(IReadOnlyList<Text> aFinishedLetter)
+        /// <param name="aFinishedLetter">The finished letter list</param>
+        /// <param name="HasContinueMessage">Adds enter continue in the mission bar</param>
+        public void StartWritingLetter(IReadOnlyList<Text> aFinishedLetter, bool HasContinueMessage = false)
         {
             IsWritingMessage = true;
             myFinishedLetter = aFinishedLetter;
-
-            myLetterMessageWorker.DoWork += WriteLetter;
-            myLetterMessageWorker.WorkerSupportsCancellation = true;
-            myLetterMessageWorker.RunWorkerAsync();
+            
+            myLetterMessageWorker.RunWorkerAsync(HasContinueMessage);
             
         }
         
@@ -411,8 +415,8 @@ namespace PotterGame.Utils.Text
         {
             
             Console.Clear();
+            
             var worker = sender as BackgroundWorker;
-
             var largestStringLength = myFinishedLetter.Select(m => m.OriginalMessage.Length).Prepend(0).Max();
 
             //while (worker != null && !worker.CancellationPending)
@@ -451,10 +455,13 @@ namespace PotterGame.Utils.Text
                 
                 Thread.Sleep(1000 / 4);
             }
-            
-            IsWritingMessage = false;
-            TextUtils.FadeInControlMessage(new Text("[ENTER] - Continue"), 0, 0, 200, 7500);
-            Program.Player.Context.Continue = true;
+
+            if ((bool) e.Argument)
+            {
+                IsWritingMessage = false;
+                TextUtils.FadeInControlMessage(new Text("[ENTER] - Continue"), 0, 0, 200, 7500);
+                Program.Player.Context.Continue = true; 
+            }
         }
     }
     

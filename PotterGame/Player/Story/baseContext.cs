@@ -45,7 +45,6 @@ namespace PotterGame.Player.Story
         public virtual void RunDAction() {}
         public virtual void RunInventoryAction()
         {
-            Program.Instance.StopTicking();
             InventoryManager.PlayerInventory.OpenInventory(true);
         }
 

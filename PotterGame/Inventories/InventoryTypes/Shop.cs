@@ -1,24 +1,17 @@
-﻿using System.Collections.Generic;
-using PotterGame.Inventories.Items;
-using PotterGame.Utils;
-using PotterGame.Utils.Text;
+﻿using PotterGame.Utils.Text;
 
 namespace PotterGame.Inventories.InventoryTypes
 {
     public class Shop : BaseInventory
     {
 
-        public Shop(string aName)
-        {
-            Name = aName;
-            Content = new List<BaseItem>();
-            Header = new Text(Name.PadRight(45).PadLeft(0) + $"({Player.Player.Money})");
-            HeaderFoot = new Text("     Item".PadRight(45) + "Price");
-        }
+        public Shop(string aName) : base(
+            aName,
+            new Text(aName.PadRight(45).PadLeft(0) + $"({Player.Player.Money})"),
+            new Text("     Item".PadRight(45) + "Price")) {}
 
         public override void RunInteractAction()
         {
-            if (Selected.Value > Player.Player.Money) return;
             if (!Program.Player.RemoveMoney(Selected.Value)) return;
             
             InventoryManager.PlayerInventory.AddItem(Selected.Clone());

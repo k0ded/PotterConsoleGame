@@ -17,7 +17,6 @@ namespace PotterGame.Player
         public bool SeizeInput { get; set; }
         public static int Money { get; private set; }
         public int Health { get; private set; }
-        public int DamageAmount { get; private set; }
         public int MaxHealth { get; }= 100;
         public int StunnedUntil { get; private set; }
         public Wand? PlayerWand { get; set; }
@@ -42,11 +41,7 @@ namespace PotterGame.Player
             InventoryManager.IsInventoryOpen = false;
             Console.Clear();
             AudioWrapper.PlayAudioWithFilename("mainmenu.wav");
-            if (Context is MainStory)
-            {
-                MainStory story = (MainStory) Context;
-                story.RunStory(0);
-            }
+            Context.Start();
         }
 
         public void StartMenu()
@@ -63,7 +58,11 @@ namespace PotterGame.Player
         private static void SendContext(BaseContext aContext)
         {
             Console.Clear();
-            var previousCenteredMessage = aContext.PreviousCenteredMessage;
+            Text[] previousCenteredMessage;
+            if (!(aContext is Battle))
+                previousCenteredMessage = aContext.PreviousCenteredMessage;
+            else
+                previousCenteredMessage = ((Battle) aContext).GetBattleText();
             var previousControls = aContext.PreviousControlsMessage;
             var previousExplorationMessage = aContext.PreviousExplorationMessage;
             var previousExplanationMessage = aContext.PreviousExplanationMessage;
@@ -189,8 +188,10 @@ namespace PotterGame.Player
                 throw new ArgumentException("Number must be non-negative and more than 0");
             if (Health < aAmount)
             {
-                // Player died
-
+                if(Context is Battle)
+                    Context = new MainStory();
+                ((MainStory)Context).Exploration.SetLocation(ELocations.PRIVET_DRIVE_HALL);
+                ((MainStory)Context).Explore();
                 return false;
             }
 
@@ -206,11 +207,6 @@ namespace PotterGame.Player
         public bool IsStunned()
         {
             return StunnedUntil < DateTime.Now.Second;
-        }
-
-        public void SetPlayerDamage(int aAmount)
-        {
-            DamageAmount = aAmount;
         }
     }
 }

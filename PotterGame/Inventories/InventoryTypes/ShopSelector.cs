@@ -9,16 +9,14 @@ namespace PotterGame.Inventories.InventoryTypes
         private BaseShopItem openShop;
         private bool isOpen;
         
-        public ShopSelector(string aName)
-        {
-            Name = aName;
-            Header = new Text(Name.PadRight(45).PadLeft(0) + $"({Player.Player.Money})");
-            HeaderFoot = new Text("     Item".PadRight(45) + "Price");
-        }
+        public ShopSelector(string aName) : base(
+            aName,
+            new Text(aName.PadRight(45).PadLeft(0) + $"({Player.Player.Money})"),
+            new Text("     Item".PadRight(45) + "Price")) {}
 
         public override void RunInteractAction()
         {
-            if (Selected is BaseShopItem item)
+            if (Selected is BaseShopItem item && !isOpen)
             {
                 item.InteractEvent();
                 openShop = item;

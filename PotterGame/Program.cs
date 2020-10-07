@@ -70,57 +70,6 @@ namespace PotterGame
             Player.StartMenu();
         }
 
-        #region Ticking
-        
-        private Thread myThread;
-        private bool myShouldTick;
-        
-        /// <summary>
-        /// Starts ticking realtime battles
-        /// </summary>
-        public void StartTicking()
-        {
-            if(myShouldTick)
-                throw new Exception("Cannot start ticking when already ticking. Stop ticking when not needed");
-            myShouldTick = true;
-            myThread = new Thread(Tick);
-            myThread.IsBackground = true;
-            myThread.Start();
-        }
-
-        /// <summary>
-        /// Stops ticking realtime battles
-        /// *Used for pausing the game/going into the inventory*
-        /// </summary>
-        public void StopTicking()
-        {
-            if (!myShouldTick)
-                return;
-            myShouldTick = false;
-            myThread.Interrupt();
-            myThread.Abort();
-
-            myThread = null;
-        }
-        
-        /// <summary>
-        /// Ticks realtime battles
-        /// </summary>
-        private void Tick()
-        {
-            var i = 0;
-            while(myShouldTick)
-            {
-                Player.CurrentBattle.Tick();
-                
-                //TextUtils.SendMessage(new Text("Ticking: " + i, ColorCode.RESET), TextType.DEBUG);
-                Thread.Sleep(1000 / 20);
-                i++;
-            }
-        }
-        
-        #endregion
-
         /// <summary>
         /// This maximizes the window.
         /// </summary>
