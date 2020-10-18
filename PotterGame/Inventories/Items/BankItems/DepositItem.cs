@@ -8,7 +8,7 @@ namespace PotterGame.Inventories.Items.BankItems
 {
     public class DepositItem : BaseItem
     {
-        public DepositItem() : base("Deposit")
+        public DepositItem() : base("Deposit", 0)
         {
             Controls = "    [ENTER] - Deposit                       [BACKSPACE] - Back    ";
         }

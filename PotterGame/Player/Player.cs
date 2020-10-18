@@ -5,6 +5,7 @@ using System;
 using PotterGame.Inventories.InventoryTypes;
 using PotterGame.Inventories.Items.ShopItems.OlivandersItems.Wands;
 using PotterGame.Player.Battling;
+using PotterGame.Player.Story.Exploring;
 using PotterGame.Utils.AudioPlayer;
 using PotterGame.Utils.Text;
 
@@ -26,14 +27,9 @@ namespace PotterGame.Player
             Context = new MainStory();
             CurrentBattle = new Battle();
             Program.Player = this;
-        }
-        public void PlayerSetup()
-        {
             InventoryManager.PlayerInventory = new Inventory("Inventory");
             InventoryManager.OpenInventory = InventoryManager.PlayerInventory;
         }
-
-        // TODO: Make SendContext
 
         public void Start()
         {
@@ -59,15 +55,13 @@ namespace PotterGame.Player
         {
             Console.Clear();
             Text[] previousCenteredMessage;
-            if (!(aContext is Battle))
-                previousCenteredMessage = aContext.PreviousCenteredMessage;
-            else
-                previousCenteredMessage = ((Battle) aContext).GetBattleText();
+            previousCenteredMessage = !(aContext is Battle) ? aContext.PreviousCenteredMessage : ((Battle) aContext).GetBattleText();
             var previousControls = aContext.PreviousControlsMessage;
             var previousExplorationMessage = aContext.PreviousExplorationMessage;
             var previousExplanationMessage = aContext.PreviousExplanationMessage;
             var previousLetterMessage = aContext.PreviousLetterMessage;
             var previousMissionMessage = aContext.PreviousMissionMessage;
+            var previousDangerScaleMessage = aContext.PreviousDangerScaleMessage;
 
             if (previousCenteredMessage != null) 
                 TextUtils.SendMessage(previousCenteredMessage, TextType.CENTERED);
@@ -86,6 +80,9 @@ namespace PotterGame.Player
 
             if (previousMissionMessage != null) 
                 TextUtils.SendMessage(previousMissionMessage, TextType.MISSION);
+            
+            if(previousDangerScaleMessage != null)
+                TextUtils.SendMessage(previousDangerScaleMessage, TextType.HEADERBAR);
         }
 
         /// <summary>
@@ -172,7 +169,6 @@ namespace PotterGame.Player
             }
 
             Health += aAmount;
-            return;
         }
 
         /// <summary>
@@ -190,23 +186,14 @@ namespace PotterGame.Player
             {
                 if(Context is Battle)
                     Context = new MainStory();
-                ((MainStory)Context).Exploration.SetLocation(ELocations.PRIVET_DRIVE_HALL);
+                ((MainStory)Context).Exploration.SetLocation(ELocations.HOGWARTS_HOSPITAL_WING);
                 ((MainStory)Context).Explore();
+                Health = MaxHealth;
                 return false;
             }
 
             Health -= aAmount;
             return true;
-        }
-
-        public void Stun(int aSeconds)
-        {
-            StunnedUntil = DateTime.Now.Second + aSeconds;
-        }
-
-        public bool IsStunned()
-        {
-            return StunnedUntil < DateTime.Now.Second;
         }
     }
 }

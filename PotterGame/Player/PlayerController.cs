@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using PotterGame.Inventories;
+using PotterGame.Utils.Text;
 
 namespace PotterGame.Player
 {
@@ -13,7 +15,9 @@ namespace PotterGame.Player
             while (true)
             {
                 var key = Console.ReadKey(true).Key;
-
+                
+                
+                // Inventory input
                 if (InventoryManager.IsInventoryOpen)
                 {
                     var openInventory = InventoryManager.OpenInventory;
@@ -38,6 +42,7 @@ namespace PotterGame.Player
                             break;
                     }
                 }
+                // Exploration input
                 else if(!Program.Player.CurrentBattle.IsBattling)
                 {
                     var story = Program.Player.Context;

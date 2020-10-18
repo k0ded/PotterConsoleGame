@@ -11,6 +11,8 @@
         MISSION,
         EXPLANATION,
         LETTER_SLOW,
-        LETTER_INSTANT
+        LETTER_INSTANT,
+        ACTION,
+        HEADERBAR
     }
 }

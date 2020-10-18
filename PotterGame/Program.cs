@@ -10,7 +10,7 @@ namespace PotterGame
     internal class Program
     {
 
-        #region Kernell Imports
+        #region DllImports
         
         /// <summary>
         /// Makes ANSI-Color Codes Possible - STOLEN FROM GOOGLE
@@ -36,8 +36,6 @@ namespace PotterGame
         
         #endregion
 
-        public static Program Instance;
-
         public static Player.Player Player;
 
         public static void Main()
@@ -62,18 +60,15 @@ namespace PotterGame
                 return;
             }
 
-            Instance = new Program();
-
             Console.CursorVisible = false;
             Player = new Player.Player();
-            Player.PlayerSetup();
             Player.StartMenu();
         }
 
         /// <summary>
         /// This maximizes the window.
         /// </summary>
-        private static void Maximize()
+        public static void Maximize()
         {
             var p = Process.GetCurrentProcess();
             ShowWindow(p.MainWindowHandle, 3); 

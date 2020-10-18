@@ -1,7 +1,8 @@
 ﻿namespace PotterGame.Utils.Text
 {
-    // ANSI ColorCode string (30m/31m etc.) => Bytes => Integer 
+    // ANSI ColorCode string (30m/31m etc...) => Bytes => Integer 
     public enum ColorCode {
+        
         // Text color
         BLACK = 1831875419,
         RED = 1831940955,

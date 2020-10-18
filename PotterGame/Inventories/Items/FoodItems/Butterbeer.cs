@@ -2,7 +2,7 @@
 {
     internal class Butterbeer : BaseItem
     {
-        public Butterbeer() : base("Butterbeer") {}
+        public Butterbeer() : base("Butterbeer", 10) {}
         
         public override void InteractEvent()
         {

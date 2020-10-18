@@ -1,84 +1,12 @@
-﻿using PotterGame.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using PotterGame.Inventories;
 using PotterGame.Inventories.InventoryTypes;
 using PotterGame.Inventories.Items.FoodItems;
 using PotterGame.Inventories.Items.ShopItems;
 using PotterGame.Utils.Text;
 
-namespace PotterGame.Player.Story
+namespace PotterGame.Player.Story.Exploring
 {
-    public readonly struct Locations
-    {
-        public Locations(string aName, 
-            ELocations aQLoc, 
-            ELocations aWLoc, 
-            ELocations aELoc, 
-            ELocations aALoc,
-            ELocations aSLoc,
-            ELocations aDLoc, 
-            Text[] aExplanation)
-        {
-            Name = aName;
-            QLoc = aQLoc;
-            WLoc = aWLoc;
-            ELoc = aELoc;
-            ALoc = aALoc;
-            SLoc = aSLoc;
-            DLoc = aDLoc;
-            Explanation = aExplanation;
-        }
-        public Locations(string aName, ELocations aQLoc, ELocations aWLoc, ELocations aELoc, Text[] aExplanation)
-        {
-            Name = aName;
-            QLoc = aQLoc;
-            WLoc = aWLoc;
-            ELoc = aELoc;
-            ALoc = ELocations.NONE;
-            SLoc = ELocations.NONE;
-            DLoc = ELocations.NONE;
-            Explanation = aExplanation;
-        }
-        public string Name { get; }
-        public ELocations QLoc { get; }
-        public ELocations WLoc { get; }
-        public ELocations ELoc { get; }
-        public ELocations ALoc { get; }
-        public ELocations SLoc { get; }
-        public ELocations DLoc { get; }
-        public Text[] Explanation { get; }
-    }
-
-    public enum ELocations
-    {
-        #region Privet Drive
-        
-        PRIVET_DRIVE_HALL,
-        PRIVET_DRIVE_OUTSIDE,
-        PRIVET_DRIVE_SECOND_FLOOR,
-        PRIVET_DRIVE_KITCHEN,
-        PRIVET_DRIVE_DUDLEYS_ROOM,
-        PRIVET_DRIVE_HARRYS_ROOM,
-        
-        #endregion
-
-        #region London
-        
-        LONDON_KNIGHTBUS,
-        LONDON_LEAKYCAULDRON,
-        LONDON_LEAKYCAULDRON_APPARTMENTS,
-        LONDON_DIAGONALLEY,
-        LONDON_KINGSCROSS,
-        
-        DIAGON_ALLEY_SHOP,
-        LEAKY_CAULDRON_SHOP,
-        LEAKY_CAULDRON_APARTMENT_SHOP,
-
-        #endregion
-        
-        NONE
-    }
 
     internal class Exploration
     {
@@ -196,7 +124,7 @@ namespace PotterGame.Player.Story
                 "London - Knight Bus",
                 ELocations.LONDON_LEAKYCAULDRON,
                 ELocations.LONDON_KINGSCROSS,
-                ELocations.NONE,
+                ELocations.PRIVET_DRIVE_OUTSIDE,
                 new []
                 {
                     new Text("Knight Bus"),
@@ -247,7 +175,6 @@ namespace PotterGame.Player.Story
                     new Text(""), 
                 });
             
-            // TODO: ADD PLATFORM 9 3/4
             var londonKingsCross = new Locations(
                 "London - Kings Cross",
                 ELocations.LONDON_KNIGHTBUS,
@@ -267,6 +194,12 @@ namespace PotterGame.Player.Story
 
             #endregion
 
+            #region Hogwarts
+
+            
+
+            #endregion
+            
             #region Generic
 
             var none = new Locations(
@@ -301,10 +234,10 @@ namespace PotterGame.Player.Story
             
             
             
-            ShopSelector DiagonAlley = new ShopSelector("Diagon Alley");
-            DiagonAlley.AddItem(new OlivandersItem());
-            DiagonAlley.AddItem(new GringottsItem());
-            myShopSelectors.Add(ELocations.DIAGON_ALLEY_SHOP, DiagonAlley);
+            var diagonAlley = new ShopSelector("Diagon Alley");
+            diagonAlley.AddItem(new OlivandersItem());
+            diagonAlley.AddItem(new GringottsItem());
+            myShopSelectors.Add(ELocations.DIAGON_ALLEY_SHOP, diagonAlley);
             
             #endregion
         } 
@@ -374,11 +307,9 @@ namespace PotterGame.Player.Story
             {
                 case ELocations.DIAGON_ALLEY_SHOP:
                     myShopSelectors[ELocations.DIAGON_ALLEY_SHOP].OpenInventory(true);
-                    TextUtils.SendMessage(new Text("DiagonAlleyShop"), TextType.DEBUG);
                     return false;
                 case ELocations.LEAKY_CAULDRON_SHOP:
                     myShops[ELocations.LEAKY_CAULDRON_SHOP].OpenInventory(true);
-                    TextUtils.SendMessage(new Text("LeakyCauldronShop"), TextType.DEBUG);
                     return false;
                 case ELocations.LEAKY_CAULDRON_APARTMENT_SHOP:
                     myShops[ELocations.LONDON_LEAKYCAULDRON_APPARTMENTS].OpenInventory(true);
@@ -386,8 +317,39 @@ namespace PotterGame.Player.Story
                 case ELocations.NONE:
                     return false;
                 default:
+                    TryBattle();
                     myCurrentLocation = aRunLocation;
                     return true;
+            }
+        }
+        
+        
+        // TODO : Battling triggers.
+        private void TryBattle()
+        {
+            if (myLocations[myCurrentLocation].IsFakeDanger)
+            {
+                FakeDanger(myCurrentLocation);
+            }
+            else if(myLocations[myCurrentLocation].Danger != 1)
+            {
+                var rand = new Random();
+                var danger = (double) myLocations[myCurrentLocation].Danger / 100;
+
+                if (rand.NextDouble() > danger)
+                {
+                    
+                }
+            }
+        }
+
+        private void FakeDanger(ELocations aLocation)
+        {
+            switch (aLocation)
+            {
+                case ELocations.HOGWARTS_EXPRESS:
+                    
+                    break;
             }
         }
 
@@ -425,6 +387,11 @@ namespace PotterGame.Player.Story
         {
             var location = myLocations[myCurrentLocation];
             return RunAction(location.DLoc);
+        }
+
+        public int GetDangerLevel()
+        {
+            return myLocations[myCurrentLocation].Danger;
         }
     }
 }

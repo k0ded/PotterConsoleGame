@@ -30,7 +30,7 @@ namespace PotterGame.Inventories.InventoryTypes
         /// Asks if you want to set the open inventory to this specific one.
         /// Should be false if you're in subinventory of a normal inventory.
         /// </param>
-        protected void OpenInventory(int aSelection, int aOffset, bool aSetOpened)
+        protected virtual void OpenInventory(int aSelection, int aOffset, bool aSetOpened)
         {
             OpenInventory(aSelection, aOffset, InventoryTextType, aSetOpened);
         }
@@ -73,7 +73,7 @@ namespace PotterGame.Inventories.InventoryTypes
         /// Asks if you want to set the open inventory to this specific one.
         /// Should be false if you're in subinventory of a normal inventory.
         /// </param>
-        private void OpenInventory(int aSelection, int aOffset, TextType aType, bool aSetOpened)
+        protected virtual void OpenInventory(int aSelection, int aOffset, TextType aType, bool aSetOpened)
         {
             Console.Clear();
             if(aSetOpened)
@@ -82,7 +82,7 @@ namespace PotterGame.Inventories.InventoryTypes
             myOffset = aOffset;
 
             var inventory = new Text[Math.Min(Content.Count + 4, 11)];
-            var canScrollDown = (Content.Count - myOffset) - (Console.WindowHeight - 5) > 0;
+            var canScrollDown = Content.Count - myOffset - Console.WindowHeight - 5 > 0;
             var canScrollUp = myOffset > 0;
 
             inventory[0] = Header;
@@ -111,11 +111,11 @@ namespace PotterGame.Inventories.InventoryTypes
         {
             var itemName = $"[{aItem.Name}]";
             if (!aSelected)
-                return new Text(("   " + itemName + "   ").PadRight(30) + $"({aItem.Value})", 128, 128, 128, true);
+                return new Text(("   " + itemName + "   ").PadRight(45) + $"({aItem.Value})", 128, 128, 128, true);
             const string prefix = ">> ";
             const string suffix = " <<";
             Selected = aItem;
-            return new Text((prefix + itemName + suffix).PadRight(30) + $"({aItem.Value})", ColorCode.WHITE);
+            return new Text((prefix + itemName + suffix).PadRight(45) + $"({aItem.Value})", ColorCode.WHITE);
         }
 
         /// <summary>
@@ -133,6 +133,8 @@ namespace PotterGame.Inventories.InventoryTypes
                 return;
             }
 
+            if (aItem.Count <= 0)
+                aItem.Count = 1;
             Content.Add(aItem);
         }
         /// <summary>
@@ -144,12 +146,6 @@ namespace PotterGame.Inventories.InventoryTypes
             {
                 Selected.ReturnEvent();
                 OpenInventory(mySelection, myOffset, false);
-                return;
-            }
-
-            if (Program.Player.CurrentBattle.Enemy != null)
-            {
-                // TODO: IMPLEMENT BATTLE CONTROLS
                 return;
             }
             Program.Player.CloseInventory();

@@ -1,5 +1,4 @@
-﻿using System;
-using PotterGame.Inventories.InventoryTypes;
+﻿using PotterGame.Inventories.InventoryTypes;
 using PotterGame.Inventories.Items.BankItems;
 
 namespace PotterGame.Inventories.Items.ShopItems
@@ -8,7 +7,7 @@ namespace PotterGame.Inventories.Items.ShopItems
     {
         public GringottsItem() : base("Gringotts Bank")
         {
-            Shop = new Shop("Gringotts Bank");
+            Shop = new Shop("Gringotts Bank", true);
             Shop.AddItem(new WithdrawItem());
             Shop.AddItem(new DepositItem());
         }

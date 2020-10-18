@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using PotterGame.Utils;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using PotterGame.Utils.Text;
+using PotterGame.Player.Story.Exploring;
 
 namespace PotterGame.Player.Story
 {
@@ -46,22 +44,14 @@ namespace PotterGame.Player.Story
         {
             myStory = 2;
             ResetPrevious();
+            SendExplorationMission(new Text("Get to Hogwarts and get sorted!"));
         }
         
-        // Bug: If you spam space or enter "Get to Olivanders' and buy your wand!" will stay in the middle of the screen.
-        // Bug: Currently writes this twice???
         private void RunStoryTwo()
         {
             myStory = 1;
             ResetPrevious();
-
-            Text message = new Text("Get to Olivanders' and buy your wand!");
-            TextUtils.SendMessage(message, TextType.LETTER_SLOW);
-            Thread.Sleep(2250);
-            
-            PreviousMissionMessage = message;
-            Explore();
-            TextUtils.SendMessage(message, TextType.MISSION);
+            SendExplorationMission(new Text("Get to Olivanders' and buy your wand!"));
         }
 
         private void RunStoryOne()
@@ -73,7 +63,7 @@ namespace PotterGame.Player.Story
 
             var letter = new Text[13];
             letter[0] = new Text("Dear Mr. Potter,");
-            letter[1] = new Text("               We are pleased to inform you that");
+            letter[1] = new Text("     We are pleased to inform you that");
             letter[2] = new Text("you have been accepted at Hogwarts School of");
             letter[3] = new Text("Witchcraft and Wizardry. Please find enclosed a list");
             letter[4] = new Text("of all necessary books and equipment.");
@@ -89,16 +79,38 @@ namespace PotterGame.Player.Story
             PreviousLetterMessage = letter;
             TextUtils.SendMessage(letter, TextType.LETTER_SLOW, true);
         }
+
+        private void SendExplorationMission(Text message)
+        {
+            TextUtils.SendMessage(message, TextType.LETTER_SLOW);
+            Thread.Sleep(2250);
+            
+            PreviousMissionMessage = message;
+            Explore();
+            TextUtils.SendMessage(message, TextType.MISSION);
+        }
         
         public void Explore()
         {
             Console.Clear();
+            var sb = new StringBuilder();
+            var f = (double) Exploration.GetDangerLevel() / 100;
+            for (var i = 0; i < (Console.WindowWidth - 10) * f; i++)
+            {
+                sb.Append("=");
+                TextUtils.SendMessage(new Text("ok: " + f + " : " + Console.WindowWidth), TextType.ACTION);
+            }
+            var headerbar = new Text(sb.ToString(), ColorCode.RED, ColorCode.B_RED);
+            
             PreviousExplorationMessage = Exploration.GetExplorationMessage();
             PreviousExplanationMessage = Exploration.GetExplanationMessage();
+            PreviousDangerScaleMessage = new []{headerbar, new Text("-//- DANGER BAR -\\\\-", ColorCode.RESET)};
 
+            TextUtils.SendMessage(PreviousDangerScaleMessage, TextType.HEADERBAR);
             TextUtils.SendMessage(PreviousExplorationMessage, TextType.EXPLORATION);
             TextUtils.SendMessage(PreviousExplanationMessage, TextType.EXPLANATION);
             TextUtils.SendMessage(PreviousMissionMessage, TextType.MISSION);
+
             Player.SendControls(Exploration.GetControlsMessage());
             Program.Player.SeizeInput = false;
         }

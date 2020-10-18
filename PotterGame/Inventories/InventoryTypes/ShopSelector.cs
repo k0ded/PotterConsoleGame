@@ -22,17 +22,20 @@ namespace PotterGame.Inventories.InventoryTypes
                 openShop = item;
                 isOpen = true;
             }
-            base.RunInteractAction();
+            else
+                base.RunInteractAction();
         }
 
         public override void RunBackspaceAction()
         {
             if (isOpen)
             {
-                OpenInventory(true);
                 isOpen = false;
+                OpenInventory(true);
                 return;
             }
+
+            Selected.IsOpened = false;
             base.RunBackspaceAction();
         }
 

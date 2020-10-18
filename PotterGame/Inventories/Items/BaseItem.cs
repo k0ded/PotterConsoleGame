@@ -11,9 +11,10 @@
         public abstract void InteractEvent();
         public abstract void ReturnEvent();
 
-        protected BaseItem(string aName)
+        protected BaseItem(string aName, int aValue)
         {
             Name = aName;
+            Value = aValue;
         }
         
         public BaseItem Clone()

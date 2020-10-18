@@ -7,6 +7,7 @@ using System.Threading;
 
 namespace PotterGame.Utils.Text
 {
+
     public static class TextUtils
     {
         private static readonly LetterWriter Writer = new LetterWriter();
@@ -31,7 +32,7 @@ namespace PotterGame.Utils.Text
             switch (aType)
             {
                 case TextType.DEBUG:
-                    SendDebugMessage(message[0]);
+                    //SendDebugMessage(message[0]);
                     break;
                 case TextType.CENTERED:
                     SendCenteredMessage(message);
@@ -56,6 +57,12 @@ namespace PotterGame.Utils.Text
                     break;
                 case TextType.LETTER_INSTANT:
                     SendLetterMessage(message, false);
+                    break;
+                case TextType.ACTION:
+                    SendActionMessage(message);
+                    break;
+                case TextType.HEADERBAR:
+                    SendHeaderBarMessage(message);
                     break;
                 default:
                     Console.WriteLine("CHECK CODE, TEXT TYPE IS NULL OR NOT ADDED IN TEXT UTILS");
@@ -87,6 +94,16 @@ namespace PotterGame.Utils.Text
                 Console.WriteLine(aMessage[i].Message);
             }
 
+        }
+
+        private static void SendHeaderBarMessage(IReadOnlyList<Text> aMessage)
+        {
+            for (var i = 0; i < aMessage.Count; i++)
+            {
+                var x = Console.BufferWidth / 2 - aMessage[i].OriginalMessage.Length / 2;
+                Console.SetCursorPosition(x, i + 1);
+                Console.WriteLine(aMessage[i].Message);
+            }
         }
         
         private static void SendExplorationMessage(IReadOnlyList<Text> aMessage)
@@ -203,14 +220,14 @@ namespace PotterGame.Utils.Text
         /// 
         /// <param name="aLetter">A List of NonNull <c>Text</c> objects to display in the Console</param>
         /// <param name="aSlow">TRUE: Character by character. FALSE: Instant.</param>
-        /// <param name="ContinueMessage"></param>
-        private static void SendLetterMessage(IReadOnlyList<Text> aLetter, bool aSlow, bool ContinueMessage = false)
+        /// <param name="aSkippable">TRUE if you want to be able to skip the writing of the letter</param>
+        private static void SendLetterMessage(IReadOnlyList<Text> aLetter, bool aSlow, bool aSkippable = false)
         {
             var largestStringLength = aLetter.Select(m => m.OriginalMessage.Length).Prepend(0).Max();
 
             if (aSlow)
             {
-                Writer.StartWritingLetter(aLetter, ContinueMessage);
+                Writer.StartWritingLetter(aLetter, aSkippable);
                 return;
             }
             
@@ -253,6 +270,30 @@ namespace PotterGame.Utils.Text
             
         }
 
+        private static Text _prevText;
+        private static int _iteration = 1;
+        private static void SendActionMessage(IReadOnlyList<Text> aAction)
+        {
+            if (_prevText?.Message == aAction[0].Message)
+            {
+                _iteration++;
+            }
+            else
+                _iteration = 1;
+
+            string s;
+            if (_iteration == 1)
+                s = aAction[0].OriginalMessage;
+            else
+                s = _iteration + " (" + aAction[0].OriginalMessage + ")";
+            var x = Console.WindowWidth - 2 - s.Length;
+            var y = Console.WindowHeight - 1;
+            
+            Console.SetCursorPosition(x, y);
+            Console.Write(s);
+            _prevText = aAction[0];
+        }
+        
         /// <summary>
         /// Fades a Text from black into desired RGB values!
         /// </summary>
@@ -262,9 +303,12 @@ namespace PotterGame.Utils.Text
         /// <param name="aGreen">Green value in RGB values.</param>
         /// <param name="aBlue">Blue value in RGB values</param>
         /// <param name="aFadeInMilliseconds">Time in Milliseconds for the fade complete.</param>
-        public static void FadeInControlMessage(Text aText, int aRed, int aGreen, int aBlue, int aFadeInMilliseconds)
+        /// <param name="aType">Type the fader should fade in</param>
+        public static void FadeInControlMessage(Text aText, int aRed, int aGreen, int aBlue, int aFadeInMilliseconds, TextType aType)
         {
-            Fader.FadeInControls(aText, aRed, aGreen, aBlue, aFadeInMilliseconds);
+            if(IsFadingIn())
+                StopFadeIn();
+            Fader.FadeInControls(aText, aRed, aGreen, aBlue, aFadeInMilliseconds, aType);
         }
 
         /// <summary>
@@ -273,12 +317,8 @@ namespace PotterGame.Utils.Text
         /// </summary>
         public static void StopFadeIn()
         {
-
             Fader.StopFadeIn();
-
         }
-
-        
 
         /// <summary>
         /// This gets the state of <c>LetterWriter</c> and
@@ -326,7 +366,8 @@ namespace PotterGame.Utils.Text
         private int myBlue;
         private int myFadeInMilliseconds;
         internal bool IsFadingIn;
-        public void FadeInControls(Text aText, int aRed, int aGreen, int aBlue, int fadeInMilliseconds)
+        private TextType myType;
+        public void FadeInControls(Text aText, int aRed, int aGreen, int aBlue, int fadeInMilliseconds, TextType type)
         {
             // Makes sure all of the variables are in the right format as to not crash the program
             var argumentException = new ArgumentException("Number must be non-negative and less than 256");
@@ -342,6 +383,7 @@ namespace PotterGame.Utils.Text
             myGreen = aGreen;
             myBlue = aBlue;
             myFadeInMilliseconds = fadeInMilliseconds;
+            myType = type;
 
             myFadeInWorker.DoWork += FadeInControls;
             myFadeInWorker.WorkerSupportsCancellation = true;
@@ -358,7 +400,7 @@ namespace PotterGame.Utils.Text
                 var g = myGreen * i / 256;
                 var b = myBlue * i / 256;
                 
-                TextUtils.SendMessage(new[] { new Text(myControls.OriginalMessage, r, g, b, true) }, TextType.CONTROLS);
+                TextUtils.SendMessage(new[] { new Text(myControls.OriginalMessage, r, g, b, true) }, myType);
                 Thread.Sleep(myFadeInMilliseconds / 256);
                 if (i >= 256)
                     return;
@@ -378,8 +420,11 @@ namespace PotterGame.Utils.Text
     {
         internal void FinishLetterMessage()
         {
+            if (!IsWritingMessage)
+                return;
             myLetterMessageWorker.CancelAsync();
             TextUtils.SendMessage(myFinishedLetter, TextType.LETTER_INSTANT);
+            IsWritingMessage = false;
         }
 
         // Background worker is used to make sure you can skip the writing part in case
@@ -398,13 +443,13 @@ namespace PotterGame.Utils.Text
         /// Starts Writing the letter slowly!
         /// </summary>
         /// <param name="aFinishedLetter">The finished letter list</param>
-        /// <param name="HasContinueMessage">Adds enter continue in the mission bar</param>
-        public void StartWritingLetter(IReadOnlyList<Text> aFinishedLetter, bool HasContinueMessage = false)
+        /// <param name="aHasContinueMessage">Adds enter continue in the mission bar</param>
+        public void StartWritingLetter(IReadOnlyList<Text> aFinishedLetter, bool aHasContinueMessage = false)
         {
             IsWritingMessage = true;
             myFinishedLetter = aFinishedLetter;
             
-            myLetterMessageWorker.RunWorkerAsync(HasContinueMessage);
+            myLetterMessageWorker.RunWorkerAsync(aHasContinueMessage);
             
         }
         
@@ -455,13 +500,11 @@ namespace PotterGame.Utils.Text
                 
                 Thread.Sleep(1000 / 4);
             }
+            IsWritingMessage = false;
 
-            if ((bool) e.Argument)
-            {
-                IsWritingMessage = false;
-                TextUtils.FadeInControlMessage(new Text("[ENTER] - Continue"), 0, 0, 200, 7500);
-                Program.Player.Context.Continue = true; 
-            }
+            if (!(bool) e.Argument) return;
+            TextUtils.FadeInControlMessage(new Text("[ENTER] - Continue"), 0, 0, 200, 7500, TextType.CONTROLS);
+            Program.Player.Context.Continue = true;
         }
     }
     

@@ -6,17 +6,19 @@ namespace PotterGame.Inventories.Items.ShopItems
     {
         public Shop Shop;
 
-        public BaseShopItem(string aName) : base(aName) {}
+        public BaseShopItem(string aName) : base(aName, 0) {}
         
         public override void InteractEvent()
         {
             if (IsOpened)
             {
                 Shop.RunInteractAction();
-                return;
             }
-            Shop.OpenInventory(false);
-            IsOpened = true;
+            else
+            {
+                Shop.OpenInventory(false);
+                IsOpened = true;
+            }
         }
 
         public override void ReturnEvent()

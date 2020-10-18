@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using PotterGame.Inventories.Items;
-using PotterGame.Utils;
 using PotterGame.Utils.Text;
 
 namespace PotterGame.Inventories.InventoryTypes
@@ -17,32 +14,47 @@ namespace PotterGame.Inventories.InventoryTypes
             InventoryTextType = TextType.CENTERED;
 
             Content.Add(GetStartItem());
+            Content.Add(GetMaximizeItem());
             Content.Add(GetExitItem());
+        }
+
+        protected override void OpenInventory(int aSelection, int aOffset, TextType aType, bool aSetOpened)
+        {
+            base.OpenInventory(aSelection, aOffset, aType, aSetOpened);
+            TextUtils.SendMessage(new [] {new Text("For the best gameplay experience"), new Text("please maximize your window!")}, TextType.HEADERBAR);
         }
 
         private GenericItem GetStartItem()
         {
-            var item = new GenericItem("Start");
-            item.InteractEventTask = Program.Player.Start;
-            return item;
-        }
-
-        private GenericItem GetLoadItem()
-        {
-            var item = new GenericItem("Load");
-            item.InteractEventTask = delegate
+            var item = new GenericItem("Start")
             {
-                
+                InteractEventTask = Program.Player.Start
             };
             return item;
         }
-        
+
+        private GenericItem GetMaximizeItem()
+        {
+            var item = new GenericItem("Maximize")
+            {
+                InteractEventTask = delegate
+                {
+                    Program.Maximize();
+                    OpenInventory(1, 0, true);
+                    Console.CursorVisible = false;
+                }
+            };
+            return item;
+        }
+
         private GenericItem GetExitItem()
         {
-            var item = new GenericItem("Exit");
-            item.InteractEventTask = delegate
+            var item = new GenericItem("Exit")
             {
-                Environment.Exit(0);
+                InteractEventTask = delegate
+                {
+                    Environment.Exit(0);
+                }
             };
             return item;
         }

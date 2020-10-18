@@ -11,6 +11,7 @@ namespace PotterGame.Player.Story
         public Text[] PreviousLetterMessage { get; protected set; }
         public Text[] PreviousExplorationMessage { get; protected set; }
         public Text[] PreviousExplanationMessage { get; protected set; }
+        public Text[] PreviousDangerScaleMessage { get; protected set; }
         public Text PreviousMissionMessage { get; protected set; }
         public Text PreviousControlsMessage { get; protected set; }
         public bool Continue { get; set; }
