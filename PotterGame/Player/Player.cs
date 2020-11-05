@@ -4,7 +4,7 @@ using PotterGame.Utils;
 using System;
 using PotterGame.Inventories.InventoryTypes;
 using PotterGame.Inventories.Items.ShopItems.OlivandersItems.Wands;
-using PotterGame.Player.Battling;
+using PotterGame.Player.Story.Battling;
 using PotterGame.Player.Story.Exploring;
 using PotterGame.Utils.AudioPlayer;
 using PotterGame.Utils.Text;
@@ -19,7 +19,6 @@ namespace PotterGame.Player
         public static int Money { get; private set; }
         public int Health { get; private set; }
         public int MaxHealth { get; }= 100;
-        public int StunnedUntil { get; private set; }
         public Wand? PlayerWand { get; set; }
 
         public Player()
@@ -36,7 +35,7 @@ namespace PotterGame.Player
             InventoryManager.OpenInventory = InventoryManager.PlayerInventory;
             InventoryManager.IsInventoryOpen = false;
             Console.Clear();
-            AudioWrapper.PlayAudioWithFilename("mainmenu.wav");
+            AudioWrapper.PlayMusicWithFilename("mainmenu.wav");
             Context.Start();
         }
 

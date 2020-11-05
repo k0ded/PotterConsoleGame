@@ -1,17 +1,11 @@
-﻿
-using System;
-using System.Linq;
+﻿using System;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using PotterGame.Inventories;
 using PotterGame.Inventories.Items.ShopItems.OlivandersItems.Wands;
-using PotterGame.Player.Battling.Enemies;
-using PotterGame.Player.Story;
-using PotterGame.Utils;
+using PotterGame.Player.Story.Battling.Enemies;
 using PotterGame.Utils.Text;
 
-namespace PotterGame.Player.Battling
+namespace PotterGame.Player.Story.Battling
 {
     public class Battle : BaseContext
     {
@@ -73,12 +67,18 @@ namespace PotterGame.Player.Battling
             Program.Player.SeizeInput = false;
         }
 
+        /// <summary>
+        /// This runs the damage animation of the player / enemy
+        /// </summary>
+        /// <param name="aIsEnemy">If the damager is enemy</param>
+        /// <param name="damage">How much damage to be done</param>
         public void RunAnimation(bool aIsEnemy, int damage)
         {
 
+            Text[] msg;
             if (aIsEnemy)
             {
-                Text[] msg =
+                msg = new []
                 {
                     new Text("      -" + damage),
                     new Text("(∩｀-´)⊃━☆                    ☆━⊂(｀-´∩)"),
@@ -87,21 +87,29 @@ namespace PotterGame.Player.Battling
             }
             else
             {
-                Text[] msg = {
+                msg = new []{
                     new Text("                                  -" + damage),
                     new Text("    (∩｀-´)⊃━☆                    ☆━⊂(｀-´∩)"),
                     GetHealthbar()
                 };
-                TextUtils.SendMessage(msg, TextType.CENTERED);
-                Task.Delay(500);
-                TextUtils.SendMessage(GetBattleText(), TextType.CENTERED);
+            }
+            
+            TextUtils.SendMessage(msg, TextType.CENTERED);
+            Task.Delay(500);
+            TextUtils.SendMessage(GetBattleText(), TextType.CENTERED);
+            if (!aIsEnemy)
+            {
                 Enemy.RunLogic();
                 Task.Delay(500);
-                TextUtils.SendMessage(GetBattleText(), TextType.CENTERED);
             }
+            TextUtils.SendMessage(GetBattleText(), TextType.CENTERED);
             
         }
         
+        /// <summary>
+        /// Gets the default battle text (Nothing is happening)
+        /// </summary>
+        /// <returns>The default battle text</returns>
         public Text[] GetBattleText()
         {
             return new[]
@@ -112,38 +120,47 @@ namespace PotterGame.Player.Battling
             };
         }
 
+        /// <summary>
+        /// Calculates and gets the healthbar of the player and the enemy.
+        /// </summary>
+        /// <returns></returns>
         private Text GetHealthbar()
         {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < Program.Player.Health / Program.Player.MaxHealth * 11; i++)
+            var sb = new StringBuilder();
+            for (var i = 0; i < Program.Player.Health / Program.Player.MaxHealth * 11; i++)
             {
                 sb.Append("+");
             }
             
             var txt = new Text(sb.ToString(), ColorCode.B_RED);
             sb.Clear();
-            for (int i = 0; i < 11 - Program.Player.Health / Program.Player.MaxHealth * 11; i++)
+            for (var i = 0; i < 11 - Program.Player.Health / Program.Player.MaxHealth * 11; i++)
             {
                 sb.Append("+");
             }
             var nText = new Text(sb.ToString());
 
             sb.Clear();
-            for (int i = 0; i < Enemy.Health / Enemy.MaxHealth * 11; i++)
+            for (var i = 0; i < Enemy.Health / Enemy.MaxHealth * 11; i++)
             {
                 sb.Append("+");
             }
             
             var etxt = new Text(sb.ToString(), ColorCode.B_RED);
             sb.Clear();
-            for (int i = 0; i < 11 - Enemy.Health / Enemy.MaxHealth * 11; i++)
+            for (var i = 0; i < 11 - Enemy.Health / Enemy.MaxHealth * 11; i++)
             {
                 sb.Append("+");
             }
             var enText = new Text(sb.ToString());
-            return new Text(txt.Message + nText.Message + "                        " + etxt.Message + enText.Message);
+            return new Text(txt.Message + nText.Message + "                        " + enText.Message + etxt.Message);
         }
 
+        /// <summary>
+        /// Gets the damage output of a wand core
+        /// </summary>
+        /// <param name="core">The core of a wand</param>
+        /// <returns>The damage factor</returns>
         private double FromCoreToDamageFactor(WandCores core)
         {
             switch (core)
@@ -160,6 +177,12 @@ namespace PotterGame.Player.Battling
                     return 0;
             }
         }
+        
+        /// <summary>
+        /// Gets the healing output of a wand wood
+        /// </summary>
+        /// <param name="wood">The wood of the current wand</param>
+        /// <returns>the healing factor</returns>
         private double FromWoodToHealFactor(WandWoods wood)
         {
             switch (wood)

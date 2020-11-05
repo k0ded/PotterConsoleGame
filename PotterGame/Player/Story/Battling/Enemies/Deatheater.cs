@@ -1,7 +1,7 @@
 ﻿using PotterGame.Inventories;
 using PotterGame.Inventories.Items.FoodItems;
 
-namespace PotterGame.Player.Battling.Enemies
+namespace PotterGame.Player.Story.Battling.Enemies
 {
     public class Deatheater : BaseEnemy
     {

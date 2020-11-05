@@ -5,12 +5,19 @@ namespace PotterGame.Utils.AudioPlayer
 {
     public static class AudioWrapper
     {
-        static SoundPlayer player = new SoundPlayer();
+        static SoundPlayer musicPlayer = new SoundPlayer();
+        static SoundPlayer sfxPlayer = new SoundPlayer();
 
-        public static void PlayAudioWithFilename(string filename)
+        public static void PlayMusicWithFilename(string filename)
         {
-            player.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\mainmenu.wav";
-            player.PlayLooping();
+            musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Music\\" + filename;
+            musicPlayer.PlayLooping();
+        }
+
+        public static void PlaySFXWithFilename(string filename)
+        {
+            sfxPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\SFX\\" + filename;
+            sfxPlayer.Play();
         }
     }
 }

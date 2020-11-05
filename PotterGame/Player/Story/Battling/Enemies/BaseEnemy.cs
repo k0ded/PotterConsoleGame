@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PotterGame.Player.Battling.Enemies
+namespace PotterGame.Player.Story.Battling.Enemies
 {
     public abstract class BaseEnemy
     {

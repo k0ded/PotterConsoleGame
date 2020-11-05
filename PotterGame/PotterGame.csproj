@@ -96,6 +96,7 @@
     <Compile Include="Player\Story\Battling\Battle.cs" />
     <Compile Include="Player\Story\Battling\Enemies\BaseEnemy.cs" />
     <Compile Include="Player\Story\Battling\Enemies\Deatheater.cs" />
+    <Compile Include="Player\Story\Battling\Enemies\Dementor.cs" />
     <Compile Include="Player\Story\Exploring\ELocations.cs" />
     <Compile Include="Player\Story\Exploring\Exploration.cs" />
     <Compile Include="Player\Story\Exploring\Locations.cs" />
@@ -125,9 +126,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\..\Documents\mainmenu.wav">
-      <Link>mainmenu.wav</Link>
+      <Link>Music\mainmenu.wav</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SFX" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

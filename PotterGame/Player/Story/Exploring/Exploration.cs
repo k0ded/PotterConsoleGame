@@ -171,19 +171,22 @@ namespace PotterGame.Player.Story.Exploring
                 ELocations.NONE,
                 new []
                 {
-                    new Text(""),
-                    new Text(""), 
+                    new Text("Leaky Cauldron"),
+                    new Text("You are standing in the hall that connects all of the apartments in the leaky cauldron. " +
+                             "On both sides there are apartments that seem to be the same size yet they are being sold in three sizes: " +
+                             "Small, Medium and Large."), 
                 });
             
             var londonKingsCross = new Locations(
                 "London - Kings Cross",
                 ELocations.LONDON_KNIGHTBUS,
-                ELocations.NONE,
+                ELocations.HOGWARTS_PLATFORM,
                 ELocations.NONE,
                 new []
                 {
-                    new Text(""),
-                    new Text(""), 
+                    new Text("Kings Cross"),
+                    new Text("You are standing in front of a huge brick arch that separates platform 9 and 10. " +
+                             "You see wizards and witches of all ages running into the wall, however the muggles dont seem to notice."), 
                 });
             
             myLocations.Add(ELocations.LONDON_KNIGHTBUS, londonKnightBus);
@@ -196,7 +199,18 @@ namespace PotterGame.Player.Story.Exploring
 
             #region Hogwarts
 
+            var platform = new Locations(
+                "London - Platform 9 3/4",
+                ELocations.LONDON_KINGSCROSS,
+                ELocations.HOGWARTS_EXPRESS,
+                ELocations.NONE,
+                new []
+                {
+                    new Text("Platform 9 3/4"), 
+                    new Text("")
+                });
             
+            myLocations.Add(ELocations.HOGWARTS_PLATFORM, platform);
 
             #endregion
             
@@ -338,7 +352,7 @@ namespace PotterGame.Player.Story.Exploring
 
                 if (rand.NextDouble() > danger)
                 {
-                    
+                    // Start battle!
                 }
             }
         }
@@ -348,7 +362,7 @@ namespace PotterGame.Player.Story.Exploring
             switch (aLocation)
             {
                 case ELocations.HOGWARTS_EXPRESS:
-                    
+                    // Start the dementor fight if you havent beaten it yet!
                     break;
             }
         }
