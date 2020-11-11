@@ -76,8 +76,6 @@
     <Compile Include="Inventories\InventoryTypes\Settings.cs" />
     <Compile Include="Inventories\InventoryTypes\Shop.cs" />
     <Compile Include="Inventories\InventoryTypes\ShopSelector.cs" />
-    <Compile Include="Inventories\Items\BankItems\WithdrawItem.cs" />
-    <Compile Include="Inventories\Items\BankItems\DepositItem.cs" />
     <Compile Include="Inventories\Items\FoodItems\Butterbeer.cs" />
     <Compile Include="Inventories\Items\FoodItems\Tea.cs" />
     <Compile Include="Inventories\Items\BaseItem.cs" />
