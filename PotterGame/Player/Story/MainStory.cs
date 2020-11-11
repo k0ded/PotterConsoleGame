@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Text;
 using System.Threading;
-using PotterGame.Utils.Text;
+using System.Threading.Tasks;
 using PotterGame.Player.Story.Exploring;
+using PotterGame.Utils.Text;
 
 namespace PotterGame.Player.Story
 {
@@ -11,7 +12,6 @@ namespace PotterGame.Player.Story
 
         private int myStory;
         public Exploration Exploration;
-        public string Controls { get; } = "[ENTER] - Continue";
 
         public MainStory()
         {
@@ -26,55 +26,53 @@ namespace PotterGame.Player.Story
 
         public void RunStory(int i)
         {
+            myStory = i;
+            ResetPrevious();
             switch (i)
             {
                 case 2:
-                    RunStoryThree();
+                    HogwartsSortingStory();
                     break;
                 case 1:
-                    RunStoryTwo();
+                    OllivandersMissionStory();
                     break;
                 case 0:
-                    RunStoryOne();
+                    HogwartsLetterStory();
                     break;
             }
         }
 
-        private void RunStoryThree()
+        private void HogwartsSortingStory()
         {
-            myStory = 2;
-            ResetPrevious();
-            SendExplorationMission(new Text("Get to Hogwarts and get sorted!"));
+            SendExplorationMission(new Text("Get to Hogwarts and get sorted!", ColorCode.YELLOW));
         }
         
-        private void RunStoryTwo()
+        private void OllivandersMissionStory()
         {
-            myStory = 1;
-            ResetPrevious();
-            SendExplorationMission(new Text("Get to Olivanders' and buy your wand!"));
+            SendExplorationMission(new Text("Get to Olivanders' and buy your wand!", ColorCode.YELLOW));
         }
 
-        private void RunStoryOne()
+        private void HogwartsLetterStory()
         {
             Console.Clear();
-            myStory = 0;
             Program.Player.SeizeInput = true;
-            ResetPrevious();
 
-            var letter = new Text[13];
-            letter[0] = new Text("Dear Mr. Potter,");
-            letter[1] = new Text("     We are pleased to inform you that");
-            letter[2] = new Text("you have been accepted at Hogwarts School of");
-            letter[3] = new Text("Witchcraft and Wizardry. Please find enclosed a list");
-            letter[4] = new Text("of all necessary books and equipment.");
-            letter[5] = new Text(" ");
-            letter[6] = new Text("Term begins on September 1st, We await your owl by");
-            letter[7] = new Text("no later than July 31st.");
-            letter[8] = new Text(" ");
-            letter[9] = new Text("Yours Sincerely,");
-            letter[10] = new Text("Madam McGonagall");
-            letter[11] = new Text("Minerva McGonagall");
-            letter[12] = new Text("Deputy Headmistress");
+            var letter = new[]
+            {
+                new Text("Dear Mr. Potter,"),
+                new Text("     We are pleased to inform you that"),
+                new Text("you have been accepted at Hogwarts School of"),
+                new Text("Witchcraft and Wizardry. Please find enclosed a list"),
+                new Text("of all necessary books and equipment."),
+                new Text(" "),
+                new Text("Term begins on September 1st, We await your owl by"),
+                new Text("no later than July 31st."),
+                new Text(" "),
+                new Text("Yours Sincerely,"),
+                new Text("Madam McGonagall"),
+                new Text("Minerva McGonagall"),
+                new Text("Deputy Headmistress")
+            };
 
             PreviousLetterMessage = letter;
             TextUtils.SendMessage(letter, TextType.LETTER_SLOW, true);
@@ -83,36 +81,56 @@ namespace PotterGame.Player.Story
         private void SendExplorationMission(Text message)
         {
             TextUtils.SendMessage(message, TextType.LETTER_SLOW);
-            Thread.Sleep(2250);
-            
-            PreviousMissionMessage = message;
-            Explore();
-            TextUtils.SendMessage(message, TextType.MISSION);
+
+            do
+            {
+                Thread.Sleep(500);
+                if (TextUtils.IsWritingMessage()) continue;
+                PreviousMissionMessage = message;
+                Explore();
+                TextUtils.SendMessage(message, TextType.MISSION);
+            } while (TextUtils.IsWritingMessage());
         }
         
         public void Explore()
         {
             Console.Clear();
-            var sb = new StringBuilder();
-            var f = (double) Exploration.GetDangerLevel() / 100;
-            for (var i = 0; i < (Console.WindowWidth - 10) * f; i++)
-            {
-                sb.Append("=");
-                TextUtils.SendMessage(new Text("ok: " + f + " : " + Console.WindowWidth), TextType.ACTION);
-            }
-            var headerbar = new Text(sb.ToString(), ColorCode.RED, ColorCode.B_RED);
+            var travelTime = Exploration.GetTravelTime();
+            Travel(travelTime);
+            Console.Clear();
             
             PreviousExplorationMessage = Exploration.GetExplorationMessage();
             PreviousExplanationMessage = Exploration.GetExplanationMessage();
-            PreviousDangerScaleMessage = new []{headerbar, new Text("-//- DANGER BAR -\\\\-", ColorCode.RESET)};
+            PreviousHeaderBarMessage = new Text(Exploration.GetClueMessage());
 
-            TextUtils.SendMessage(PreviousDangerScaleMessage, TextType.HEADERBAR);
+            TextUtils.SendMessage(PreviousHeaderBarMessage, TextType.HEADERBAR);
             TextUtils.SendMessage(PreviousExplorationMessage, TextType.EXPLORATION);
             TextUtils.SendMessage(PreviousExplanationMessage, TextType.EXPLANATION);
             TextUtils.SendMessage(PreviousMissionMessage, TextType.MISSION);
 
             Player.SendControls(Exploration.GetControlsMessage());
             Program.Player.SeizeInput = false;
+        }
+
+        private void Travel(int travelTime)
+        {
+            return; // Debugging
+            var timeDone = DateTime.Now.AddSeconds(travelTime);
+            var dots = 0;
+            
+            while (DateTime.Now.CompareTo(timeDone) < 0)
+            {
+                Console.Clear();
+                dots = (dots + 1) % 4;
+                var d = new StringBuilder();
+                for (var i = 0; i < dots; i++)
+                {
+                    d.Append(".");
+                }
+                
+                TextUtils.SendMessage(new Text($"Travelling{d}"), TextType.CENTERED);
+                Task.Delay(500).Wait();
+            }
         }
 
         private void ResetPrevious()

@@ -30,7 +30,7 @@ namespace PotterGame.Inventories.InventoryTypes
         /// Asks if you want to set the open inventory to this specific one.
         /// Should be false if you're in subinventory of a normal inventory.
         /// </param>
-        protected virtual void OpenInventory(int aSelection, int aOffset, bool aSetOpened)
+        protected void OpenInventory(int aSelection, int aOffset, bool aSetOpened)
         {
             OpenInventory(aSelection, aOffset, InventoryTextType, aSetOpened);
         }
@@ -50,7 +50,7 @@ namespace PotterGame.Inventories.InventoryTypes
         /// Asks if you want to set the open inventory to this specific one.
         /// Should be false if you're in subinventory of a normal inventory.
         /// </param>
-        private void ReloadInventory(int aSelection, int aOffset, bool aSetOpened)
+        protected void ReloadInventory(int aSelection, int aOffset, bool aSetOpened)
         {
             OpenInventory(aSelection, aOffset, InventoryTextType, aSetOpened);
         }
@@ -85,7 +85,7 @@ namespace PotterGame.Inventories.InventoryTypes
             var canScrollDown = Content.Count - myOffset - Console.WindowHeight - 5 > 0;
             var canScrollUp = myOffset > 0;
 
-            inventory[0] = Header;
+            inventory[0] = Header?.Replace("%money%", Program.Player.Money.ToString());
             inventory[1] = HeaderFoot;
             inventory[2] = new Text(canScrollUp ? "           ↑" : "            ");
             for (var i = 0; i < Math.Min(Content.Count - myOffset, 6); i++)
@@ -199,7 +199,7 @@ namespace PotterGame.Inventories.InventoryTypes
             Selected?.InteractEvent();
         }
 
-        public void RunReloadAction()
+        public virtual void RunReloadAction()
         {
             ReloadInventory(mySelection, myOffset, false);
         }

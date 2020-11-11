@@ -63,10 +63,19 @@ namespace PotterGame.Utils.Text
             Message = DeserializeColor(r, g, b) + aMessage + DeserializeColorCode(ColorCode.RESET);
         }
 
+        public static Text operator +(Text t, ColorCode code)
+        {
+            return new Text(t.OriginalMessage, code);
+        }
+        
+        public static Text operator +(Text t, Text t1)
+        {
+            return new Text(t.Message + t1.OriginalMessage);
+        }
+        
         public static Text operator +(Text t, string s)
         {
-            var text = new Text(t.Message + s);
-            return text;
+            return new Text(t.Message + s);
         }
         
         /// <summary>
@@ -94,5 +103,9 @@ namespace PotterGame.Utils.Text
             return $"\u001b[38;2;{aRed};{aGreen};{aBlue}m";
         }
 
+        public Text Replace(string replace, string replacewith)
+        {
+            return new Text(Message.Replace(replace,replacewith));
+        }
     }
 }

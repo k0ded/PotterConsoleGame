@@ -8,9 +8,9 @@ namespace PotterGame.Inventories.InventoryTypes
     internal class Inventory : BaseInventory
     {
         public Inventory(string aName) : base(
-            aName, 
-            new Text("Player".PadRight(45) + $"({Player.Player.Money})"),
-            new Text("     Item".PadRight(45) + "Value" + "Count".PadLeft(10))) {}
+            aName,
+            new Text("Player".PadRight(45) + "(%money%)"),
+            new Text("     Item".PadRight(45) + "Value" + "Count".PadLeft(10))) { }
 
         protected override Text GetItemName(BaseItem aItem, bool aSelected)
         {

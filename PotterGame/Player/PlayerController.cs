@@ -43,7 +43,7 @@ namespace PotterGame.Player
                     }
                 }
                 // Exploration input
-                else if(!Program.Player.CurrentBattle.IsBattling)
+                else
                 {
                     var story = Program.Player.Context;
 
@@ -76,24 +76,6 @@ namespace PotterGame.Player
                             break;
                         case ConsoleKey.I:
                             story.RunInventoryAction();
-                            break;
-                    }
-                }
-                else
-                {
-                    var currentBattle = Program.Player.CurrentBattle;
-
-                    // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-                    switch (key)
-                    {
-                        case ConsoleKey.W:
-                            currentBattle.UseStupefy();
-                            break;
-                        case ConsoleKey.E:
-                            currentBattle.UseEpiskey();
-                            break;
-                        case ConsoleKey.I:
-                            currentBattle.RunInventoryAction();
                             break;
                     }
                 }

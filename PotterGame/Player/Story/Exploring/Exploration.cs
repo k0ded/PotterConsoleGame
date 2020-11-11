@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using PotterGame.Inventories.InventoryTypes;
 using PotterGame.Inventories.Items.FoodItems;
 using PotterGame.Inventories.Items.ShopItems;
+using PotterGame.Utils.Dungeons;
 using PotterGame.Utils.Text;
 
 namespace PotterGame.Player.Story.Exploring
@@ -15,7 +17,7 @@ namespace PotterGame.Player.Story.Exploring
         private Dictionary<ELocations, ShopSelector> myShopSelectors = new Dictionary<ELocations, ShopSelector>();
         private ELocations myCurrentLocation = ELocations.PRIVET_DRIVE_HALL;
 
-        private const string Controls = "[Q-D] Exploring";
+        private const string Controls = "[Q-D] Exploring    [I] - Inventory";
 
         public void Load()
         {
@@ -167,14 +169,13 @@ namespace PotterGame.Player.Story.Exploring
             var leakyCauldronApartments = new Locations(
                 "London - Leaky Cauldron Apartments",
                 ELocations.LONDON_LEAKYCAULDRON,
-                ELocations.LEAKY_CAULDRON_APARTMENT_SHOP,
+                ELocations.NONE,
                 ELocations.NONE,
                 new []
                 {
-                    new Text("Leaky Cauldron"),
-                    new Text("You are standing in the hall that connects all of the apartments in the leaky cauldron. " +
-                             "On both sides there are apartments that seem to be the same size yet they are being sold in three sizes: " +
-                             "Small, Medium and Large."), 
+                    new Text("Apartments"),
+                    new Text("You are standing in a narrow hallway with multiple apartments on either side. " +
+                             "You hear multiple wizards and witches on either side shouting/talking."), 
                 });
             
             var londonKingsCross = new Locations(
@@ -185,8 +186,9 @@ namespace PotterGame.Player.Story.Exploring
                 new []
                 {
                     new Text("Kings Cross"),
-                    new Text("You are standing in front of a huge brick arch that separates platform 9 and 10. " +
-                             "You see wizards and witches of all ages running into the wall, however the muggles dont seem to notice."), 
+                    new Text("You are standing in a large hall with trains coming from one side. " +
+                             "The station is filled with muggles everywhere. " +
+                             "There are also multiple restaurants and cafés around the place."), 
                 });
             
             myLocations.Add(ELocations.LONDON_KNIGHTBUS, londonKnightBus);
@@ -199,19 +201,143 @@ namespace PotterGame.Player.Story.Exploring
 
             #region Hogwarts
 
-            var platform = new Locations(
-                "London - Platform 9 3/4",
+            var hogwartsPlatform = new Locations(
+                "Hogwarts - Platform 9 3/4",
                 ELocations.LONDON_KINGSCROSS,
                 ELocations.HOGWARTS_EXPRESS,
                 ELocations.NONE,
                 new []
                 {
                     new Text("Platform 9 3/4"), 
-                    new Text("")
+                    new Text("You ran through a wall and ended up next to a red and black train. " +
+                             "The hidden platform has a lot of witches and wizards entering almost every minute."), 
                 });
             
-            myLocations.Add(ELocations.HOGWARTS_PLATFORM, platform);
-
+            var hogwartsExpress = new Locations(
+                "Hogwarts - Express",
+                ELocations.HOGWARTS_PLATFORM,
+                ELocations.HOGWARTS_STATION,
+                ELocations.NONE,
+                new []
+                {
+                    new Text("Hogwarts Express"), 
+                    new Text("You've entered the train and you seat yourself in an empty compartment. " +
+                             "Today the trolley lady doesn't show up, wonder what happened to her."), 
+                });
+            
+            var hogwartsStation = new Locations(
+                "Hogsmeade - Station",
+                ELocations.HOGWARTS_EXPRESS,
+                ELocations.HOGWARTS_GATES,
+                ELocations.NONE,
+                new []
+                {
+                    new Text("Hogsmeade Station"),
+                    new Text("You're now standing in a tiny little village with a bunch of restaurants lying around. " +
+                             "There are also multiple paths leaving the village but only one seems to be open!") 
+                });
+            
+            var hogwartsGates =  new Locations(
+                "Hogwarts - Gates",
+                ELocations.HOGWARTS_STATION,
+                ELocations.HOGWARTS_BOATHOUSE,
+                ELocations.NONE,
+                new []
+                {
+                    new Text("Gates"), 
+                    new Text("You're standing in front of two large statues. " +
+                             "You're right outside the Hogwarts grounds and ready to go in. ") 
+                });
+            
+            var hogwartsBoatHouse = new Locations(
+                "Hogwarts - Boat House",
+                ELocations.HOGWARTS_GATES,
+                ELocations.HOGWARTS_GREATHALL,
+                ELocations.NONE,
+                new []
+                {
+                    new Text("Boat house"), 
+                    new Text("You are sitting in a boat with a bunch of first years. " +
+                             "Hagrid is in the lead getting you to the great hall!")
+                });
+            
+            var hogwartsGreatHall = new Locations(
+                "Hogwarts - Great Hall",
+                ELocations.HOGWARTS_BOATHOUSE,
+                ELocations.HOGWARTS_QUIDDITCH,
+                ELocations.HOGWARTS_HAGRIDSHUT,
+                ELocations.HOGWARTS_HOSPITAL_WING,
+                ELocations.HOGWARTS_FORBIDDEN_FOREST,
+                ELocations.NONE,
+                new []
+                {
+                    new Text("Great hall"),
+                    new Text("You are standing in the great hall of Hogwarts. " +
+                             "This is the hub to everyone and everything. " +
+                             "This is also where sorting happens! [UNIMPLEMENTED]") 
+                });
+            
+            var hogwartsQuidditch = new Locations(
+                "Hogwarts - Quidditch Arena",
+                ELocations.HOGWARTS_GREATHALL,
+                ELocations.HOGWARTS_HOSPITAL_WING,
+                ELocations.NONE,
+                new []
+                {
+                    new Text("Quidditch Arena"),
+                    new Text("You are standing in the middle of an empty quidditch arena. " +
+                             "The grass is very tidy for a place people would fall out of the sky. ") 
+                });
+            
+            var hogwartsHagridsHut = new Locations(
+                "Hogwarts - Hagrids Hut",
+                ELocations.HOGWARTS_GREATHALL,
+                ELocations.HOGWARTS_FORBIDDEN_FOREST,
+                ELocations.HOGWARTS_HOSPITAL_WING,
+                new []
+                {
+                    new Text("Hagrid's hut"),
+                    new Text("You are standing outside a simple and small hut that belongs to the gamekeeper. " +
+                             "Hagrid is the current gamekeeper and he helps take care of the different animals you may come across.") 
+                });
+            
+            var hogwartsHospitalWing = new Locations(
+                "Hogwarts - Hospital Wing",
+                ELocations.HOGWARTS_GREATHALL,
+                ELocations.HOGWARTS_QUIDDITCH,
+                ELocations.NONE,
+                new []
+                {
+                    new Text("Hospital Wing"),
+                    new Text("If you're ever injured this is the place to go. " +
+                             "With magical cures and great doctors to help you they're here for you.")
+                });
+            
+            var hogwartsForbiddenForest = new Locations(
+                "Hogwarts - Forbidden Forest",
+                ELocations.HOGWARTS_GREATHALL,
+                ELocations.HOGWARTS_HAGRIDSHUT,
+                ELocations.NONE,
+                new []
+                {
+                    new Text("Forbidden Forest"),
+                    new Text("ITS DANGEROUS TRAVELLING HERE! " +
+                             "GET OUT NOW IF YOU WANT YOUR LIFE SPARED!")
+                });
+            
+            myLocations.Add(ELocations.HOGWARTS_PLATFORM, hogwartsPlatform);
+            myLocations.Add(ELocations.HOGWARTS_EXPRESS, hogwartsExpress);
+            myLocations.Add(ELocations.HOGWARTS_STATION, hogwartsStation);
+            myLocations.Add(ELocations.HOGWARTS_GATES, hogwartsGates);
+            myLocations.Add(ELocations.HOGWARTS_BOATHOUSE, hogwartsBoatHouse);
+            
+            myLocations.Add(ELocations.HOGWARTS_GREATHALL, hogwartsGreatHall);
+            myLocations.Add(ELocations.HOGWARTS_QUIDDITCH, hogwartsQuidditch);
+            myLocations.Add(ELocations.HOGWARTS_HAGRIDSHUT, hogwartsHagridsHut);
+            myLocations.Add(ELocations.HOGWARTS_HOSPITAL_WING, hogwartsHospitalWing);
+            myLocations.Add(ELocations.HOGWARTS_FORBIDDEN_FOREST, hogwartsForbiddenForest);
+            
+            
             #endregion
             
             #region Generic
@@ -261,7 +387,7 @@ namespace PotterGame.Player.Story.Exploring
             var messages = new Text[7];
             var loc = myLocations[myCurrentLocation];
 
-            messages[0] = new Text(loc.Name);
+            messages[0] = new Text(loc.Name, ColorCode.CYAN);
             messages[1] = loc.QLoc != ELocations.NONE ? GetLocationMessage('Q', loc.QLoc) : null;
             messages[2] = loc.WLoc != ELocations.NONE ? GetLocationMessage('W', loc.WLoc) : null;
             messages[3] = loc.ELoc != ELocations.NONE ? GetLocationMessage('E', loc.ELoc) : null;
@@ -269,6 +395,20 @@ namespace PotterGame.Player.Story.Exploring
             messages[5] = loc.SLoc != ELocations.NONE ? GetLocationMessage('S', loc.SLoc) : null;
             messages[6] = loc.DLoc != ELocations.NONE ? GetLocationMessage('D', loc.DLoc) : null;
             return messages;
+        }
+
+        public string GetClueMessage()
+        {
+            var sb = new StringBuilder("");
+            if (DungeonManager.Instance.Secrets.ContainsKey(myCurrentLocation))
+            {
+                foreach (var str in DungeonManager.Instance.Secrets[myCurrentLocation])
+                {
+                    sb.Append(str.GetClue() + ", ");
+                }
+            }
+
+            return sb.ToString();
         }
 
         public string GetControlsMessage()
@@ -331,39 +471,8 @@ namespace PotterGame.Player.Story.Exploring
                 case ELocations.NONE:
                     return false;
                 default:
-                    TryBattle();
                     myCurrentLocation = aRunLocation;
                     return true;
-            }
-        }
-        
-        
-        // TODO : Battling triggers.
-        private void TryBattle()
-        {
-            if (myLocations[myCurrentLocation].IsFakeDanger)
-            {
-                FakeDanger(myCurrentLocation);
-            }
-            else if(myLocations[myCurrentLocation].Danger != 1)
-            {
-                var rand = new Random();
-                var danger = (double) myLocations[myCurrentLocation].Danger / 100;
-
-                if (rand.NextDouble() > danger)
-                {
-                    // Start battle!
-                }
-            }
-        }
-
-        private void FakeDanger(ELocations aLocation)
-        {
-            switch (aLocation)
-            {
-                case ELocations.HOGWARTS_EXPRESS:
-                    // Start the dementor fight if you havent beaten it yet!
-                    break;
             }
         }
 
@@ -403,9 +512,9 @@ namespace PotterGame.Player.Story.Exploring
             return RunAction(location.DLoc);
         }
 
-        public int GetDangerLevel()
+        public int GetTravelTime()
         {
-            return myLocations[myCurrentLocation].Danger;
+            return myLocations[myCurrentLocation].TravelTime;
         }
     }
 }

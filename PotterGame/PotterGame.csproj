@@ -70,10 +70,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Inventories\InventoryManager.cs" />
-    <Compile Include="Inventories\InventoryTypes\Bank.cs" />
     <Compile Include="Inventories\InventoryTypes\BaseInventory.cs" />
     <Compile Include="Inventories\InventoryTypes\Inventory.cs" />
     <Compile Include="Inventories\InventoryTypes\Menu.cs" />
+    <Compile Include="Inventories\InventoryTypes\Settings.cs" />
     <Compile Include="Inventories\InventoryTypes\Shop.cs" />
     <Compile Include="Inventories\InventoryTypes\ShopSelector.cs" />
     <Compile Include="Inventories\Items\BankItems\WithdrawItem.cs" />
@@ -83,8 +83,7 @@
     <Compile Include="Inventories\Items\BaseItem.cs" />
     <Compile Include="Inventories\Items\GenericItem.cs" />
     <Compile Include="Inventories\Items\ShopItems\GringottsItem.cs" />
-    <Compile Include="Inventories\Items\ShopItems\GringottsItems\DepositItem.cs" />
-    <Compile Include="Inventories\Items\ShopItems\GringottsItems\WithdrawItem.cs" />
+    <Compile Include="Inventories\Items\ShopItems\GringottsItems\DungeonItem.cs" />
     <Compile Include="Inventories\Items\ShopItems\OlivandersItem.cs" />
     <Compile Include="Inventories\Items\ShopItems\BaseShopItem.cs" />
     <Compile Include="Inventories\Items\ShopItems\OlivandersItems\Wands\Wand.cs" />
@@ -93,10 +92,6 @@
     <Compile Include="Player\Player.cs" />
     <Compile Include="Player\PlayerController.cs" />
     <Compile Include="Player\Story\BaseContext.cs" />
-    <Compile Include="Player\Story\Battling\Battle.cs" />
-    <Compile Include="Player\Story\Battling\Enemies\BaseEnemy.cs" />
-    <Compile Include="Player\Story\Battling\Enemies\Deatheater.cs" />
-    <Compile Include="Player\Story\Battling\Enemies\Dementor.cs" />
     <Compile Include="Player\Story\Exploring\ELocations.cs" />
     <Compile Include="Player\Story\Exploring\Exploration.cs" />
     <Compile Include="Player\Story\Exploring\Locations.cs" />
@@ -104,6 +99,13 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\AudioPlayer\AudioWrapper.cs" />
+    <Compile Include="Utils\Dungeons\Clue.cs" />
+    <Compile Include="Utils\Dungeons\Constants.cs" />
+    <Compile Include="Utils\Dungeons\Dungeon.cs" />
+    <Compile Include="Utils\Dungeons\DungeonManager.cs" />
+    <Compile Include="Utils\Dungeons\ISecret.cs" />
+    <Compile Include="Utils\Dungeons\SecretCipher.cs" />
+    <Compile Include="Utils\Dungeons\SecretPassword.cs" />
     <Compile Include="Utils\Text\ColorCode.cs" />
     <Compile Include="Utils\Text\Text.cs" />
     <Compile Include="Utils\Text\TextType.cs" />
@@ -123,15 +125,6 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\..\..\..\Documents\mainmenu.wav">
-      <Link>Music\mainmenu.wav</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SFX" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

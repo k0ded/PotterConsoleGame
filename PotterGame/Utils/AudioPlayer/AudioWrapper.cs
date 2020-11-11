@@ -10,8 +10,8 @@ namespace PotterGame.Utils.AudioPlayer
 
         public static void PlayMusicWithFilename(string filename)
         {
-            musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Music\\" + filename;
-            musicPlayer.PlayLooping();
+            //musicPlayer.SoundLocation = AppDomain.CurrentDomain.BaseDirectory + "\\Music\\" + filename;
+            //musicPlayer.PlayLooping();
         }
 
         public static void PlaySFXWithFilename(string filename)

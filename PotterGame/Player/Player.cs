@@ -1,30 +1,27 @@
-﻿using PotterGame.Inventories;
-using PotterGame.Player.Story;
-using PotterGame.Utils;
-using System;
+﻿using System;
+using PotterGame.Inventories;
 using PotterGame.Inventories.InventoryTypes;
 using PotterGame.Inventories.Items.ShopItems.OlivandersItems.Wands;
-using PotterGame.Player.Story.Battling;
+using PotterGame.Player.Story;
 using PotterGame.Player.Story.Exploring;
-using PotterGame.Utils.AudioPlayer;
 using PotterGame.Utils.Text;
 
 namespace PotterGame.Player
 {
     public class Player
     {
-        public BaseContext Context { get; set; }
-        public Battle CurrentBattle { get; set; }
+        public BaseContext Context { get; }
         public bool SeizeInput { get; set; }
-        public static int Money { get; private set; }
+        public int Money { get; private set; }
         public int Health { get; private set; }
         public int MaxHealth { get; }= 100;
         public Wand? PlayerWand { get; set; }
 
+        private Menu menu;
+        
         public Player()
         {
             Context = new MainStory();
-            CurrentBattle = new Battle();
             Program.Player = this;
             InventoryManager.PlayerInventory = new Inventory("Inventory");
             InventoryManager.OpenInventory = InventoryManager.PlayerInventory;
@@ -35,13 +32,18 @@ namespace PotterGame.Player
             InventoryManager.OpenInventory = InventoryManager.PlayerInventory;
             InventoryManager.IsInventoryOpen = false;
             Console.Clear();
-            AudioWrapper.PlayMusicWithFilename("mainmenu.wav");
+            Console.CursorVisible = false;
             Context.Start();
         }
 
         public void StartMenu()
         {
-            var menu = new Menu();
+            menu = new Menu();
+            StartMenuReload();
+        }
+        
+        public void StartMenuReload()
+        {
             menu.OpenInventory(true);
             PlayerController.MakeSelection();
         }
@@ -54,13 +56,13 @@ namespace PotterGame.Player
         {
             Console.Clear();
             Text[] previousCenteredMessage;
-            previousCenteredMessage = !(aContext is Battle) ? aContext.PreviousCenteredMessage : ((Battle) aContext).GetBattleText();
+            previousCenteredMessage = aContext.PreviousCenteredMessage;
             var previousControls = aContext.PreviousControlsMessage;
             var previousExplorationMessage = aContext.PreviousExplorationMessage;
             var previousExplanationMessage = aContext.PreviousExplanationMessage;
             var previousLetterMessage = aContext.PreviousLetterMessage;
             var previousMissionMessage = aContext.PreviousMissionMessage;
-            var previousDangerScaleMessage = aContext.PreviousDangerScaleMessage;
+            var previousDangerScaleMessage = aContext.PreviousHeaderBarMessage;
 
             if (previousCenteredMessage != null) 
                 TextUtils.SendMessage(previousCenteredMessage, TextType.CENTERED);
@@ -183,8 +185,6 @@ namespace PotterGame.Player
                 throw new ArgumentException("Number must be non-negative and more than 0");
             if (Health < aAmount)
             {
-                if(Context is Battle)
-                    Context = new MainStory();
                 ((MainStory)Context).Exploration.SetLocation(ELocations.HOGWARTS_HOSPITAL_WING);
                 ((MainStory)Context).Explore();
                 Health = MaxHealth;

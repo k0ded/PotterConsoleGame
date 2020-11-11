@@ -1,5 +1,5 @@
 ﻿using PotterGame.Inventories.InventoryTypes;
-using PotterGame.Inventories.Items.BankItems;
+using PotterGame.Utils.Dungeons;
 
 namespace PotterGame.Inventories.Items.ShopItems
 {
@@ -7,9 +7,11 @@ namespace PotterGame.Inventories.Items.ShopItems
     {
         public GringottsItem() : base("Gringotts Bank")
         {
-            Shop = new Shop("Gringotts Bank", true);
-            Shop.AddItem(new WithdrawItem());
-            Shop.AddItem(new DepositItem());
+            Shop = new Shop("Gringotts Bank", true, false);
+            var tItem = DungeonManager.GetDungeonItem(Constants.tDungeon);
+            var gItem = DungeonManager.GetDungeonItem(Constants.gDungeon);
+            Shop.AddItem(tItem);
+            Shop.AddItem(gItem);
         }
     }
 }

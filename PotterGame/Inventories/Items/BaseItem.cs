@@ -3,7 +3,7 @@
     public abstract class BaseItem
     {
         public bool IsOpened { get; set; }
-        public int Value { get; private set; }
+        public int Value { get; }
         public int Count { get; set; } = 1;
         public string Name { get; }
         public string Controls { get; set; }

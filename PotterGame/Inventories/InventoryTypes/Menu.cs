@@ -7,14 +7,12 @@ namespace PotterGame.Inventories.InventoryTypes
     public class Menu : BaseInventory
     {
 
-        public Menu() : base(
-            "Menu"
-            )
+        public Menu() : base("Menu")
         {
             InventoryTextType = TextType.CENTERED;
 
             Content.Add(GetStartItem());
-            Content.Add(GetMaximizeItem());
+            Content.Add(GetSettingsItem());
             Content.Add(GetExitItem());
         }
 
@@ -33,32 +31,47 @@ namespace PotterGame.Inventories.InventoryTypes
             return item;
         }
 
-        private GenericItem GetMaximizeItem()
+        /// <summary>
+        /// Gets the settings item, This is a generic item as its not supposed to be pickupable
+        /// </summary>
+        /// <returns>A generic menu item to go to Settings</returns>
+        private GenericItem GetSettingsItem()
         {
-            var item = new GenericItem("Maximize")
+            // Creates the GenericItem with the name "Settings"
+            var item = new GenericItem("Settings")
             {
-                InteractEventTask = delegate
+                // Sets the InteractEventTask (Enter got pressed) to run some code
+                InteractEventTask = () =>
                 {
-                    Program.Maximize();
-                    OpenInventory(1, 0, true);
-                    Console.CursorVisible = false;
+                    // Settings is an inventory so it will be opened as such
+                    var settings = new Settings();
+                    settings.OpenInventory(true);
                 }
             };
             return item;
         }
 
+        /// <summary>
+        /// Gets the Exit item that will exit the game.
+        /// </summary>
+        /// <returns>The GenericItem that exits the game</returns>
         private GenericItem GetExitItem()
         {
+            // Creates the GenericItem with the name "Exit"
             var item = new GenericItem("Exit")
             {
-                InteractEventTask = delegate
-                {
-                    Environment.Exit(0);
-                }
+                // Sets the InteractEventTask (Enter pressed) to exit the application with the code 0
+                InteractEventTask = () => Environment.Exit(0)
             };
             return item;
         }
 
+        /// <summary>
+        /// Overrides the GetItemName to make sure it doesn't display the count of the items
+        /// </summary>
+        /// <param name="aItem"></param>
+        /// <param name="aSelected"></param>
+        /// <returns></returns>
         protected override Text GetItemName(BaseItem aItem, bool aSelected)
         {
             var itemName = $"[{aItem.Name}]";

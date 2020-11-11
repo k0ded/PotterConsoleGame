@@ -20,10 +20,6 @@
         LONDON_LEAKYCAULDRON_APPARTMENTS,
         LONDON_DIAGONALLEY,
         LONDON_KINGSCROSS,
-        
-        DIAGON_ALLEY_SHOP,
-        LEAKY_CAULDRON_SHOP,
-        LEAKY_CAULDRON_APARTMENT_SHOP,
 
         #endregion
 
@@ -42,6 +38,14 @@
 
         #endregion
         
-        NONE
+        NONE,
+
+        #region Shops
+
+        DIAGON_ALLEY_SHOP,
+        LEAKY_CAULDRON_SHOP,
+        LEAKY_CAULDRON_APARTMENT_SHOP,
+
+        #endregion
     }
 }

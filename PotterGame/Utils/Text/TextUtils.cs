@@ -10,8 +10,8 @@ namespace PotterGame.Utils.Text
 
     public static class TextUtils
     {
-        private static readonly LetterWriter Writer = new LetterWriter();
-        private static readonly ControlsFader Fader = new ControlsFader();
+        private static LetterWriter _writer;
+        private static ControlsFader _fader = new ControlsFader();
 
         /// <summary>
         /// Sends a list of <c>Text</c> objects to be displayed on the screen in
@@ -19,8 +19,9 @@ namespace PotterGame.Utils.Text
         /// </summary>
         /// <param name="aMessage">A List of <c>Text</c> objects to be displayed on the screen!</param>
         /// <param name="aType">A <c>TextType</c> which decides what type of format to use!</param>
+        /// <param name="aShouldWriteContinue">LETTER MESSAGES ONLY, if you should be able to skip the slow writing of a letter message</param>
         /// <exception cref="ArgumentException">Exception gets thrown when the list is either empty or only contains null values</exception>
-        public static void SendMessage(IReadOnlyList<Text> aMessage, TextType aType, bool ShouldWriteContinue = false)
+        public static void SendMessage(IReadOnlyList<Text> aMessage, TextType aType, bool aShouldWriteContinue = false)
         {
             // Makes sure the message is Non Null!
             IReadOnlyList<Text> message = aMessage.Where(m => m != null).ToArray();
@@ -31,9 +32,6 @@ namespace PotterGame.Utils.Text
             
             switch (aType)
             {
-                case TextType.DEBUG:
-                    //SendDebugMessage(message[0]);
-                    break;
                 case TextType.CENTERED:
                     SendCenteredMessage(message);
                     break;
@@ -53,7 +51,7 @@ namespace PotterGame.Utils.Text
                     SendExplanationMessage(message[0], message[1]);
                     break;
                 case TextType.LETTER_SLOW:
-                    SendLetterMessage(message, true, ShouldWriteContinue);
+                    SendLetterMessage(message, true, aShouldWriteContinue);
                     break;
                 case TextType.LETTER_INSTANT:
                     SendLetterMessage(message, false);
@@ -91,7 +89,7 @@ namespace PotterGame.Utils.Text
                 var x = Console.WindowWidth / 2 - aMessage[i].OriginalMessage.Length / 2;
                 var y = Console.WindowHeight / 2 - aMessage.Count / 2 + i;
                 Console.SetCursorPosition(x, y);
-                Console.WriteLine(aMessage[i].Message);
+                Console.Write(aMessage[i].Message);
             }
 
         }
@@ -138,7 +136,7 @@ namespace PotterGame.Utils.Text
                     indexOfLastBreakLine = i;
                 }
                 
-                if (i - (previousCharacters) <= maxCharactersPerLine) continue;
+                if (i - previousCharacters <= maxCharactersPerLine) continue;
                 finishedTextBuilder.Replace(" ", "§", indexOfLastBreakLine, 1);
                 previousCharacters = i;
                 amountOfBreakLines++;
@@ -156,7 +154,7 @@ namespace PotterGame.Utils.Text
             
             // Paste the title of the explanation message
             Console.SetCursorPosition(titleX, y - 1);
-            Console.WriteLine(aTitle.Message);
+            Console.WriteLine((aTitle + ColorCode.CYAN).Message);
             
             // Paste the explanation message.
             for (var i = 0; i < textList.Length; i++)
@@ -168,7 +166,6 @@ namespace PotterGame.Utils.Text
         
         private static void SendInventoryMessage(IReadOnlyList<Text> aMessage)
         {
-            _debugLine = 2;
             for (var i = 0; i < aMessage.Count; i++)
             {
                 
@@ -183,18 +180,6 @@ namespace PotterGame.Utils.Text
         
         }
 
-        private static int _debugLine = 2;
-        private static void SendDebugMessage(Text aMessage)
-        {
-            const int x = 2;
-            var y = Math.Min(_debugLine, Console.WindowHeight - 2);
-
-            Console.SetCursorPosition(x,y);
-            Console.WriteLine(aMessage.OriginalMessage);
-            
-            _debugLine++;
-        }
-        
         private static void SendControlsMessage(IReadOnlyList<Text> aControls)
         {
             
@@ -224,10 +209,11 @@ namespace PotterGame.Utils.Text
         private static void SendLetterMessage(IReadOnlyList<Text> aLetter, bool aSlow, bool aSkippable = false)
         {
             var largestStringLength = aLetter.Select(m => m.OriginalMessage.Length).Prepend(0).Max();
-
+            _writer = new LetterWriter();
+            
             if (aSlow)
             {
-                Writer.StartWritingLetter(aLetter, aSkippable);
+                _writer.StartWritingLetter(aLetter, aSkippable);
                 return;
             }
             
@@ -248,7 +234,7 @@ namespace PotterGame.Utils.Text
         /// </summary>
         public static void FinishLetterMessage()
         {
-            Writer.FinishLetterMessage();
+            _writer.FinishLetterMessage();
         }
         
         /// <summary>
@@ -308,7 +294,7 @@ namespace PotterGame.Utils.Text
         {
             if(IsFadingIn())
                 StopFadeIn();
-            Fader.FadeInControls(aText, aRed, aGreen, aBlue, aFadeInMilliseconds, aType);
+            _fader.FadeInControls(aText, aRed, aGreen, aBlue, aFadeInMilliseconds, aType);
         }
 
         /// <summary>
@@ -317,7 +303,7 @@ namespace PotterGame.Utils.Text
         /// </summary>
         public static void StopFadeIn()
         {
-            Fader.StopFadeIn();
+            _fader.StopFadeIn();
         }
 
         /// <summary>
@@ -328,7 +314,7 @@ namespace PotterGame.Utils.Text
         /// <returns>Boolean, True if its currently writing a letter. Otherwise it will always be False</returns>
         public static bool IsWritingMessage()
         {
-            return Writer.IsWritingMessage;
+            return _writer.IsWritingMessage;
         }
 
         /// <summary>
@@ -339,7 +325,7 @@ namespace PotterGame.Utils.Text
         /// <returns>Boolean, True if controls are fading in. Otherwise it will always be False</returns>
         public static bool IsFadingIn()
         {
-            return Fader.IsFadingIn;
+            return _fader.IsFadingIn;
         }
 
     }

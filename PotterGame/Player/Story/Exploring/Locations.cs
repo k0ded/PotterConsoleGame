@@ -12,8 +12,7 @@ namespace PotterGame.Player.Story.Exploring
             ELocations aSLoc,
             ELocations aDLoc, 
             Text[] aExplanation,
-            int aDanger = 1,
-            bool aFakeDanger = false)
+            int aTravelTime = 2)
         {
             Name = aName;
             QLoc = aQLoc;
@@ -23,16 +22,14 @@ namespace PotterGame.Player.Story.Exploring
             SLoc = aSLoc;
             DLoc = aDLoc;
             Explanation = aExplanation;
-            Danger = aDanger;
-            IsFakeDanger = aFakeDanger;
+            TravelTime = aTravelTime;
         }
         public Locations(string aName,
             ELocations aQLoc,
             ELocations aWLoc,
             ELocations aELoc,
             Text[] aExplanation,
-            int aDanger = 1,
-            bool aFakeDanger = false)
+            int aTravelTime = 2)
         {
             Name = aName;
             QLoc = aQLoc;
@@ -42,8 +39,7 @@ namespace PotterGame.Player.Story.Exploring
             SLoc = ELocations.NONE;
             DLoc = ELocations.NONE;
             Explanation = aExplanation;
-            Danger = aDanger;
-            IsFakeDanger = aFakeDanger;
+            TravelTime = aTravelTime;
         }
         public string Name { get; }
         public ELocations QLoc { get; }
@@ -53,7 +49,6 @@ namespace PotterGame.Player.Story.Exploring
         public ELocations SLoc { get; }
         public ELocations DLoc { get; }
         public Text[] Explanation { get; }
-        public int Danger { get; }
-        public bool IsFakeDanger { get; }
+        public int TravelTime { get; }
     }
 }

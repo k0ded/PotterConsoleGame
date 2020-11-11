@@ -11,8 +11,18 @@ namespace PotterGame.Inventories.InventoryTypes
         
         public ShopSelector(string aName) : base(
             aName,
-            new Text(aName.PadRight(45).PadLeft(0) + $"({Player.Player.Money})"),
+            new Text(aName.PadRight(45).PadLeft(0) + "(%money%)"),
             new Text("     Item".PadRight(45) + "Price")) {}
+
+        public override void RunReloadAction()
+        {
+            if (isOpen)
+            {
+                openShop.Shop.RunReloadAction();
+                return;
+            }
+            base.RunReloadAction();
+        }
 
         public override void RunInteractAction()
         {
@@ -43,7 +53,7 @@ namespace PotterGame.Inventories.InventoryTypes
         {
             if (isOpen)
             {
-                openShop.Shop.RunSAction();
+                openShop.Shop.RunWAction();
                 return;
             }
             base.RunWAction();
