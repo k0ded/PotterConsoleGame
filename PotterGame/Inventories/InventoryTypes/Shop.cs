@@ -65,6 +65,7 @@ namespace PotterGame.Inventories.InventoryTypes
             
             InventoryManager.PlayerInventory.AddItem(Selected.Clone());
             TextUtils.SendMessage(new Text("+1 " + Selected.Name), TextType.ACTION);
+            RunReloadAction();
         }
 
         /// <summary>

@@ -6,7 +6,8 @@
         
         public override void InteractEvent()
         {
-                   
+            Program.Player.ChangeStamina(35);
+            InventoryManager.OpenInventory.RemoveItem(this);
         }
 
         public override void ReturnEvent()

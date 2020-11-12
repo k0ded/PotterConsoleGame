@@ -19,6 +19,7 @@ namespace PotterGame
         private const int StdOutputHandle = -11;
         private const uint EnableVirtualTerminalProcessing = 0x0004;
         private const uint DisableNewlineAutoReturn = 0x0008;
+        public static string MoneyAmount { get; set; } = "0";
 
         [DllImport("kernel32.dll")]
         private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
@@ -66,7 +67,6 @@ namespace PotterGame
 
             Console.CursorVisible = false;
             Manager = new DungeonManager();
-            Player = new Player.Player();
             Restart();
         }
 
@@ -75,7 +75,11 @@ namespace PotterGame
         /// </summary>
         public static void Restart()
         {
+            // Så att man börjar om från början!
+            Player = new Player.Player();
+            
             myStopwatch.Start();
+            // Den här öppnar start menyn som man får i början av spelet där man kan välja settings start och exit.
             Player.StartMenu();
         }
 
@@ -99,6 +103,21 @@ namespace PotterGame
                 new Text($"It only took you: {myStopwatch.Elapsed.ToString()}")
             };
             TextUtils.SendMessage(winMessage, TextType.CENTERED);
+            TextUtils.SendMessage(new Text("Press Enter to continue"), TextType.CONTROLS);
+            Console.ReadKey();
+            Restart();
+        }
+
+        public static void SendLoseMessage()
+        {
+            Console.Clear();
+            myStopwatch.Stop();
+            Player.SeizeInput = true;
+            var loseMessage = new [] {
+                new Text("You died!"),
+                new Text($"You survived for: {myStopwatch.Elapsed.ToString()}")
+            };
+            TextUtils.SendMessage(loseMessage, TextType.CENTERED);
             TextUtils.SendMessage(new Text("Press Enter to continue"), TextType.CONTROLS);
             Console.ReadKey();
             Restart();

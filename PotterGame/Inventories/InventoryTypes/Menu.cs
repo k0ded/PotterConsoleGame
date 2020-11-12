@@ -6,11 +6,11 @@ namespace PotterGame.Inventories.InventoryTypes
 {
     public class Menu : BaseInventory
     {
-
         public Menu() : base("Menu")
         {
             InventoryTextType = TextType.CENTERED;
 
+            //De här lägger till de olika items in i meny inventoryt.
             Content.Add(GetStartItem());
             Content.Add(GetSettingsItem());
             Content.Add(GetExitItem());
@@ -22,6 +22,9 @@ namespace PotterGame.Inventories.InventoryTypes
             TextUtils.SendMessage(new [] {new Text("For the best gameplay experience"), new Text("please maximize your window!")}, TextType.HEADERBAR);
         }
 
+        /// <summary>
+        /// Ger dig ett start item som man kan stoppa in i menyn som kör Program.Player.Start()
+        /// </summary>
         private GenericItem GetStartItem()
         {
             var item = new GenericItem("Start")

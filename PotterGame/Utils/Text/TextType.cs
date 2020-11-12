@@ -12,6 +12,7 @@
         LETTER_SLOW,
         LETTER_INSTANT,
         ACTION,
-        HEADERBAR
+        HEADERBAR,
+        HUD
     }
 }

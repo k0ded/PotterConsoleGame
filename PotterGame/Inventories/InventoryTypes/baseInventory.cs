@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using PotterGame.Inventories.Items;
-using PotterGame.Utils;
 using PotterGame.Utils.Text;
 
 namespace PotterGame.Inventories.InventoryTypes
@@ -15,8 +14,8 @@ namespace PotterGame.Inventories.InventoryTypes
         private int mySelection;
         private int myOffset;
         protected BaseItem Selected;
-        protected Text Header { get; set; }
-        protected Text HeaderFoot { get; set; }
+        protected Text Header { get; }
+        protected Text HeaderFoot { get; }
         protected TextType InventoryTextType = TextType.INVENTORY;
 
         protected string Name = "DEFAULT";
@@ -84,15 +83,14 @@ namespace PotterGame.Inventories.InventoryTypes
             var inventory = new Text[Math.Min(Content.Count + 4, 11)];
             var canScrollDown = Content.Count - myOffset - Console.WindowHeight - 5 > 0;
             var canScrollUp = myOffset > 0;
-
             inventory[0] = Header?.Replace("%money%", Program.Player.Money.ToString());
             inventory[1] = HeaderFoot;
-            inventory[2] = new Text(canScrollUp ? "           ↑" : "            ");
-            for (var i = 0; i < Math.Min(Content.Count - myOffset, 6); i++)
+            inventory[2] = new Text(canScrollUp ? "           ↑" : "            "); // Sätter en pil uppåt om man kan scrolla uppåt.
+            for (var i = 0; i < Math.Min(Content.Count - myOffset, 6); i++) // Placerar alla items på deras plats 0 är högst
             {
                 var item = Content.ElementAt(i);
                 inventory[i + 3] = GetItemName(item, mySelection == i);
-                inventory[i + 4] = new Text(canScrollDown ? "           ↓" : "            ");
+                inventory[i + 4] = new Text(canScrollDown ? "           ↓" : "            "); // Sätter en pil neråt om du kan scrolla neråt.
             }
             
             Player.Player.SendControls(Controls);
@@ -127,28 +125,43 @@ namespace PotterGame.Inventories.InventoryTypes
         /// <param name="aItem">Item to be added</param>
         public void AddItem(BaseItem aItem)
         {
+            if(!TryChangeCount(aItem, 1))
+                Content.Add(aItem);
+        }
+        
+        public void RemoveItem(BaseItem aItem)
+        {
+            TryChangeCount(aItem, -1);
+        }
+
+        private bool TryChangeCount(BaseItem aItem, int amount)
+        {
+            // Den här kollar igenom om ett item har samma item namn i Content
+            // Anledningen till att man inte kan använda contains eller find är för att
+            // Count kommer vara olika på de olika objekten och kommer därför jämnföras med namn.
             foreach (var item in Content.Where(item => item.Name == aItem.Name))
             {
-                item.Count++;
-                return;
+                item.Count += amount;
+                if (item.Count <= 0)
+                    Content.Remove(item);
+                return true;
             }
 
-            if (aItem.Count <= 0)
-                aItem.Count = 1;
-            Content.Add(aItem);
+            return false;
         }
+        
         /// <summary>
         /// Exits out of the inventory or selected <c>BaseItem</c>
         /// </summary>
         public virtual void RunBackspaceAction()
         {
+            // är Selected open så är selected oftast en shop och tar därför över events från.
             if(Selected != null && Selected.IsOpened)
             {
                 Selected.ReturnEvent();
                 OpenInventory(mySelection, myOffset, false);
-                return;
-            }
-            Program.Player.CloseInventory();
+            }else
+                Program.Player.CloseInventory();
         }
 
         /// <summary>
@@ -160,15 +173,11 @@ namespace PotterGame.Inventories.InventoryTypes
             if(canScrollUp && mySelection == 1)
             {
                 ReloadInventory(mySelection, myOffset - 1, false);
-                return;
-            }
-            if(mySelection == 0)
+            } else if(mySelection == 0)
             {
                 ReloadInventory(0, myOffset, false);
-                return;
-            }
-            ReloadInventory(mySelection - 1, myOffset, false);
-
+            }else
+                ReloadInventory(mySelection - 1, myOffset, false);
         }
 
         /// <summary>
@@ -176,19 +185,17 @@ namespace PotterGame.Inventories.InventoryTypes
         /// </summary>
         public virtual void RunSAction()
         {
-            var canScrollDown = (Content.Count - myOffset) - (Console.WindowHeight - 5) > 0;
+            var canScrollDown = Content.Count - myOffset - (Console.WindowHeight - 5) > 0;
+            
+            // Den här bestämmer om du ska scrolla ner, byta selectionen så att den går ner lite eller bara stanna.
             if (canScrollDown && mySelection == 4)
             {
                 ReloadInventory(mySelection, myOffset + 1, false);
-                return;
-            }
-            if (mySelection == Console.WindowHeight - 5 || mySelection == Content.Count - 1)
+            }else if (mySelection == Console.WindowHeight - 5 || mySelection == Content.Count - 1)
             {
                 ReloadInventory(mySelection, myOffset, false);
-                return;
-            }
-            ReloadInventory(mySelection + 1, myOffset, false);
-
+            }else
+                ReloadInventory(mySelection + 1, myOffset, false);
         }
         
         /// <summary>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using PotterGame.Inventories.Items;
 using PotterGame.Utils.Text;
 
@@ -7,67 +6,24 @@ namespace PotterGame.Inventories.InventoryTypes
 {
     public class Settings : BaseInventory
     {
-        private double volume = 1;
-        
         public Settings() : base("Settings")
         {
             InventoryTextType = TextType.CENTERED;
             
-            Content.Add(GetMusicInteractable());
-            Content.Add(GetMusicSlider());
+            // De här ser till så att de olika items kommer med in i inventoryt
             Content.Add(GetMaximizeItem());
             Content.Add(GetBackItem());
         }
 
-        private BaseItem GetMusicSlider()
-        {
-            var builder = new StringBuilder();
-            for (var i = 0; i < (Console.WindowWidth/2 - 4) * volume; i++)
-            {
-                builder.Append("=");
-            }
-
-            var item = new GenericItem(builder.ToString()) {IsOpened = true};
-            return item;
-        }
-
-        private BaseItem GetMusicInteractable()
-        {
-            var item = new GenericItem("Music Volume");
-            item.InteractEventTask = () =>
-            {
-                //Increase volume
-                volume = Math.Min(1, volume + 0.1);
-                Content[1] = GetMusicSlider();
-                ReloadInventory(0, 0, false);
-                
-                //Set volume
-                
-            };
-
-            item.ReturnEventTask = () =>
-            {
-                //Decrease volume
-                volume = Math.Max(0, volume - 0.1);
-                Content[1] = GetMusicSlider();
-                ReloadInventory(0, 0, false);
-                
-                //Set volume
-                
-            };
-            item.Controls = "BACKSPACE - Volume down      ENTER - Volume up";
-            item.IsOpened = true;
-            return item;
-        }
-        
         private GenericItem GetMaximizeItem()
         {
             var item = new GenericItem("Maximize")
             {
+                // När man trycker enter så körs denna biten av kod
                 InteractEventTask = delegate
                 {
                     Program.Maximize();
-                    OpenInventory(2, 0, true);
+                    RunReloadAction();
                     Console.CursorVisible = false;
                 }
             };

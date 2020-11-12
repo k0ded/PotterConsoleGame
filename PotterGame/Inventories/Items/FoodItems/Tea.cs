@@ -7,12 +7,12 @@ namespace PotterGame.Inventories.Items.FoodItems
 
         public Tea() : base("Tea", 5)
         {
-            Controls = "    [ENTER] - Consume                       [BACKSPACE] - Back    ";
         }
             
         public override void InteractEvent()
         {
-            
+            Program.Player.ChangeStamina(15);
+            InventoryManager.OpenInventory.RemoveItem(this);
         }
 
         public override void ReturnEvent()

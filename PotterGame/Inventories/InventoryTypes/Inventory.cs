@@ -21,5 +21,11 @@ namespace PotterGame.Inventories.InventoryTypes
         {
             OpenInventory(0,0, aSetOpened);
         }
+
+        public override void RunInteractAction()
+        {
+            base.RunInteractAction();
+            RunReloadAction();
+        }
     }
 }

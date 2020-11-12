@@ -47,6 +47,9 @@ namespace PotterGame.Utils.Text
                 case TextType.MISSION:
                     SendMissionMessage(message);
                     break;
+                case TextType.HUD:
+                    SendHudMessage(message);
+                    break;
                 case TextType.EXPLANATION:
                     SendExplanationMessage(message[0], message[1]);
                     break;
@@ -66,6 +69,17 @@ namespace PotterGame.Utils.Text
                     Console.WriteLine("CHECK CODE, TEXT TYPE IS NULL OR NOT ADDED IN TEXT UTILS");
                     break;
             }
+        }
+
+        private static void SendHudMessage(IReadOnlyList<Text> message)
+        {
+            if(message.Count > 1)
+                throw new ArgumentException("You cant have more than 1 message in your HUD");
+
+            var x = Console.WindowWidth - message[0].OriginalMessage.Length - 2;
+            var y = Console.WindowHeight - 1;
+            Console.SetCursorPosition(x,y);
+            Console.Write(message[0].Message);
         }
 
         /// <summary>

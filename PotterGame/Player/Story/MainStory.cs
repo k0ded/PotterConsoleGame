@@ -11,6 +11,7 @@ namespace PotterGame.Player.Story
     {
 
         private int myStory;
+        private Random myRandom = new Random();
         public Exploration Exploration;
 
         public MainStory()
@@ -19,11 +20,18 @@ namespace PotterGame.Player.Story
             Exploration.Load();
         }
 
+        /// <summary>
+        /// Startar berättelsen.
+        /// </summary>
         public override void Start()
         {
             RunStory(0);
         }
 
+        /// <summary>
+        /// Kör en specifik berättelse.
+        /// </summary>
+        /// <param name="i"></param>
         public void RunStory(int i)
         {
             myStory = i;
@@ -31,7 +39,7 @@ namespace PotterGame.Player.Story
             switch (i)
             {
                 case 2:
-                    HogwartsSortingStory();
+                    GringottsStory();
                     break;
                 case 1:
                     OllivandersMissionStory();
@@ -42,20 +50,26 @@ namespace PotterGame.Player.Story
             }
         }
 
-        private void HogwartsSortingStory()
+        #region Stories
+
+        private void GringottsStory()
         {
-            SendExplorationMission(new Text("Get to Hogwarts and get sorted!", ColorCode.YELLOW));
+            // Den här skickar en text i mitten av skärmen där den sakta skriver ut allting,
+            // efter en liten stund när den är färdig går den tillbaka till Explore();
+            SendExplorationMission(new Text("You now have your wand! Find the clues necessary to open the dungeons at gringotts!", ColorCode.YELLOW));
         }
         
         private void OllivandersMissionStory()
         {
+            // Den här skickar en text i mitten av skärmen där den sakta skriver ut allting,
+            // efter en liten stund när den är färdig går den tillbaka till Explore();
             SendExplorationMission(new Text("Get to Olivanders' and buy your wand!", ColorCode.YELLOW));
         }
 
         private void HogwartsLetterStory()
         {
             Console.Clear();
-            Program.Player.SeizeInput = true;
+            Program.Player.SeizeInput = true; // Ser till så att input stoppas
 
             var letter = new[]
             {
@@ -78,10 +92,19 @@ namespace PotterGame.Player.Story
             TextUtils.SendMessage(letter, TextType.LETTER_SLOW, true);
         }
 
+        #endregion
+
+        /// <summary>
+        /// Av någon anledning så vägrade LETTER_SLOW fungera på rätt sätt så jag valde att göra
+        /// Denna metoden istället för att fixa problemet då det var lite lättare.
+        /// </summary>
         private void SendExplorationMission(Text message)
         {
             TextUtils.SendMessage(message, TextType.LETTER_SLOW);
 
+            // Hade problem med att en letter valde att köras två gånger så för att fixa detta gjorde jag en do-while
+            // Vilket kör först sen kollar conditionen vilket betyder att jag bara kommer få loopen att köra en gång
+            // så länge conditionen är false
             do
             {
                 Thread.Sleep(500);
@@ -92,13 +115,24 @@ namespace PotterGame.Player.Story
             } while (TextUtils.IsWritingMessage());
         }
         
+        /// <summary>
+        /// Skickar informationen till skärmen när man utforskar.
+        /// </summary>
         public void Explore()
         {
+            Program.Player.ChangeStamina(-5);
             Console.Clear();
             var travelTime = Exploration.GetTravelTime();
-            Travel(travelTime);
-            Console.Clear();
             
+            // Den här tar "travelTime" sekunder på sig att bli färdig och skriver Travelling...
+            // med olika mängd punkter tills den är färdig
+            TravelDelay(travelTime);
+            Console.Clear();
+
+            int moneyFound = myRandom.Next(1, 10);
+            bool shouldGiveMoney = myRandom.Next(100) > 80;
+            
+            // Här ser jag till så att ifall man går in i Inventoryt så kan man ta sig tillbaka ut.
             PreviousExplorationMessage = Exploration.GetExplorationMessage();
             PreviousExplanationMessage = Exploration.GetExplanationMessage();
             PreviousHeaderBarMessage = new Text(Exploration.GetClueMessage());
@@ -107,21 +141,40 @@ namespace PotterGame.Player.Story
             TextUtils.SendMessage(PreviousExplorationMessage, TextType.EXPLORATION);
             TextUtils.SendMessage(PreviousExplanationMessage, TextType.EXPLANATION);
             TextUtils.SendMessage(PreviousMissionMessage, TextType.MISSION);
+            
+            // Den här skickar rätt text ifall man hittat guld eller ej och hur mycket guld man i så fall hittat.
+            Text hud = shouldGiveMoney
+                ? new Text("You found " + moneyFound + " gold!    " + Program.Player.Stamina + "/" +
+                           Program.Player.MaxStamina)
+                : new Text(Program.Player.Stamina + "/" + Program.Player.MaxStamina);
+            
+            TextUtils.SendMessage(hud, TextType.HUD);
 
+            if(shouldGiveMoney)
+                Program.Player.AddMoney(moneyFound);
             Player.SendControls(Exploration.GetControlsMessage());
             Program.Player.SeizeInput = false;
         }
 
-        private void Travel(int travelTime)
+        /// <summary>
+        /// Används som ett sätt att vänta lite innan man får fortsätta utforska.
+        /// Detta gjordes för att man inte ska kunna spamma olika knappar för att komma fram.
+        /// </summary>
+        private void TravelDelay(int travelTime)
         {
-            return; // Debugging
             var timeDone = DateTime.Now.AddSeconds(travelTime);
             var dots = 0;
             
+            // CompareTo ger:
+            // <0 om DateTime.Now är tidigare än timeDone
+            // 0 om DateTime.Now är exakt samma som timeDone
+            // >0 om DateTime.Now är mer än timeDone
             while (DateTime.Now.CompareTo(timeDone) < 0)
             {
                 Console.Clear();
+                //Den här ser till så att det går från en punkt till två till tre till noll.
                 dots = (dots + 1) % 4;
+                
                 var d = new StringBuilder();
                 for (var i = 0; i < dots; i++)
                 {
@@ -133,6 +186,9 @@ namespace PotterGame.Player.Story
             }
         }
 
+        /// <summary>
+        /// Ser till så att man inte får med onödig information från en annan plats.
+        /// </summary>
         private void ResetPrevious()
         {
             PreviousCenteredMessage = null;
@@ -141,6 +197,8 @@ namespace PotterGame.Player.Story
             PreviousLetterMessage = null;
             PreviousMissionMessage = null;
         }
+
+        #region Controls
 
         public override void RunInteractAction()
         {
@@ -157,7 +215,7 @@ namespace PotterGame.Player.Story
             Program.Player.SeizeInput = false;
             Continue = false;
         }
-
+        
         public override void RunQAction()
         {
             if (Program.Player.SeizeInput)
@@ -206,5 +264,7 @@ namespace PotterGame.Player.Story
             if (Exploration.RunDAction()) 
                 Explore();
         }
+
+        #endregion
     }
 }

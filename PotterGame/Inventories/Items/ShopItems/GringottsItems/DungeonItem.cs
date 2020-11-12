@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
-using PotterGame.Player.Story.Exploring;
 using PotterGame.Utils.Dungeons;
 using PotterGame.Utils.Text;
 
@@ -10,14 +8,14 @@ namespace PotterGame.Inventories.Items.ShopItems.GringottsItems
     public class DungeonItem : BaseItem
     {
         private Dungeon myDungeon;
-        private bool alreadyOpened;
+        private bool myAlreadyOpened;
         public DungeonItem(Dungeon aDungeon) : base(aDungeon.Name, 0)
         {
             myDungeon = aDungeon;
         }
 
         /// <summary>
-        /// När man 
+        /// När man trycker enter så ska en meny öppnas där man kan kan skriva in lösenordet.
         /// </summary>
         public override void InteractEvent()
         {
@@ -34,7 +32,7 @@ namespace PotterGame.Inventories.Items.ShopItems.GringottsItems
                 if (myDungeon.TryPassword(result))
                 {
                     // Lösenordet var rätt
-                    if (!alreadyOpened)
+                    if (!myAlreadyOpened)
                         DungeonManager.OpenedDungeons++;
                     else
                         break;
@@ -67,7 +65,7 @@ namespace PotterGame.Inventories.Items.ShopItems.GringottsItems
                         }
                     }
 
-                    alreadyOpened = true;
+                    myAlreadyOpened = true;
                     break;
                 }
 
@@ -84,6 +82,9 @@ namespace PotterGame.Inventories.Items.ShopItems.GringottsItems
             InventoryManager.OpenInventory.RunReloadAction();
         }
 
+        /// <summary>
+        /// Här kan man få svar på en fråga genom att passera in en text array.
+        /// </summary>
         private string SendQuery(Text[] query)
         {
             TextUtils.SendMessage(new []

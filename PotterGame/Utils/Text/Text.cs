@@ -23,12 +23,6 @@ namespace PotterGame.Utils.Text
             Message = DeserializeColorCode(aColor) + aMessage + DeserializeColorCode(ColorCode.RESET);
         }
 
-        public Text(string aMessage, ColorCode foregroundColor, ColorCode backgroundColor)
-        {
-            OriginalMessage = aMessage;
-            Message = DeserializeColorCode(foregroundColor) + DeserializeColorCode(backgroundColor) + aMessage + DeserializeColorCode(ColorCode.RESET);
-        }
-
         /// <summary>
         /// The simplest form of a <c>Text</c> message. Its plain white.
         /// </summary>
@@ -63,6 +57,8 @@ namespace PotterGame.Utils.Text
             Message = DeserializeColor(r, g, b) + aMessage + DeserializeColorCode(ColorCode.RESET);
         }
 
+        #region Operators
+
         public static Text operator +(Text t, ColorCode code)
         {
             return new Text(t.OriginalMessage, code);
@@ -77,7 +73,9 @@ namespace PotterGame.Utils.Text
         {
             return new Text(t.Message + s);
         }
-        
+
+        #endregion
+
         /// <summary>
         /// Translates the ColorCodes constant integer into bytes then into the correct string
         /// for the color. Empty space is replaced with 0 as 0 doesnt have a value in the encoded

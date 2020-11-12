@@ -2,6 +2,7 @@
 using PotterGame.Inventories.InventoryTypes;
 using PotterGame.Inventories.Items.ShopItems.OlivandersItems.Wands;
 using PotterGame.Player.Story;
+using PotterGame.Utils.Text;
 
 namespace PotterGame.Inventories.Items.ShopItems
 {
@@ -10,8 +11,7 @@ namespace PotterGame.Inventories.Items.ShopItems
         public OlivandersItem() : base("Olivanders' Wands")
         {
             Shop = new Shop("Olivanders' Wands", true);
-            GenericItem item = new GenericItem("Wand");
-            item.InteractEventTask = DecideWandInteractEvent;
+            var item = new GenericItem("Wand") {InteractEventTask = DecideWandInteractEvent};
             Shop.AddItem(item);
         }
 
@@ -27,16 +27,29 @@ namespace PotterGame.Inventories.Items.ShopItems
         {
             Random r = new Random();
             var wand = new Wand();
+            
+            // Enums har en int värde så jag använder den för att slumpa stav.
             wand.Core = (WandCores) r.Next(0,4);
             wand.Wood = (WandWoods) r.Next(0,10);
             Program.Player.PlayerWand = wand;
 
+            // Ser till så att input går till rätt ställe!
+            InventoryManager.OpenInventory = InventoryManager.PlayerInventory;
+            InventoryManager.IsInventoryOpen = false;
+            
             if(Program.Player.Context is MainStory)
                 ((MainStory)Program.Player.Context).RunStory(2);
         }
 
         private void SendWandTraits()
         {
+            Text[] traits = {
+                new Text("Wand"),
+                new Text("Core: " + Program.Player.PlayerWand.Value.Core),
+                new Text("Wood: " + Program.Player.PlayerWand.Value.Wood),
+            };
+            
+            TextUtils.SendMessage(traits, TextType.EXPLANATION);
             
         }
     }

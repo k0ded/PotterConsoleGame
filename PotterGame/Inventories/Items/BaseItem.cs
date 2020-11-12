@@ -6,7 +6,6 @@
         public int Value { get; }
         public int Count { get; set; } = 1;
         public string Name { get; }
-        public string Controls { get; set; }
 
         public abstract void InteractEvent();
         public abstract void ReturnEvent();

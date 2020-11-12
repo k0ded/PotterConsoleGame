@@ -8,8 +8,6 @@ namespace PotterGame.Inventories.Items
         public Action ReturnEventTask { get; set; }
         
         public GenericItem(string aName) : base(aName, 0) {}
-        
-        public GenericItem(string aName, int aValue) : base(aName, aValue) {}
 
         public override void InteractEvent()
         {

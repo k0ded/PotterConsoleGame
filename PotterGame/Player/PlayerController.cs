@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using PotterGame.Inventories;
-using PotterGame.Utils.Text;
 
 namespace PotterGame.Player
 {
@@ -12,7 +10,7 @@ namespace PotterGame.Player
         /// </summary>
         public static void MakeSelection()
         {
-            while (true)
+            while (true) // Den här loopen körs förevigt då den används för alla olika inputs
             {
                 var key = Console.ReadKey(true).Key;
                 

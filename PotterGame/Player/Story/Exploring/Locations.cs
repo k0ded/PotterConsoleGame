@@ -29,7 +29,7 @@ namespace PotterGame.Player.Story.Exploring
             ELocations aWLoc,
             ELocations aELoc,
             Text[] aExplanation,
-            int aTravelTime = 2)
+            int aTravelTime = 1)
         {
             Name = aName;
             QLoc = aQLoc;

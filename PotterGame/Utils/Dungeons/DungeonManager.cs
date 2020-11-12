@@ -66,25 +66,6 @@ namespace PotterGame.Utils.Dungeons
             {
                 Secrets[l].Add(Cipher);
             }
-
-            /*for (int i = 0; i < 2; i++)
-            {
-                var x = i * 20;
-                Console.SetCursorPosition(x, 0);
-                foreach (var location in Secrets.Keys)
-                {
-                    foreach (var secret in Secrets[location])
-                    {
-                        Console.WriteLine(location + ": " + secret.GetClue());
-                    }
-
-                    Console.WriteLine();
-                }
-
-                Console.WriteLine("TKEY: " + Cipher.Decipher(Dungeons[0].Password.Password));
-                Console.WriteLine("GKEY: " + Cipher.Decipher(Dungeons[1].Password.Password));
-                Console.ReadKey();
-            }*/
         }
 
         public static DungeonItem GetDungeonItem(string constant)

@@ -223,7 +223,8 @@ namespace PotterGame.Player.Story.Exploring
                     new Text("Hogwarts Express"), 
                     new Text("You've entered the train and you seat yourself in an empty compartment. " +
                              "Today the trolley lady doesn't show up, wonder what happened to her."), 
-                });
+                },
+                5);
             
             var hogwartsStation = new Locations(
                 "Hogsmeade - Station",
@@ -275,7 +276,8 @@ namespace PotterGame.Player.Story.Exploring
                     new Text("You are standing in the great hall of Hogwarts. " +
                              "This is the hub to everyone and everything. " +
                              "This is also where sorting happens! [UNIMPLEMENTED]") 
-                });
+                },
+                8);
             
             var hogwartsQuidditch = new Locations(
                 "Hogwarts - Quidditch Arena",
@@ -305,7 +307,7 @@ namespace PotterGame.Player.Story.Exploring
                 "Hogwarts - Hospital Wing",
                 ELocations.HOGWARTS_GREATHALL,
                 ELocations.HOGWARTS_QUIDDITCH,
-                ELocations.NONE,
+                ELocations.HOGWARTS_HAGRIDSHUT,
                 new []
                 {
                     new Text("Hospital Wing"),
@@ -399,6 +401,10 @@ namespace PotterGame.Player.Story.Exploring
 
         public string GetClueMessage()
         {
+            // Är PlayerWand null så borde du inte kunna se clues. 
+            if (Program.Player.PlayerWand == null)
+                return "";
+            
             var sb = new StringBuilder("");
             if (DungeonManager.Instance.Secrets.ContainsKey(myCurrentLocation))
             {
@@ -440,11 +446,6 @@ namespace PotterGame.Player.Story.Exploring
         public Text[] GetExplanationMessage()
         {
             return myLocations[myCurrentLocation].Explanation;
-        }
-
-        public void SetLocation(ELocations loc)
-        {
-            RunAction(loc);
         }
 
         /// <summary>

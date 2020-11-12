@@ -2,7 +2,7 @@
 {
     public struct Wand
     {
-        public WandCores Core;
-        public WandWoods Wood;
+        public WandCores Core { get; set; }
+        public WandWoods Wood { get; set; }
     }
 }
